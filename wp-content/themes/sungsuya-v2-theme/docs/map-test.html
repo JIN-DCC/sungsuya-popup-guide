@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>성수야! V2 - 네이버 지도 테스트</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        #popup-map {
+            width: 100%;
+            height: 500px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .info-box {
+            background: #e9ecef;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .api-info {
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🗺️ 성수야! V2 - 네이버 지도 메인 프로그램 테스트</h1>
+        
+        <div id="status" class="status">
+            ⏳ 네이버 지도 API 로딩 중...
+        </div>
+        
+        <div class="info-box">
+            <h3>📊 API 설정 정보</h3>
+            <div class="api-info">URL: https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=qosb7em5i9&callback=initNaverMaps</div>
+            <div class="api-info">파라미터: ncpKeyId (올바른 형식)</div>
+            <div class="api-info">콜백 함수: initNaverMaps</div>
+        </div>
+        
+        <div id="popup-map">지도 로딩 중...</div>
+        
+        <div class="info-box">
+            <h3>📝 테스트 결과</h3>
+            <div id="test-results">
+                <p>테스트 진행 중...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 네이버 클라우드 플랫폼 Maps API 로드 (올바른 방식) -->
+    <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=qosb7em5i9&callback=initNaverMaps"></script>
+    
+    <script>
+        // 상태 업데이트 함수
+        function updateStatus(message, type) {
+            const statusElement = document.getElementById('status');
+            statusElement.textContent = message;
+            statusElement.className = `status ${type}`;
+        }
+        
+        function addTestResult(message) {
+            const resultsElement = document.getElementById('test-results');
+            resultsElement.innerHTML += `<p>✅ ${message}</p>`;
+        }
+        
+        // 전역 변수
+        var map = null;
+        var sungsuyaMapInstance = null;
+        
+        // 메인 프로그램과 동일한 콜백 함수
+        window.initNaverMaps = function() {
+            console.log('✅ 네이버 지도 API 콜백 호출됨');
+            updateStatus('✅ 네이버 지도 API 로드 완료', 'success');
+            addTestResult('네이버 지도 API 콜백 함수 호출됨');
+            
+            try {
+                // API 객체 확인
+                if (typeof naver === 'undefined') {
+                    throw new Error('naver 객체가 정의되지 않음');
+                }
+                
+                if (typeof naver.maps === 'undefined') {
+                    throw new Error('naver.maps 객체가 정의되지 않음');
+                }
+                
+                addTestResult('네이버 지도 API 객체 확인됨');
+                
+                // SungsuyaMapV2 클래스 사용 (메인 프로그램과 동일)
+                if (typeof SungsuyaMapV2 !== 'undefined') {
+                    sungsuyaMapInstance = new SungsuyaMapV2('popup-map');
+                    addTestResult('SungsuyaMapV2 클래스 인스턴스 생성됨');
+                    
+                    // 5초 후 테스트 마커 추가
+                    setTimeout(() => {
+                        if (sungsuyaMapInstance && sungsuyaMapInstance.map) {
+                            sungsuyaMapInstance.addSingleMarker(
+                                37.5447, 
+                                127.0557, 
+                                '성수야! 테스트 스토어', 
+                                '서울특별시 성동구 성수일로8길 17'
+                            );
+                            addTestResult('테스트 마커 추가됨');
+                        }
+                    }, 2000);
+                    
+                } else {
+                    // 기본 지도 생성
+                    const mapContainer = document.getElementById('popup-map');
+                    
+                    map = new naver.maps.Map(mapContainer, {
+                        center: new naver.maps.LatLng(37.5447, 127.0557),
+                        zoom: 15,
+                        mapTypeControl: true,
+                        zoomControl: true
+                    });
+                    
+                    addTestResult('기본 네이버 지도 생성됨');
+                    
+                    // 마커 추가
+                    const marker = new naver.maps.Marker({
+                        position: new naver.maps.LatLng(37.5447, 127.0557),
+                        map: map,
+                        title: '성수동 테스트'
+                    });
+                    
+                    addTestResult('기본 마커 추가됨');
+                }
+                
+            } catch (error) {
+                console.error('❌ 지도 초기화 실패:', error);
+                updateStatus(`❌ 지도 초기화 실패: ${error.message}`, 'error');
+                document.getElementById('popup-map').innerHTML = `
+                    <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #dc3545; text-align: center;">
+                        <div>
+                            <h3>❌ 지도 초기화 실패</h3>
+                            <p>${error.message}</p>
+                        </div>
+                    </div>
+                `;
+            }
+        };
+        
+        // DOM 로드 완료 후 로그 시작
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 성수야! V2 네이버 지도 테스트 시작');
+            addTestResult('DOM 로드 완료');
+            
+            // 10초 후에도 initNaverMaps가 호출되지 않으면 오류 표시
+            setTimeout(function() {
+                if (map === null && sungsuyaMapInstance === null) {
+                    updateStatus('❌ API 로드 실패: 콜백 함수 호출되지 않음', 'error');
+                }
+            }, 10000);
+        });
+    </script>
+    
+    <!-- 메인 프로그램의 map.js 로드 (올바른 경로) -->
+    <script src="./assets/js/map.js"></script>
+</body>
+</html>

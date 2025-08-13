@@ -1,0 +1,832 @@
+/* 
+ * 팝업스토어 상세페이지 스타일 (개선 버전) - 계속
+ */
+
+.store-card-meta {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.store-excerpt {
+    font-size: var(--font-sm);
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin: 0;
+}
+
+.store-period {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-sm);
+    color: var(--text-muted);
+    margin: 0;
+}
+
+.period-icon {
+    font-size: var(--font-base);
+}
+
+.card-hover-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(37, 99, 235, 0.9);
+    color: var(--text-inverse);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity var(--transition-normal);
+    backdrop-filter: blur(4px);
+}
+
+.related-store-card:hover .card-hover-overlay {
+    opacity: 1;
+}
+
+.view-details {
+    font-size: var(--font-lg);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.related-stores-footer {
+    text-align: center;
+}
+
+.view-all-stores-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-8);
+    background: var(--primary-color);
+    color: var(--text-inverse);
+    text-decoration: none;
+    border-radius: var(--radius-xl);
+    font-size: var(--font-lg);
+    font-weight: 600;
+    transition: all var(--transition-normal);
+    box-shadow: var(--shadow-lg);
+}
+
+.view-all-stores-btn:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-xl);
+}
+
+.btn-icon, .btn-arrow {
+    font-size: var(--font-xl);
+}
+
+.no-related-stores {
+    text-align: center;
+    padding: var(--space-16);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-xl);
+}
+
+.no-related-icon {
+    font-size: 4rem;
+    margin-bottom: var(--space-4);
+}
+
+.explore-options {
+    margin-top: var(--space-6);
+}
+
+.explore-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-6);
+    background: var(--primary-color);
+    color: var(--text-inverse);
+    text-decoration: none;
+    border-radius: var(--radius-lg);
+    font-weight: 600;
+    transition: all var(--transition-normal);
+}
+
+.explore-link:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+}
+
+/* ========================
+   스토어 설명 섹션
+======================== */
+.store-description {
+    max-width: 800px;
+    margin: 0 auto;
+    font-size: var(--font-lg);
+    line-height: 1.7;
+    color: var(--text-secondary);
+}
+
+.store-description h1,
+.store-description h2,
+.store-description h3,
+.store-description h4 {
+    color: var(--text-primary);
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-4);
+}
+
+.store-description p {
+    margin-bottom: var(--space-4);
+}
+
+.store-description ul,
+.store-description ol {
+    margin: var(--space-4) 0;
+    padding-left: var(--space-6);
+}
+
+.store-description li {
+    margin-bottom: var(--space-2);
+}
+
+.placeholder-content {
+    text-align: center;
+    padding: var(--space-12);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-xl);
+    border: 2px dashed var(--gray-300);
+}
+
+.placeholder-content h3 {
+    font-size: var(--font-2xl);
+    font-weight: 700;
+    margin: 0 0 var(--space-4);
+    color: var(--text-primary);
+}
+
+.placeholder-content p {
+    font-size: var(--font-lg);
+    color: var(--text-secondary);
+    margin: 0 0 var(--space-3);
+}
+
+/* ========================
+   액션 버튼 섹션
+======================== */
+.store-actions {
+    background: var(--bg-secondary);
+    padding: var(--space-8) 0;
+    border-top: 1px solid var(--gray-200);
+}
+
+.actions-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-6);
+    border-radius: var(--radius-xl);
+    text-decoration: none;
+    font-size: var(--font-base);
+    font-weight: 600;
+    transition: all var(--transition-normal);
+    border: 2px solid transparent;
+    cursor: pointer;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-md);
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.share-btn:hover {
+    background: var(--primary-color);
+    color: var(--text-inverse);
+    border-color: var(--primary-color);
+}
+
+.bookmark-btn:hover {
+    background: var(--accent-color);
+    color: var(--text-inverse);
+    border-color: var(--accent-color);
+}
+
+.bookmark-btn.bookmarked {
+    background: var(--accent-color);
+    color: var(--text-inverse);
+}
+
+.back-btn:hover {
+    background: var(--gray-600);
+    color: var(--text-inverse);
+    border-color: var(--gray-600);
+}
+
+.btn-icon {
+    font-size: var(--font-xl);
+}
+
+/* ========================
+   토스트 메시지
+======================== */
+.toast, .copy-toast {
+    position: fixed;
+    bottom: var(--space-6);
+    right: var(--space-6);
+    background: var(--gray-800);
+    color: var(--text-inverse);
+    padding: var(--space-4) var(--space-6);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    z-index: 10000;
+    transform: translateX(100%);
+    transition: transform var(--transition-normal);
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    max-width: 400px;
+}
+
+.toast.show, .copy-toast.show {
+    transform: translateX(0);
+}
+
+.toast--success, .copy-toast--success {
+    background: var(--success-color);
+}
+
+.toast--warning, .copy-toast--warning {
+    background: var(--warning-color);
+}
+
+.toast--error, .copy-toast--error {
+    background: var(--error-color);
+}
+
+.toast--info, .copy-toast--info {
+    background: var(--primary-color);
+}
+
+.toast-icon, .toast-message {
+    font-size: var(--font-base);
+    font-weight: 600;
+}
+
+/* ========================
+   키보드 힌트
+======================== */
+.keyboard-hints {
+    position: fixed;
+    top: var(--space-6);
+    right: var(--space-6);
+    background: var(--gray-800);
+    color: var(--text-inverse);
+    padding: var(--space-6);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    z-index: 10000;
+    transform: translateX(100%);
+    transition: transform var(--transition-normal);
+    max-width: 250px;
+}
+
+.keyboard-hints.hints-show {
+    transform: translateX(0);
+}
+
+.hints-content h4 {
+    margin: 0 0 var(--space-4);
+    font-size: var(--font-lg);
+    color: var(--text-inverse);
+}
+
+.hints-content ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.hints-content li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-2);
+    font-size: var(--font-sm);
+}
+
+kbd {
+    background: var(--gray-600);
+    border: 1px solid var(--gray-500);
+    border-radius: var(--radius-sm);
+    padding: var(--space-1) var(--space-2);
+    font-size: var(--font-xs);
+    font-family: monospace;
+}
+
+/* ========================
+   반응형 디자인
+======================== */
+@media (max-width: 1024px) {
+    .container {
+        padding: 0 var(--space-3);
+    }
+    
+    .store-hero {
+        grid-template-columns: 1fr;
+        gap: var(--space-6);
+        text-align: center;
+    }
+    
+    .store-image .hero-image {
+        width: 100%;
+        max-width: 400px;
+        height: 250px;
+        margin: 0 auto;
+    }
+    
+    .nav-content {
+        grid-template-columns: 1fr;
+        gap: var(--space-4);
+        text-align: center;
+    }
+    
+    .nav-item {
+        justify-content: center;
+    }
+    
+    .nav-link {
+        max-width: 100%;
+    }
+    
+    .store-info-grid,
+    .transport-info-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .related-stores-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: var(--space-4);
+    }
+}
+
+@media (max-width: 768px) {
+    .store-header {
+        padding: var(--space-6) 0 var(--space-12);
+    }
+    
+    .store-title {
+        font-size: var(--font-3xl);
+    }
+    
+    .section-title {
+        font-size: var(--font-xl);
+    }
+    
+    .store-info-section,
+    .store-location-section,
+    .store-transport-section,
+    .store-description-section,
+    .related-stores-section {
+        padding: var(--space-8) 0;
+    }
+    
+    .address-info {
+        flex-direction: column;
+        gap: var(--space-4);
+        align-items: stretch;
+    }
+    
+    .address-actions {
+        justify-content: space-between;
+    }
+    
+    .copy-address-btn,
+    .naver-map-link,
+    .directions-link {
+        flex: 1;
+        justify-content: center;
+        padding: var(--space-3);
+        font-size: var(--font-xs);
+    }
+    
+    #store-map {
+        height: 350px;
+    }
+    
+    .actions-wrapper {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .action-btn {
+        justify-content: center;
+        padding: var(--space-4);
+    }
+    
+    .related-stores-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .toast, .copy-toast {
+        bottom: var(--space-4);
+        right: var(--space-4);
+        left: var(--space-4);
+        max-width: none;
+    }
+    
+    .keyboard-hints {
+        top: var(--space-4);
+        right: var(--space-4);
+        left: var(--space-4);
+        max-width: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 0 var(--space-2);
+    }
+    
+    .store-title {
+        font-size: var(--font-2xl);
+    }
+    
+    .section-title {
+        font-size: var(--font-lg);
+        flex-direction: column;
+        gap: var(--space-2);
+    }
+    
+    .info-item,
+    .transport-item {
+        padding: var(--space-4);
+    }
+    
+    .map-controls {
+        flex-wrap: wrap;
+        gap: var(--space-2);
+    }
+    
+    .map-control-btn {
+        flex: 1;
+        min-width: 0;
+        padding: var(--space-2);
+        font-size: var(--font-sm);
+    }
+    
+    .store-card-content {
+        padding: var(--space-4);
+    }
+    
+    .related-store-card {
+        margin-bottom: var(--space-4);
+    }
+}
+
+/* ========================
+   접근성 개선
+======================== */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .loading-spinner {
+        animation: none;
+        border: 4px solid var(--primary-color);
+    }
+    
+    .marker-pin,
+    .marker-pulse,
+    .status-dot {
+        animation: none;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --text-primary: #f9fafb;
+        --text-secondary: #d1d5db;
+        --text-muted: #9ca3af;
+        --bg-primary: #111827;
+        --bg-secondary: #1f2937;
+        --bg-accent: #374151;
+        --gray-50: #374151;
+        --gray-100: #4b5563;
+        --gray-200: #6b7280;
+    }
+    
+    .store-header {
+        background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+    }
+    
+    .info-item,
+    .transport-item,
+    .related-store-card {
+        border-color: var(--gray-600);
+    }
+    
+    .map-container,
+    #store-map {
+        border-color: var(--gray-600);
+    }
+}
+
+/* ========================
+   고대비 모드
+======================== */
+@media (prefers-contrast: high) {
+    :root {
+        --primary-color: #0066cc;
+        --text-primary: #000000;
+        --text-secondary: #333333;
+        --bg-primary: #ffffff;
+        --bg-secondary: #f5f5f5;
+    }
+    
+    .category-badge,
+    .featured-badge,
+    .status-badge {
+        border: 2px solid currentColor;
+    }
+    
+    .info-item,
+    .transport-item,
+    .related-store-card {
+        border: 2px solid var(--gray-400);
+    }
+    
+    .action-btn {
+        border: 2px solid currentColor;
+    }
+}
+
+/* ========================
+   프린트 스타일
+======================== */
+@media print {
+    .store-navigation,
+    .map-controls,
+    .store-actions,
+    .keyboard-hints,
+    .toast,
+    .copy-toast,
+    .scroll-progress {
+        display: none !important;
+    }
+    
+    .store-header {
+        background: none !important;
+        color: var(--text-primary) !important;
+    }
+    
+    .popup-store-detail {
+        font-size: 12pt;
+        line-height: 1.4;
+    }
+    
+    .store-title {
+        font-size: 24pt;
+        margin-bottom: 12pt;
+    }
+    
+    .section-title {
+        font-size: 16pt;
+        margin: 18pt 0 12pt;
+    }
+    
+    .related-stores-section {
+        page-break-before: always;
+    }
+}
+
+/* ========================
+   애니메이션 클래스
+======================== */
+.fade-in {
+    animation: fadeIn var(--transition-slow) ease-out;
+}
+
+.slide-up {
+    animation: slideUp var(--transition-slow) ease-out;
+}
+
+.scale-in {
+    animation: scaleIn var(--transition-normal) ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* ========================
+   스크롤바 스타일링
+======================== */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--gray-100);
+    border-radius: var(--radius-md);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--gray-400);
+    border-radius: var(--radius-md);
+    transition: background var(--transition-fast);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--gray-500);
+}
+
+/* Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--gray-400) var(--gray-100);
+}
+
+/* ========================
+   포커스 스타일
+======================== */
+.nav-link:focus,
+.action-btn:focus,
+.map-control-btn:focus,
+.copy-address-btn:focus,
+.naver-map-link:focus,
+.directions-link:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+.store-card-link:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 4px;
+    border-radius: var(--radius-xl);
+}
+
+/* ========================
+   로딩 상태
+======================== */
+.loading-text {
+    font-size: var(--font-base);
+    font-weight: 600;
+    animation: pulse 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes pulse {
+    from { opacity: 0.6; }
+    to { opacity: 1; }
+}
+
+/* ========================
+   유틸리티 클래스
+======================== */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.visible {
+    display: block !important;
+}
+
+.flex {
+    display: flex;
+}
+
+.flex-col {
+    flex-direction: column;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.gap-2 {
+    gap: var(--space-2);
+}
+
+.gap-4 {
+    gap: var(--space-4);
+}
+
+.mb-4 {
+    margin-bottom: var(--space-4);
+}
+
+.mt-4 {
+    margin-top: var(--space-4);
+}
+
+.p-4 {
+    padding: var(--space-4);
+}
+
+.rounded {
+    border-radius: var(--radius-md);
+}
+
+.rounded-lg {
+    border-radius: var(--radius-lg);
+}
+
+.shadow {
+    box-shadow: var(--shadow-md);
+}
+
+.border {
+    border: 1px solid var(--gray-200);
+}
+
+.bg-white {
+    background-color: var(--bg-primary);
+}
+
+.bg-gray-50 {
+    background-color: var(--bg-secondary);
+}
+
+.text-primary {
+    color: var(--text-primary);
+}
+
+.text-secondary {
+    color: var(--text-secondary);
+}
+
+.font-bold {
+    font-weight: 700;
+}
+
+.font-semibold {
+    font-weight: 600;
+}

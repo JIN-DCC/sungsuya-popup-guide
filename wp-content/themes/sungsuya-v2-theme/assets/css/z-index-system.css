@@ -1,0 +1,277 @@
+/**
+ * Z-index System and Modal Improvements
+ * 
+ * 성수야! V2 - Z-index 체계 정리
+ * 
+ * Z-index 레벨:
+ * - 1-99: 기본 요소들 (드롭다운, 툴팁 등)
+ * - 100-499: 플로팅 요소 (고정 헤더, 플로팅 버튼 등)
+ * - 500-999: 오버레이 (사이드바, 드로어 등)
+ * - 1000-4999: 모달
+ * - 5000-9999: 중요 알림, 토스트
+ * - 10000+: 최상위 (PWA 설치, 긴급 알림 등)
+ */
+
+/* ===== Z-index 체계 정리 ===== */
+:root {
+    /* Z-index 레벨 정의 */
+    --z-dropdown: 10;
+    --z-tooltip: 20;
+    --z-fixed-header: 100;
+    --z-floating-button: 200;
+    --z-drawer: 500;
+    --z-overlay: 600;
+    --z-modal-backdrop: 1000;
+    --z-modal: 1100;
+    --z-toast: 5000;
+    --z-critical: 10000;
+}
+
+/* ===== 기존 요소들 z-index 수정 ===== */
+
+/* 헤더 */
+.site-header {
+    z-index: var(--z-fixed-header);
+}
+
+/* 모바일 메뉴 */
+.mobile-menu-overlay {
+    z-index: var(--z-overlay);
+}
+
+.mobile-menu {
+    z-index: calc(var(--z-overlay) + 10);
+}
+
+/* 드롭다운 메뉴 */
+.dropdown-menu,
+.user-menu-dropdown {
+    z-index: var(--z-dropdown);
+}
+
+/* ===== 모달 공통 스타일 개선 ===== */
+.modal-backdrop,
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8) !important; /* 불투명 배경 */
+    z-index: var(--z-modal-backdrop);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.modal-content,
+.modal-dialog {
+    position: relative;
+    z-index: var(--z-modal);
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-height: 90vh;
+    overflow-y: auto;
+    margin: 20px;
+}
+
+/* 모달 열렸을 때 body 스크롤 방지 */
+body.modal-open {
+    overflow: hidden !important;
+    position: fixed !important;
+    width: 100% !important;
+}
+
+/* ===== 국적/프로필 선택 모달 스타일 ===== */
+.profile-modal,
+.country-modal,
+.auth-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.9) !important; /* 더 진한 불투명 배경 */
+    z-index: var(--z-modal-backdrop);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.profile-modal-content,
+.country-modal-content,
+.auth-modal-content {
+    position: relative;
+    background: white;
+    border-radius: 20px;
+    padding: 32px;
+    max-width: 500px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+    z-index: var(--z-modal);
+}
+
+/* 모달 닫기 버튼 */
+.modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: transparent;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    color: var(--muted-text, #666);
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.modal-close:hover {
+    color: var(--charcoal, #2C2C2C);
+    transform: rotate(90deg);
+}
+
+/* ===== 토스트 메시지 ===== */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: var(--z-toast);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    pointer-events: none;
+}
+
+.toast {
+    pointer-events: auto;
+    background: white;
+    border-radius: 12px;
+    padding: 16px 20px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    min-width: 300px;
+    animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* ===== PWA 관련 요소들 ===== */
+.pwa-install-banner {
+    z-index: var(--z-toast);
+}
+
+.pwa-instructions-modal {
+    z-index: var(--z-critical);
+}
+
+/* ===== 플로팅 버튼들 ===== */
+.floating-button,
+.scroll-to-top,
+.mobile-install-prompt {
+    z-index: var(--z-floating-button);
+}
+
+/* ===== 로딩 오버레이 ===== */
+.loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.95);
+    z-index: var(--z-critical);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ===== 모바일 최적화 ===== */
+@media (max-width: 768px) {
+    .modal-content,
+    .modal-dialog {
+        margin: 10px;
+        max-height: calc(100vh - 20px);
+    }
+    
+    .profile-modal-content,
+    .country-modal-content,
+    .auth-modal-content {
+        padding: 24px;
+        margin: 10px;
+    }
+    
+    .toast-container {
+        left: 10px;
+        right: 10px;
+        top: 10px;
+    }
+    
+    .toast {
+        min-width: auto;
+        width: 100%;
+    }
+}
+
+/* ===== 애니메이션 개선 ===== */
+.modal-backdrop,
+.modal-overlay {
+    animation: fadeIn 0.2s ease-out;
+}
+
+.modal-content,
+.modal-dialog {
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes modalSlideIn {
+    from {
+        transform: translateY(-20px) scale(0.95);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+/* ===== 접근성 개선 ===== */
+.modal-backdrop:focus,
+.modal-content:focus {
+    outline: 2px solid var(--brick-red, #B85450);
+    outline-offset: 2px;
+}
+
+/* 키보드 네비게이션 시 포커스 표시 */
+.modal-content:focus-within {
+    box-shadow: 0 0 0 3px rgba(184, 84, 80, 0.2);
+}
+
+/* ===== 다크모드 대응 (옵션) ===== */
+@media (prefers-color-scheme: dark) {
+    .modal-backdrop,
+    .modal-overlay {
+        background: rgba(0, 0, 0, 0.95) !important;
+    }
+    
+    .modal-content,
+    .modal-dialog {
+        background: #1a1a1a;
+        color: #ffffff;
+    }
+    
+    .toast {
+        background: #2a2a2a;
+        color: #ffffff;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+}

@@ -1,0 +1,126 @@
+/**
+ * 모바일 스크롤 버그 수정
+ * 
+ * @since 2025-07-04
+ */
+
+/* 기본 HTML/BODY 스크롤 설정 */
+html {
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: 100%;
+}
+
+body {
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: auto !important;
+    min-height: 100%;
+    position: relative !important;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* 모바일에서 고정된 높이 제거 */
+@media (max-width: 768px) {
+    html,
+    body {
+        height: auto !important;
+        overflow: visible !important;
+        position: relative !important;
+    }
+    
+    /* 메인 컨테이너 스크롤 허용 */
+    #page,
+    .site,
+    main,
+    .site-main,
+    .content-area {
+        height: auto !important;
+        overflow: visible !important;
+        position: relative !important;
+    }
+    
+    /* 100vh 사용하는 요소들 수정 */
+    .hero-section,
+    .full-height,
+    .vh-100 {
+        height: auto !important;
+        min-height: 100vh;
+    }
+    
+    /* 고정 요소들이 스크롤을 막지 않도록 */
+    .fixed,
+    .sticky {
+        position: fixed !important;
+        z-index: 999;
+    }
+    
+    /* 모달이나 오버레이가 열려있지 않을 때 */
+    body:not(.modal-open):not(.menu-open) {
+        overflow-y: auto !important;
+        position: relative !important;
+        height: auto !important;
+    }
+}
+
+/* iOS Safari 스크롤 버그 수정 */
+@supports (-webkit-touch-callout: none) {
+    body {
+        position: relative !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+}
+
+/* 헤더가 고정되어 있을 경우 */
+.site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+/* 헤더 높이만큼 메인 컨텐츠에 패딩 추가 */
+@media (max-width: 768px) {
+    main,
+    .site-main {
+        padding-top: 60px; /* 헤더 높이에 맞게 조정 */
+    }
+}
+
+/* 터치 디바이스 최적화 */
+@media (hover: none) and (pointer: coarse) {
+    * {
+        -webkit-tap-highlight-color: transparent;
+    }
+    
+    body {
+        -webkit-overflow-scrolling: touch;
+        overflow-scrolling: touch;
+    }
+}
+
+/* 모바일 메뉴가 열렸을 때만 스크롤 방지 */
+body.menu-open {
+    overflow: hidden !important;
+    position: fixed !important;
+    width: 100%;
+}
+
+/* Z-index 정리 */
+.mobile-nav { z-index: 100; }
+.site-header { z-index: 1000; }
+.modal { z-index: 9999; }
+.modal-backdrop { z-index: 9998; }
+
+/* 디버그용 - 문제가 지속되면 이 부분 추가 */
+/*
+* {
+    transform: none !important;
+    position: static !important;
+}
+
+body > * {
+    position: relative !important;
+}
+*/

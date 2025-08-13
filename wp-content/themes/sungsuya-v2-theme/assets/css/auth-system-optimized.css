@@ -1,0 +1,443 @@
+/**
+ * 성수야 PWA 인증 시스템 스타일 - 모바일 최적화 버전
+ * 
+ * 빠른 로딩과 부드러운 애니메이션
+ */
+
+/* 인증 모달 */
+.sungsuya-auth-modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    animation: fadeIn 0.2s ease;
+}
+
+.auth-modal-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 30px;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 400px;
+    position: relative;
+    animation: slideUp 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    max-height: 90vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 768px) {
+    .auth-modal-content {
+        margin: 10% auto;
+        padding: 25px 20px;
+        width: 92%;
+        border-radius: 20px 20px 0 0;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: 0;
+        animation: slideUpMobile 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+}
+
+.auth-modal-close {
+    color: #999;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    font-size: 28px;
+    font-weight: 300;
+    cursor: pointer;
+    line-height: 1;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.auth-modal-close:hover,
+.auth-modal-close:focus {
+    color: #333;
+    background: #f5f5f5;
+    transform: rotate(90deg);
+}
+
+/* 제목 */
+.auth-modal-content h2 {
+    margin: 0 0 8px 0;
+    color: #1a1a1a;
+    font-size: 28px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.auth-modal-content p {
+    color: #666;
+    text-align: center;
+    margin-bottom: 24px;
+    font-size: 15px;
+}
+
+/* 소셜 로그인 버튼 */
+.auth-social-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.auth-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 14px 20px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.auth-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+.auth-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Google 버튼 */
+.auth-google {
+    background-color: #fff;
+    color: #3c4043;
+    border: 2px solid #e8eaed;
+}
+
+.auth-google:hover {
+    background-color: #f8f9fa;
+    border-color: #dadce0;
+}
+
+/* 카카오 버튼 */
+.auth-kakao {
+    background-color: #FEE500;
+    color: #000000;
+    border: 2px solid #FEE500;
+}
+
+.auth-kakao:hover {
+    background-color: #FDDC3F;
+    border-color: #FDDC3F;
+}
+
+/* 이메일 버튼 */
+.auth-email {
+    background-color: #fff;
+    color: #333;
+    border: 2px solid #e0e0e0;
+}
+
+.auth-email:hover {
+    background-color: #f8f8f8;
+    border-color: #FF6B6B;
+    color: #FF6B6B;
+}
+
+/* 구분선 */
+.auth-divider {
+    text-align: center;
+    margin: 24px 0;
+    position: relative;
+    color: #999;
+    font-size: 14px;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: calc(50% - 30px);
+    height: 1px;
+    background-color: #e0e0e0;
+}
+
+.auth-divider::before {
+    left: 0;
+}
+
+.auth-divider::after {
+    right: 0;
+}
+
+/* 이메일 폼 */
+.auth-email-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+    animation: fadeIn 0.3s ease;
+}
+
+.auth-email-form input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 16px;
+    transition: all 0.2s ease;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.auth-email-form input:focus {
+    outline: none;
+    border-color: #FF6B6B;
+    box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
+}
+
+/* 모바일에서 입력 필드 확대 방지 */
+@media (max-width: 768px) {
+    .auth-email-form input {
+        font-size: 16px !important; /* iOS 자동 확대 방지 */
+    }
+}
+
+.auth-submit {
+    background-color: #FF6B6B;
+    color: white;
+    margin-top: 8px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+.auth-submit:hover {
+    background-color: #ff5252;
+}
+
+.auth-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* 로그인/회원가입 토글 */
+.auth-toggle {
+    text-align: center;
+    margin-top: 16px;
+    font-size: 14px;
+    color: #666;
+}
+
+.auth-toggle a {
+    color: #FF6B6B;
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 4px;
+}
+
+.auth-toggle a:hover {
+    text-decoration: underline;
+}
+
+/* 에러 메시지 */
+.auth-error {
+    background: #fff3f3;
+    border: 1px solid #ffcccc;
+    color: #d32f2f;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-top: 12px;
+    animation: shake 0.3s ease;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* 약관 */
+.auth-terms {
+    font-size: 12px;
+    color: #999;
+    text-align: center;
+    margin-top: 24px;
+    line-height: 1.5;
+}
+
+.auth-terms a {
+    color: #FF6B6B;
+    text-decoration: none;
+}
+
+.auth-terms a:hover {
+    text-decoration: underline;
+}
+
+/* 애니메이션 */
+@keyframes fadeIn {
+    from { 
+        opacity: 0; 
+    }
+    to { 
+        opacity: 1; 
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideUpMobile {
+    from {
+        transform: translateY(100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+/* 로그인 상태 표시 */
+.user-profile-mini {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px;
+    cursor: pointer;
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #f0f0f0;
+}
+
+.user-name {
+    font-size: 14px;
+    color: #333;
+}
+
+/* 토스트 메시지 */
+.auth-toast {
+    position: fixed;
+    bottom: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: white;
+    padding: 16px 24px;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    transition: bottom 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 10001;
+    font-size: 15px;
+}
+
+.auth-toast.show {
+    bottom: 30px;
+}
+
+/* 모바일 최적화 */
+@media (max-width: 768px) {
+    /* 터치 영역 확보 */
+    .auth-btn {
+        min-height: 52px;
+    }
+    
+    .auth-modal-close {
+        width: 40px;
+        height: 40px;
+        right: 15px;
+        top: 15px;
+    }
+    
+    /* 스크롤 성능 */
+    .auth-modal-content {
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+    }
+}
+
+/* 다크모드 지원 */
+@media (prefers-color-scheme: dark) {
+    .auth-modal-content {
+        background-color: #1a1a1a;
+        color: #e0e0e0;
+    }
+    
+    .auth-modal-content h2 {
+        color: #fff;
+    }
+    
+    .auth-modal-content p {
+        color: #999;
+    }
+    
+    .auth-google {
+        background-color: #2a2a2a;
+        color: #fff;
+        border-color: #3a3a3a;
+    }
+    
+    .auth-email {
+        background-color: #2a2a2a;
+        color: #fff;
+        border-color: #3a3a3a;
+    }
+    
+    .auth-email-form input {
+        background-color: #2a2a2a;
+        color: #fff;
+        border-color: #3a3a3a;
+    }
+    
+    .auth-divider::before,
+    .auth-divider::after {
+        background-color: #3a3a3a;
+    }
+}
+
+/* 접근성 개선 */
+.auth-btn:focus,
+.auth-modal-close:focus,
+.auth-email-form input:focus {
+    outline: 2px solid #FF6B6B;
+    outline-offset: 2px;
+}
+
+/* 고해상도 디스플레이 */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .auth-modal-content {
+        border: 0.5px solid rgba(0, 0, 0, 0.1);
+    }
+}

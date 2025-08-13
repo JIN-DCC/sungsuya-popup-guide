@@ -1,0 +1,124 @@
+/*
+Theme Name: 성수야!
+Description: 성수동 팝업스토어 가이드 PWA - 모바일 우선 설계
+Author: AI Development Team
+Version: 2.0.0
+License: GPL v2 or later
+Text Domain: sungsuya-v2
+*/
+
+/* 
+이 파일은 WordPress 테마 인식용입니다.
+실제 스타일은 assets/css/ 폴더에 분리됩니다.
+*/
+
+/* ========================================
+   모바일 성능 최적화 스타일
+   2025-07-05
+   ======================================== */
+
+/* GPU 가속 */
+.site-header,
+.card,
+.place-item,
+img {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+/* 스크롤 중 최적화 */
+.is-scrolling * {
+    pointer-events: none !important;
+}
+
+.is-scrolling .animate {
+    animation-play-state: paused !important;
+}
+
+/* 헤더 숨김 애니메이션 */
+.site-header {
+    transition: transform 0.3s ease;
+}
+
+.site-header.hidden {
+    transform: translateY(-100%);
+}
+
+/* 이미지 로딩 효과 */
+img:not(.loaded) {
+    filter: blur(8px);
+    opacity: 0.8;
+    transition: filter 0.3s, opacity 0.3s;
+}
+
+img.loaded {
+    filter: none;
+    opacity: 1;
+}
+
+/* 터치 최적화 */
+a,
+button,
+.clickable {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+/* 모바일 스크롤 성능 */
+.scrollable,
+body {
+    -webkit-overflow-scrolling: touch;
+}
+
+/* 페이지 전환 효과 */
+body {
+    transition: opacity 0.2s ease;
+}
+
+/* 모바일 전용 스타일 */
+@media (max-width: 768px) {
+    /* 애니메이션 단순화 */
+    .parallax {
+        transform: none !important;
+    }
+    
+    .fade-in,
+    .slide-in {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+    
+    /* 터치 타겟 크기 확보 */
+    a,
+    button {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        padding: 10px;
+    }
+    
+    /* 폰트 크기 고정 */
+    html {
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+    }
+    
+    /* contain 속성으로 렌더링 최적화 */
+    .card,
+    .place-item {
+        contain: layout style paint;
+    }
+}
+
+/* 저대역폭 모드 */
+@media (prefers-reduced-data: reduce) {
+    img {
+        filter: none !important;
+    }
+    
+    video {
+        display: none;
+    }
+}

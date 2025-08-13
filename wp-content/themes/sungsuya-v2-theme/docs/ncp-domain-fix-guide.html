@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔧 NCP 도메인 설정 가이드</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(45deg, #dc3545, #fd7e14);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .problem-box {
+            background: #f8d7da;
+            border: 2px solid #f5c6cb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .solution-box {
+            background: #d4edda;
+            border: 2px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .step {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .step h3 {
+            color: #495057;
+            margin-top: 0;
+        }
+        
+        .code {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        
+        .highlight {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+        }
+        
+        .warning {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .success {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        ul {
+            padding-left: 20px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        .domain-list {
+            background: #e3f2fd;
+            border: 1px solid #bbdefb;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .domain-list h4 {
+            margin-top: 0;
+            color: #1565c0;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            margin: 10px 10px 10px 0;
+        }
+        
+        .btn:hover {
+            background: #0056b3;
+        }
+        
+        .btn-success {
+            background: #28a745;
+        }
+        
+        .btn-success:hover {
+            background: #1e7e34;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 네이버 지도 API 문제 해결 가이드</h1>
+            <p>도메인 인증 실패 문제를 완전히 해결하는 방법</p>
+        </div>
+        
+        <div class="content">
+            <!-- 문제 진단 -->
+            <div class="problem-box">
+                <h2>❌ 확인된 문제</h2>
+                <p><strong>문제:</strong> 지도 타일 로드 완료 후 naver.maps 객체가 null이 되며 지도가 사라짐</p>
+                <p><strong>원인:</strong> 네이버 클라우드 플랫폼에서 <code>sungsuya-v2.local</code> 도메인이 등록되지 않아 인증 실패</p>
+                <p><strong>증상:</strong> API 로드는 성공하지만 렌더링 과정에서 DOM 노드가 제거됨</p>
+            </div>
+            
+            <!-- 해결 방법 -->
+            <div class="solution-box">
+                <h2>✅ 해결 방법</h2>
+                <p>네이버 클라우드 플랫폼에서 Web 서비스 URL에 로컬 개발 도메인을 추가해야 합니다.</p>
+            </div>
+            
+            <!-- 단계별 해결 -->
+            <div class="step">
+                <h3>🔑 1단계: NCP 콘솔 접속</h3>
+                <p>네이버 클라우드 플랫폼 콘솔에 로그인하세요.</p>
+                <a href="https://console.ncloud.com/" target="_blank" class="btn">NCP 콘솔 열기</a>
+            </div>
+            
+            <div class="step">
+                <h3>🗺️ 2단계: Maps 서비스 설정</h3>
+                <p><strong>경로:</strong> AI·Application Service → Maps → Application 관리</p>
+                <p>현재 등록된 Application: <code>sungsuya-v2</code></p>
+                <div class="highlight">
+                    <p><strong>💡 팁:</strong> Application 목록에서 "sungsuya-v2"를 찾아 클릭하세요.</p>
+                </div>
+            </div>
+            
+            <div class="step">
+                <h3>🌐 3단계: Web 서비스 URL 수정</h3>
+                <p>현재 등록된 URL 목록에 로컬 개발 도메인을 추가해야 합니다.</p>
+                
+                <div class="domain-list">
+                    <h4>📋 추가해야 할 도메인들</h4>
+                    <div class="code">
+http://sungsuya-v2.local
+http://sungsuya-v2.local/
+https://sungsuya-v2.local
+https://sungsuya-v2.local/
+http://localhost
+http://localhost/
+http://127.0.0.1
+http://127.0.0.1/</div>
+                </div>
+                
+                <div class="warning">
+                    <p><strong>⚠️ 중요:</strong> 기존 URL들은 삭제하지 말고, 위의 도메인들을 <strong>추가</strong>하세요!</p>
+                </div>
+            </div>
+            
+            <div class="step">
+                <h3>💾 4단계: 설정 저장 및 대기</h3>
+                <p>변경사항을 저장한 후 <strong>5-10분 정도</strong> 기다리세요.</p>
+                <div class="highlight">
+                    <p><strong>참고:</strong> NCP Maps API는 도메인 설정 변경 후 즉시 적용되지 않습니다.</p>
+                </div>
+            </div>
+            
+            <div class="step">
+                <h3>🧪 5단계: 테스트</h3>
+                <p>설정 변경 후 아래 링크들로 테스트하세요:</p>
+                <a href="http://sungsuya-v2.local/wp-content/themes/sungsuya-v2-theme/ncp-maps-diagnostic.html" class="btn">진단 페이지 재테스트</a>
+                <a href="http://sungsuya-v2.local/wp-content/themes/sungsuya-v2-theme/ncp-maps-pure-test.html" class="btn">순수 테스트 페이지</a>
+            </div>
+            
+            <!-- 대안 해결책 -->
+            <div class="step">
+                <h3>🔄 대안 1: hosts 파일 수정 (즉시 해결)</h3>
+                <p>도메인 설정 대기 시간 없이 즉시 해결하려면:</p>
+                
+                <div class="code">
+# Windows: C:\Windows\System32\drivers\etc\hosts 파일에 추가
+127.0.0.1 production-domain.com
+# 그리고 NCP에서 production-domain.com 등록</div>
+                
+                <div class="warning">
+                    <p><strong>주의:</strong> 이 방법은 개발용으로만 사용하세요.</p>
+                </div>
+            </div>
+            
+            <div class="step">
+                <h3>🌍 대안 2: 실제 도메인 사용</h3>
+                <p>실제 도메인을 사용하여 테스트:</p>
+                <ul>
+                    <li>Ngrok 또는 Cloudflare Tunnel 사용</li>
+                    <li>실제 웹 서버에 업로드</li>
+                    <li>GitHub Pages 등 무료 호스팅 활용</li>
+                </ul>
+            </div>
+            
+            <!-- 확인 사항 -->
+            <div class="success">
+                <h3>✅ 성공 확인 방법</h3>
+                <ul>
+                    <li><strong>지도가 사라지지 않음</strong> - 가장 중요한 지표</li>
+                    <li><strong>콘솔 오류 없음</strong> - naver.maps null 오류 해결</li>
+                    <li><strong>NCP 사용량 집계</strong> - 클라우드 플랫폼에서 API 호출 횟수 확인됨</li>
+                    <li><strong>마커 클릭 가능</strong> - 모든 지도 기능 정상 작동</li>
+                </ul>
+            </div>
+            
+            <!-- 추가 팁 -->
+            <div class="highlight">
+                <h3>💡 개발 팁</h3>
+                <ul>
+                    <li><strong>개발 환경:</strong> localhost, 127.0.0.1, *.local 도메인 모두 등록</li>
+                    <li><strong>프로덕션:</strong> 실제 도메인 등록 (www 포함/미포함 모두)</li>
+                    <li><strong>HTTPS:</strong> HTTP, HTTPS 모두 등록 권장</li>
+                    <li><strong>경로:</strong> 루트(/) 경로와 서브경로 모두 고려</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                <h3>📞 문제 지속 시</h3>
+                <p>위 단계를 모두 따라했는데도 문제가 지속된다면:</p>
+                <ul>
+                    <li>NCP 고객센터 문의 (기술지원)</li>
+                    <li>새로운 Application 생성 시도</li>
+                    <li>다른 브라우저에서 테스트</li>
+                    <li>캐시 완전 삭제 후 재시도</li>
+                </ul>
+                
+                <a href="https://ncloud.com/support" target="_blank" class="btn btn-success">NCP 고객센터</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

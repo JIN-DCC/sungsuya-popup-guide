@@ -1,0 +1,665 @@
+/**
+ * 성수야! V2 - Places 메타박스 스타일
+ * 
+ * WordPress 관리자 페이지에서 사용되는 Places 메타박스 스타일
+ * 
+ * @package SungsuyaV2
+ * @version 2.1.0
+ */
+
+/* ==========================================================================
+   전체 컨테이너
+   ========================================================================== */
+
+#places-metabox-container {
+    background: #fff;
+    padding: 0;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* ==========================================================================
+   필드 그룹
+   ========================================================================== */
+
+.places-field-group {
+    border-bottom: 1px solid #e5e5e5;
+    padding: 20px;
+    margin: 0;
+}
+
+.places-field-group:last-child {
+    border-bottom: none;
+}
+
+.places-field-group h3 {
+    margin: 0 0 15px 0;
+    padding: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1d2327;
+    border-bottom: 2px solid #0073aa;
+    padding-bottom: 8px;
+}
+
+/* ==========================================================================
+   장소 유형 선택
+   ========================================================================== */
+
+.place-type-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 12px;
+    margin: 15px 0;
+}
+
+.place-type-btn {
+    background: #f6f7f7;
+    border: 2px solid #dcdcde;
+    border-radius: 8px;
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+    position: relative;
+}
+
+.place-type-btn:hover {
+    border-color: #0073aa;
+    background: #f0f6fc;
+}
+
+.place-type-btn.active {
+    border-color: #0073aa;
+    background: #0073aa;
+    color: white;
+}
+
+.place-type-btn .type-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.place-type-btn .type-description {
+    display: block;
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+/* ==========================================================================
+   기본 정보와 지도 레이아웃
+   ========================================================================== */
+
+.address-and-map {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: 30px;
+    align-items: start;
+}
+
+@media (max-width: 1200px) {
+    .address-and-map {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}
+
+.address-fields-container {
+    min-width: 0;
+}
+
+.map-container {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 15px;
+    position: sticky;
+    top: 20px;
+}
+
+.map-container h4 {
+    margin: 0 0 15px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1d2327;
+}
+
+/* ==========================================================================
+   지도 미리보기
+   ========================================================================== */
+
+#places-map-preview {
+    width: 100%;
+    height: 200px;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    position: relative;
+    overflow: hidden;
+    /* 디버깅: 지도 컸테이너 가시성 및 영역 확인 */
+    min-height: 200px;
+    display: block !important;
+    visibility: visible !important;
+}
+
+/* 네이버 지도 API에서 생성되는 실제 지도 요소 */
+#places-map-preview > div {
+    width: 100% !important;
+    height: 100% !important;
+    position: relative !important;
+}
+
+/* 디버깅: 지도 준비 상태 표시 */
+#places-map-preview.map-loading {
+    background: #e3f2fd;
+    border: 2px dashed #1976d2;
+}
+
+#places-map-preview.map-ready {
+    background: #e8f5e8;
+    border: 2px solid #4caf50;
+}
+
+#places-map-preview.map-error {
+    background: #ffebee;
+    border: 2px solid #f44336;
+}
+
+#map-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    font-size: 12px;
+    color: #666;
+    line-height: 1.4;
+    padding: 20px;
+}
+
+/* 통합 시스템 플레이스홀더 스타일 */
+#map-placeholder.integrated-system {
+    background: linear-gradient(135deg, #e7f3ff 0%, #f0f8ff 100%);
+    border: 2px dashed #b3d7ff;
+    color: #0066cc;
+    font-weight: 500;
+    border-radius: 6px;
+}
+
+.map-info-panel {
+    margin-top: 15px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 12px;
+    font-size: 11px;
+}
+
+.map-info-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.map-info-item:last-child {
+    margin-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.map-info-label {
+    font-weight: 500;
+    color: #666;
+}
+
+.map-info-value {
+    color: #1d2327;
+    font-weight: 500;
+}
+
+/* 통합 시스템 관련 지도 정보 스타일 */
+.map-info-value.integrated-system {
+    color: #0066cc;
+    font-style: italic;
+    font-size: 10px;
+}
+
+/* ==========================================================================
+   개별 필드 스타일
+   ========================================================================== */
+
+.places-field {
+    margin-bottom: 20px;
+}
+
+.places-field label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #1d2327;
+    font-size: 13px;
+}
+
+.places-field .required {
+    color: #d63384;
+    font-weight: bold;
+}
+
+.places-field input,
+.places-field textarea,
+.places-field select {
+    width: 100%;
+    max-width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #8c8f94;
+    border-radius: 4px;
+    font-size: 13px;
+    line-height: 1.4;
+    background: #fff;
+    transition: border-color 0.2s ease;
+}
+
+.places-field input:focus,
+.places-field textarea:focus,
+.places-field select:focus {
+    border-color: #0073aa;
+    box-shadow: 0 0 0 1px #0073aa;
+    outline: none;
+}
+
+.places-field input[readonly] {
+    background: #f6f7f7;
+    color: #646970;
+}
+
+.places-field textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.field-description {
+    margin: 6px 0 0 0;
+    font-size: 11px;
+    color: #646970;
+    font-style: italic;
+}
+
+/* ==========================================================================
+   주소 입력 (통합 지도생성 시스템)
+   ========================================================================== */
+
+.address-input-wrapper {
+    position: relative;
+}
+
+.address-input-wrapper input {
+    width: 100%;
+}
+
+/* 통합 시스템 안내 메시지 */
+.integrated-system-notice {
+    background: #e7f3ff;
+    border: 1px solid #b3d7ff;
+    border-radius: 4px;
+    padding: 8px 12px;
+    margin-top: 8px;
+    font-size: 12px;
+    color: #0066cc;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.integrated-system-notice::before {
+    content: "ⓘ";
+    font-weight: bold;
+    color: #0066cc;
+}
+
+/* 좌표 필드 안내 */
+.coordinate-notice {
+    background: #fff3cd;
+    border: 1px solid #ffecb5;
+    border-radius: 4px;
+    padding: 6px 10px;
+    margin: 6px 0 0 0;
+    font-size: 11px;
+    color: #856404;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.coordinate-notice::before {
+    content: "🔒";
+    font-size: 10px;
+}
+
+/* readonly 좌표 필드 스타일 강화 */
+.places-field input[readonly] {
+    background: #f8f9fa;
+    color: #6c757d;
+    border-color: #ced4da;
+    cursor: not-allowed;
+}
+
+.places-field input[readonly]:focus {
+    border-color: #ced4da;
+    box-shadow: none;
+}
+
+/* 레거시 주소 검색 스타일 (비활성화됨) */
+.address-search-wrapper {
+    display: flex;
+    gap: 8px;
+}
+
+.address-search-wrapper input {
+    flex: 1;
+}
+
+#places-address-search-btn {
+    background: #0073aa;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    white-space: nowrap;
+    transition: background-color 0.2s ease;
+}
+
+#places-address-search-btn:hover {
+background: #005a87;
+}
+
+/* 비활성화된 주소 검색 버튼 스타일 */
+#places-address-search-btn:disabled {
+    background: #ccc;
+    color: #999;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+#geocoding-message {
+    margin-top: 8px;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    display: none;
+}
+
+#geocoding-message.success {
+    background: #d1e7dd;
+    color: #0f5132;
+    border: 1px solid #badbcc;
+    display: block;
+}
+
+#geocoding-message.error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c2c7;
+    display: block;
+}
+
+/* 통합 시스템 관련 메시지 스타일 */
+#geocoding-message.integrated-system {
+    background: #e7f3ff;
+    color: #0066cc;
+    border: 1px solid #b3d7ff;
+    display: block;
+    font-weight: 500;
+}
+
+/* ==========================================================================
+   체크박스 스타일
+   ========================================================================== */
+
+.checkbox-multiple-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 8px;
+    margin-top: 6px;
+}
+
+.checkbox-multiple-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px;
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 12px;
+}
+
+.checkbox-multiple-item:hover {
+    background: #e9ecef;
+}
+
+.checkbox-multiple-item input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+}
+
+.checkbox-label {
+    margin: 0;
+    cursor: pointer;
+    font-weight: normal;
+}
+
+/* ==========================================================================
+   동적 필드 그룹
+   ========================================================================== */
+
+.dynamic-field-group {
+    transition: opacity 0.3s ease;
+}
+
+.dynamic-field-group[style*="none"] {
+    display: none !important;
+}
+
+/* ==========================================================================
+   팝업스토어 필드 그룹 (특별 스타일)
+   ========================================================================== */
+
+.popup-store-fields-container {
+    background: #f8f9fa;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.popup-store-field-group {
+    background: white;
+    margin-bottom: 1px;
+    padding: 20px;
+}
+
+.popup-store-field-group:last-child {
+    margin-bottom: 0;
+}
+
+.popup-store-field-group h3 {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    margin: -20px -20px 20px -20px;
+    padding: 15px 20px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.group-description {
+    margin: -10px 0 20px 0;
+    font-size: 13px;
+    color: #646970;
+    font-style: italic;
+}
+
+/* ==========================================================================
+   반응형 디자인
+   ========================================================================== */
+
+@media (max-width: 782px) {
+    .places-field-group {
+        padding: 15px;
+    }
+    
+    .place-type-buttons {
+        grid-template-columns: 1fr;
+    }
+    
+    .address-search-wrapper {
+        flex-direction: column;
+    }
+    
+    .checkbox-multiple-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .map-container {
+        position: static;
+    }
+}
+
+/* ==========================================================================
+   로딩 및 상태 표시
+   ========================================================================== */
+
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #0073aa;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   에러 및 성공 메시지
+   ========================================================================== */
+
+.notice-success {
+    background: #d1e7dd;
+    color: #0f5132;
+    border-left: 4px solid #0a3622;
+    padding: 12px;
+    margin: 15px 0;
+}
+
+.notice-error {
+    background: #f8d7da;
+    color: #721c24;
+    border-left: 4px solid #a52834;
+    padding: 12px;
+    margin: 15px 0;
+}
+
+.notice-warning {
+    background: #fff3cd;
+    color: #856404;
+    border-left: 4px solid #b08800;
+    padding: 12px;
+    margin: 15px 0;
+}
+
+/* ==========================================================================
+   접근성 개선
+   ========================================================================== */
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* ==========================================================================
+   통합 지도생성 시스템 다크 모드 지원
+   ========================================================================== */
+
+@media (prefers-color-scheme: dark) {
+    body.admin-color-auto .integrated-system-notice {
+        background: #1a3a52;
+        border-color: #2c5282;
+        color: #90cdf4;
+    }
+    
+    body.admin-color-auto .coordinate-notice {
+        background: #2d2011;
+        border-color: #4a3619;
+        color: #d69e2e;
+    }
+    
+    body.admin-color-auto .places-field input[readonly] {
+        background: #1a1a1a;
+        color: #888;
+        border-color: #3c434a;
+    }
+}
+
+/* ==========================================================================
+   다크 모드 지원 (WordPress 6.2+)
+   ========================================================================== */
+
+@media (prefers-color-scheme: dark) {
+    body.admin-color-auto #places-metabox-container {
+        background: #1d2327;
+        color: #f0f0f1;
+    }
+    
+    body.admin-color-auto .places-field-group {
+        border-bottom-color: #3c434a;
+    }
+    
+    body.admin-color-auto .places-field input,
+    body.admin-color-auto .places-field textarea,
+    body.admin-color-auto .places-field select {
+        background: #2c3338;
+        border-color: #3c434a;
+        color: #f0f0f1;
+    }
+    
+    body.admin-color-auto .map-container {
+        background: #2c3338;
+        border-color: #3c434a;
+    }
+    
+    body.admin-color-auto .place-type-btn {
+        background: #2c3338;
+        border-color: #3c434a;
+        color: #f0f0f1;
+    }
+    
+    body.admin-color-auto .place-type-btn:hover {
+        background: #32373c;
+    }
+}

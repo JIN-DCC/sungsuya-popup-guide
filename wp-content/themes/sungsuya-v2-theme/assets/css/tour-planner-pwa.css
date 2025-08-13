@@ -1,0 +1,839 @@
+/**
+ * 투어플래너 PWA 전용 스타일
+ * 모바일 우선, 전체화면 최적화
+ */
+
+/* ===== CSS 변수 ===== */
+:root {
+    --pwa-primary: #667eea;
+    --pwa-primary-dark: #5a67d8;
+    --pwa-secondary: #48bb78;
+    --pwa-danger: #f56565;
+    
+    --pwa-text: #2d3748;
+    --pwa-text-light: #718096;
+    --pwa-bg: #f7fafc;
+    --pwa-bg-white: #ffffff;
+    --pwa-border: #e2e8f0;
+    
+    --pwa-header-height: 56px;
+    --pwa-tab-height: 64px;
+    --pwa-safe-area-top: env(safe-area-inset-top);
+    --pwa-safe-area-bottom: env(safe-area-inset-bottom);
+    
+    --pwa-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    --pwa-shadow-lg: 0 10px 25px rgba(0,0,0,0.15);
+    
+    --pwa-radius: 12px;
+    --pwa-radius-sm: 8px;
+    
+    --pwa-transition: all 0.2s ease;
+}
+
+/* ===== 기본 리셋 ===== */
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body.tour-pwa-body {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    background: var(--pwa-bg);
+    color: var(--pwa-text);
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ===== 메인 컨테이너 ===== */
+.tour-pwa-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    height: 100dvh; /* 동적 뷰포트 높이 */
+    position: relative;
+    background: var(--pwa-bg);
+}
+
+/* ===== PWA 헤더 ===== */
+.pwa-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--pwa-header-height);
+    background: var(--pwa-primary);
+    color: white;
+    z-index: 100;
+    padding-top: var(--pwa-safe-area-top);
+}
+
+.pwa-header-content {
+    height: var(--pwa-header-height);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+}
+
+.pwa-header h1 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.pwa-menu-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    padding: 8px;
+    cursor: pointer;
+}
+
+/* ===== 메인 컨텐츠 ===== */
+.pwa-main {
+    flex: 1;
+    margin-top: calc(var(--pwa-header-height) + var(--pwa-safe-area-top));
+    margin-bottom: calc(var(--pwa-tab-height) + var(--pwa-safe-area-bottom));
+    position: relative;
+    overflow: hidden;
+}
+
+/* ===== 뷰 컨테이너 ===== */
+.pwa-view {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: none;
+    flex-direction: column;
+    background: var(--pwa-bg);
+}
+
+.pwa-view.active {
+    display: flex;
+}
+
+/* ===== 지도 뷰 ===== */
+.pwa-map {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background: #f0f0f0;
+}
+
+.map-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.map-loading-content {
+    text-align: center;
+    padding: 32px;
+    background: white;
+    border-radius: var(--pwa-radius);
+    box-shadow: var(--pwa-shadow-lg);
+}
+
+.map-icon {
+    font-size: 64px;
+    margin-bottom: 16px;
+}
+
+.map-loading-content h3 {
+    margin: 0 0 8px;
+    font-size: 20px;
+    color: var(--pwa-text);
+}
+
+.map-loading-content p {
+    margin: 0 0 16px;
+    color: var(--pwa-text-light);
+    font-size: 14px;
+}
+
+.load-map-btn {
+    background: var(--pwa-primary);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: var(--pwa-radius-sm);
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+/* ===== 장소 목록 뷰 ===== */
+.places-header {
+    background: white;
+    padding: 16px;
+    border-bottom: 1px solid var(--pwa-border);
+}
+
+.search-box {
+    margin-bottom: 12px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--pwa-border);
+    border-radius: var(--pwa-radius-sm);
+    font-size: 16px;
+    background: var(--pwa-bg);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--pwa-primary);
+    background: white;
+}
+
+.filter-chips {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.filter-chips::-webkit-scrollbar {
+    display: none;
+}
+
+.chip {
+    padding: 8px 16px;
+    border: 1px solid var(--pwa-border);
+    border-radius: 20px;
+    background: white;
+    font-size: 14px;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: var(--pwa-transition);
+}
+
+.chip.active {
+    background: var(--pwa-primary);
+    color: white;
+    border-color: var(--pwa-primary);
+}
+
+.places-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* 장소 카드 */
+.place-card {
+    background: white;
+    border-radius: var(--pwa-radius);
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: var(--pwa-shadow);
+    cursor: pointer;
+    transition: var(--pwa-transition);
+}
+
+.place-card:active {
+    transform: scale(0.98);
+}
+
+.place-card.selected {
+    border: 2px solid var(--pwa-primary);
+    background: #f0f4ff;
+}
+
+.place-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.place-icon {
+    width: 48px;
+    height: 48px;
+    background: var(--pwa-primary);
+    color: white;
+    border-radius: var(--pwa-radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+.place-info h3 {
+    margin: 0 0 4px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.place-type {
+    font-size: 12px;
+    color: var(--pwa-text-light);
+    background: var(--pwa-bg);
+    padding: 2px 8px;
+    border-radius: 12px;
+    display: inline-block;
+}
+
+.place-address {
+    font-size: 14px;
+    color: var(--pwa-text-light);
+    margin: 0;
+}
+
+/* ===== 내 투어 뷰 ===== */
+.tour-header {
+    background: white;
+    padding: 16px;
+    border-bottom: 1px solid var(--pwa-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tour-header h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.place-count {
+    background: var(--pwa-primary);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.tour-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.selected-places {
+    margin-bottom: 16px;
+}
+
+/* 선택된 장소 아이템 */
+.selected-item {
+    background: white;
+    border-radius: var(--pwa-radius);
+    padding: 12px;
+    margin-bottom: 12px;
+    box-shadow: var(--pwa-shadow);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.order-number {
+    width: 32px;
+    height: 32px;
+    background: var(--pwa-primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+.selected-info {
+    flex: 1;
+}
+
+.selected-name {
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0 0 2px;
+}
+
+.selected-type {
+    font-size: 12px;
+    color: var(--pwa-text-light);
+}
+
+.remove-btn {
+    width: 32px;
+    height: 32px;
+    background: var(--pwa-danger);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+/* 빈 상태 */
+.empty-state {
+    text-align: center;
+    padding: 48px 24px;
+}
+
+.empty-icon {
+    font-size: 64px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.empty-state h3 {
+    margin: 0 0 8px;
+    font-size: 18px;
+    color: var(--pwa-text);
+}
+
+.empty-state p {
+    margin: 0;
+    color: var(--pwa-text-light);
+    font-size: 14px;
+}
+
+/* 투어 요약 카드 */
+.tour-summary-card {
+    background: white;
+    border-radius: var(--pwa-radius);
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: var(--pwa-shadow);
+}
+
+.tour-summary-card h3 {
+    margin: 0 0 16px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.summary-items {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.summary-item {
+    text-align: center;
+}
+
+.summary-item .icon {
+    font-size: 24px;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.summary-value {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.summary-value span:first-child {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--pwa-primary);
+}
+
+.summary-value .label {
+    font-size: 12px;
+    color: var(--pwa-text-light);
+}
+
+/* 액션 버튼 */
+.tour-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.action-btn {
+    flex: 1;
+    padding: 14px;
+    border: none;
+    border-radius: var(--pwa-radius);
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: var(--pwa-transition);
+}
+
+.action-btn:active {
+    transform: scale(0.98);
+}
+
+.action-btn.primary {
+    background: var(--pwa-primary);
+    color: white;
+}
+
+.action-btn.secondary {
+    background: white;
+    color: var(--pwa-text);
+    border: 1px solid var(--pwa-border);
+}
+
+.action-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.action-btn .icon {
+    font-size: 20px;
+}
+
+/* ===== 하단 탭 네비게이션 ===== */
+.pwa-tabs {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: calc(var(--pwa-tab-height) + var(--pwa-safe-area-bottom));
+    background: white;
+    border-top: 1px solid var(--pwa-border);
+    display: flex;
+    z-index: 100;
+    padding-bottom: var(--pwa-safe-area-bottom);
+}
+
+.pwa-tab {
+    flex: 1;
+    height: var(--pwa-tab-height);
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    position: relative;
+    color: var(--pwa-text-light);
+    transition: var(--pwa-transition);
+}
+
+.pwa-tab:active {
+    background: var(--pwa-bg);
+}
+
+.pwa-tab.active {
+    color: var(--pwa-primary);
+}
+
+.pwa-tab.active::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 20%;
+    right: 20%;
+    height: 2px;
+    background: var(--pwa-primary);
+}
+
+.tab-icon {
+    font-size: 24px;
+}
+
+.tab-label {
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.tab-badge {
+    position: absolute;
+    top: 8px;
+    right: calc(50% - 20px);
+    background: var(--pwa-danger);
+    color: white;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 10px;
+    min-width: 18px;
+    text-align: center;
+}
+
+/* ===== 모달 ===== */
+.pwa-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+}
+
+.pwa-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    position: relative;
+    background: white;
+    border-radius: var(--pwa-radius);
+    margin: 16px;
+    max-width: 400px;
+    width: 100%;
+    max-height: 80vh;
+    overflow: hidden;
+    box-shadow: var(--pwa-shadow-lg);
+}
+
+.modal-header {
+    padding: 16px;
+    border-bottom: 1px solid var(--pwa-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: var(--pwa-text-light);
+    cursor: pointer;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-body {
+    padding: 16px;
+}
+
+/* 공유 옵션 */
+.share-options {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.share-option {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid var(--pwa-border);
+    border-radius: var(--pwa-radius-sm);
+    background: white;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    transition: var(--pwa-transition);
+}
+
+.share-option:active {
+    background: var(--pwa-bg);
+}
+
+.share-option.kakao {
+    background: #fee500;
+    border-color: #fee500;
+}
+
+.share-option .icon {
+    font-size: 24px;
+}
+
+.share-option span:last-child {
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* 메뉴 아이템 */
+.menu-item {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    background: none;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+    transition: var(--pwa-transition);
+    border-bottom: 1px solid var(--pwa-border);
+}
+
+.menu-item:active {
+    background: var(--pwa-bg);
+}
+
+.menu-item:last-child {
+    border-bottom: none;
+}
+
+.menu-item .icon {
+    font-size: 24px;
+}
+
+.menu-item span:last-child {
+    font-size: 16px;
+    color: var(--pwa-text);
+}
+
+/* ===== 토스트 ===== */
+#toast-container {
+    position: fixed;
+    bottom: calc(var(--pwa-tab-height) + var(--pwa-safe-area-bottom) + 16px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1100;
+}
+
+.toast {
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 24px;
+    font-size: 14px;
+    margin-bottom: 8px;
+    animation: slideUp 0.3s ease;
+    white-space: nowrap;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* ===== 로딩 ===== */
+.loading {
+    text-align: center;
+    padding: 48px;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--pwa-border);
+    border-top-color: var(--pwa-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 16px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.loading p {
+    color: var(--pwa-text-light);
+    margin: 0;
+}
+
+/* ===== 드래그 앤 드롭 ===== */
+.sortable-ghost {
+    opacity: 0.4;
+}
+
+.sortable-drag {
+    opacity: 1 !important;
+    transform: scale(1.05);
+    box-shadow: var(--pwa-shadow-lg);
+}
+
+/* ===== 반응형 (데스크톱) ===== */
+@media (min-width: 768px) {
+    .tour-pwa-container {
+        max-width: 768px;
+        margin: 0 auto;
+        box-shadow: 0 0 50px rgba(0, 0, 0, 0.1);
+    }
+    
+    .pwa-header,
+    .pwa-tabs {
+        max-width: 768px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    /* 데스크톱 안내 메시지 */
+    .desktop-notice {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 24px;
+        font-size: 14px;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .desktop-notice a {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 500;
+    }
+    
+    .desktop-notice a:hover {
+        text-decoration: underline;
+    }
+}
+
+/* ===== 다크모드 대응 (선택사항) ===== */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --pwa-bg: #1a202c;
+        --pwa-bg-white: #2d3748;
+        --pwa-text: #e2e8f0;
+        --pwa-text-light: #a0aec0;
+        --pwa-border: #4a5568;
+    }
+    
+    .map-placeholder {
+        background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+    }
+}

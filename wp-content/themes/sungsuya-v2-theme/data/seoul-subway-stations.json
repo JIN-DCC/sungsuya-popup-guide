@@ -1,0 +1,251 @@
+{
+  "meta": {
+    "version": "1.0.0",
+    "lastUpdated": "2025-06-12",
+    "description": "성수동 주변 지하철역 정보 - 성수야! V2 프로젝트",
+    "coverage": "성수동 중심 반경 2km 이내 주요 지하철역"
+  },
+  "stations": [
+    {
+      "id": "station_seongsu",
+      "name": "성수",
+      "line": "2호선",
+      "lineColor": "#00A84D",
+      "stationCode": "212",
+      "latitude": 37.5447,
+      "longitude": 127.0557,
+      "address": "서울특별시 성동구 성수동2가",
+      "exits": [
+        {
+          "number": "1번",
+          "description": "성수1가1동 방향",
+          "direction": "북서쪽",
+          "landmarks": ["성수1가동주민센터", "성수역 북부"],
+          "facilities": ["엘리베이터"]
+        },
+        {
+          "number": "2번",
+          "description": "성수동 카페거리",
+          "direction": "남서쪽", 
+          "landmarks": ["성수동 카페거리", "대림창고", "성수동 핫플레이스"],
+          "facilities": ["엘리베이터", "화장실"]
+        },
+        {
+          "number": "3번",
+          "description": "서울숲 방향",
+          "direction": "남동쪽",
+          "landmarks": ["서울숲", "뚝섬한강공원"],
+          "facilities": ["엘리베이터"]
+        },
+        {
+          "number": "4번",
+          "description": "뚝섬공원 방향", 
+          "direction": "동쪽",
+          "landmarks": ["뚝섬공원", "한강시민공원"],
+          "facilities": []
+        },
+        {
+          "number": "5번",
+          "description": "성수2가3동 방향",
+          "direction": "북동쪽", 
+          "landmarks": ["성수2가3동", "성수동 상업지구"],
+          "facilities": ["엘리베이터"]
+        }
+      ],
+      "facilities": ["엘리베이터", "화장실", "무장애시설", "WiFi"],
+      "transferLines": [],
+      "popularExits": ["2번", "3번"],
+      "walkingSpeedKmh": 4
+    },
+    {
+      "id": "station_ttukseom", 
+      "name": "뚝섬",
+      "line": "2호선",
+      "lineColor": "#00A84D",
+      "stationCode": "211", 
+      "latitude": 37.5473,
+      "longitude": 127.0471,
+      "address": "서울특별시 성동구 성수동1가",
+      "exits": [
+        {
+          "number": "1번",
+          "description": "성수역 방향",
+          "direction": "남동쪽",
+          "landmarks": ["성수역", "성수동 상업지구"],
+          "facilities": ["엘리베이터"]
+        },
+        {
+          "number": "2번", 
+          "description": "한양대학교 방향",
+          "direction": "서쪽",
+          "landmarks": ["한양대학교", "사근동"],
+          "facilities": ["엘리베이터", "화장실"]
+        },
+        {
+          "number": "3번",
+          "description": "건대입구역 방향", 
+          "direction": "동쪽",
+          "landmarks": ["건국대학교", "자양동"],
+          "facilities": ["엘리베이터"]
+        },
+        {
+          "number": "4번",
+          "description": "성동구청 방향",
+          "direction": "북쪽", 
+          "landmarks": ["성동구청", "금호동"],
+          "facilities": []
+        }
+      ],
+      "facilities": ["엘리베이터", "화장실", "무장애시설", "WiFi"],
+      "transferLines": [],
+      "popularExits": ["1번", "2번"],
+      "walkingSpeedKmh": 4
+    },
+    {
+      "id": "station_konkuk",
+      "name": "건대입구",
+      "line": "2호선", 
+      "lineColor": "#00A84D",
+      "stationCode": "213",
+      "latitude": 37.5404,
+      "longitude": 127.0700,
+      "address": "서울특별시 광진구 자양동",
+      "exits": [
+        {
+          "number": "1번",
+          "description": "건국대학교 정문",
+          "direction": "남쪽",
+          "landmarks": ["건국대학교 정문", "건국대학교 병원"],
+          "facilities": ["엘리베이터", "화장실"]
+        },
+        {
+          "number": "2번",
+          "description": "건국대학교 후문", 
+          "direction": "남서쪽",
+          "landmarks": ["건국대학교 후문", "건대 상업지구"],
+          "facilities": ["엘리베이터"]
+        },
+        {
+          "number": "3번",
+          "description": "어린이대공원 방향",
+          "direction": "동쪽", 
+          "landmarks": ["어린이대공원", "광진구민회관"],
+          "facilities": ["엘리베이터"]
+        },
+        {
+          "number": "4번",
+          "description": "건대 로데오거리",
+          "direction": "북쪽",
+          "landmarks": ["건대 로데오거리", "건대 맛집거리"],
+          "facilities": ["엘리베이터", "화장실"]
+        },
+        {
+          "number": "5번", 
+          "description": "자양동 방향",
+          "direction": "북동쪽",
+          "landmarks": ["자양동", "구의역 방향"],
+          "facilities": ["엘리베이터"]
+        },
+        {
+          "number": "6번",
+          "description": "광진구청 방향",
+          "direction": "서쪽",
+          "landmarks": ["광진구청", "중곡동"],
+          "facilities": []
+        }
+      ],
+      "facilities": ["엘리베이터", "화장실", "무장애시설", "WiFi", "환전"],
+      "transferLines": ["7호선"],
+      "popularExits": ["1번", "2번", "4번"], 
+      "walkingSpeedKmh": 4
+    },
+    {
+      "id": "station_hanyang",
+      "name": "한양대",
+      "line": "2호선",
+      "lineColor": "#00A84D", 
+      "stationCode": "210",
+      "latitude": 37.5558,
+      "longitude": 127.0443,
+      "address": "서울특별시 성동구 사근동",
+      "exits": [
+        {
+          "number": "1번",
+          "description": "한양대학교 정문",
+          "direction": "남동쪽",
+          "landmarks": ["한양대학교 정문", "한양대학교 병원"],
+          "facilities": ["엘리베이터", "화장실"]
+        },
+        {
+          "number": "2번",
+          "description": "사근동 방향", 
+          "direction": "북쪽",
+          "landmarks": ["사근동", "응봉동"],
+          "facilities": ["엘리베이터"]
+        },
+        {
+          "number": "3번",
+          "description": "금호동4가 방향",
+          "direction": "서쪽",
+          "landmarks": ["금호동4가", "옥수역 방향"],
+          "facilities": ["엘리베이터"]
+        },
+        {
+          "number": "4번",
+          "description": "한양대학교 후문",
+          "direction": "남쪽",
+          "landmarks": ["한양대학교 후문", "한양대 상업지구"],
+          "facilities": []
+        }
+      ],
+      "facilities": ["엘리베이터", "화장실", "무장애시설", "WiFi"],
+      "transferLines": [],
+      "popularExits": ["1번", "4번"],
+      "walkingSpeedKmh": 4
+    },
+    {
+      "id": "station_wangsimni",
+      "name": "왕십리",
+      "line": "2호선",
+      "lineColor": "#00A84D",
+      "stationCode": "209", 
+      "latitude": 37.5612,
+      "longitude": 127.0378,
+      "address": "서울특별시 성동구 왕십리동",
+      "exits": [
+        {
+          "number": "1번",
+          "description": "행당동 방향",
+          "direction": "북쪽",
+          "landmarks": ["행당동", "왕십리뉴타운"],
+          "facilities": ["엘리베이터", "화장실"]
+        },
+        {
+          "number": "2번",
+          "description": "왕십리광장",
+          "direction": "남쪽", 
+          "landmarks": ["왕십리광장", "비트플렉스"],
+          "facilities": ["엘리베이터", "화장실"]
+        },
+        {
+          "number": "3번",
+          "description": "성동구청 방향",
+          "direction": "동쪽",
+          "landmarks": ["성동구청", "금호동"],
+          "facilities": ["엘리베이터"]
+        },
+        {
+          "number": "4번",
+          "description": "왕십리역 환승센터",
+          "direction": "남서쪽",
+          "landmarks": ["왕십리역 환승센터", "경의중앙선"],
+          "facilities": ["엘리베이터", "화장실", "환전"]
+        }
+      ],
+      "facilities": ["엘리베이터", "화장실", "무장애시설", "WiFi", "환전", "편의점"],
+      "transferLines": ["5호선", "분당선", "경의중앙선"],
+      "popularExits": ["2번", "4번"],
+      "walkingSpeedKmh": 4
+    }
+  ]
+}

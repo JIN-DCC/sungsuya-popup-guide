@@ -1,0 +1,243 @@
+/**
+ * SUNGSUYA 글로벌 페이지네이션 스타일
+ * 
+ * 모든 페이지에서 일관된 페이지네이션 스타일 제공
+ * 기준: archive-places.php의 스타일
+ * 
+ * @package SungsuyaV2
+ * @version 1.0.0
+ */
+
+/* 페이지네이션 컨테이너 */
+.pagination-wrapper {
+    margin: 60px 0;
+    text-align: center;
+}
+
+/* WP-PageNavi 플러그인 스타일 */
+.wp-pagenavi {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.wp-pagenavi a,
+.wp-pagenavi span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 12px;
+    background: white;
+    border: 1px solid var(--concrete-grey);
+    border-radius: 8px;
+    color: var(--charcoal) !important; /* 기본 텍스트 색상을 검정색으로 설정 */
+    text-decoration: none !important; /* 밑줄 제거 */
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+/* 페이지네이션 버튼 호버 효과 */
+.wp-pagenavi a:hover {
+    background: var(--brick-red);
+    color: white !important;
+    border-color: var(--brick-red);
+    text-decoration: none !important; /* 호버 시에도 밑줄 없음 */
+}
+
+/* 현재 페이지 (활성화된 버튼) */
+.wp-pagenavi .current {
+    background: var(--brick-red);
+    color: white !important; /* 활성화된 버튼은 하얀색 텍스트 */
+    border-color: var(--brick-red);
+    text-decoration: none !important; /* 밑줄 제거 */
+}
+
+/* 비활성화된 페이지네이션 버튼 (span 요소) */
+.wp-pagenavi span:not(.current) {
+    color: var(--charcoal) !important; /* 비활성화된 버튼은 검정색 텍스트 */
+    background: #f5f5f5;
+    border-color: #ddd;
+    cursor: default;
+    text-decoration: none !important; /* 밑줄 제거 */
+}
+
+/* WordPress 기본 페이지네이션 (paginate_links) */
+.pagination-nav {
+    display: flex;
+    justify-content: center; /* center로 변경 */
+    gap: 8px; /* 간격 추가 */
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.pagination-nav a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 12px;
+    background: white;
+    border: 1px solid var(--concrete-grey);
+    border-radius: 8px;
+    color: var(--brick-red) !important;
+    text-decoration: none !important;
+    font-weight: 500; /* 600에서 500으로 변경 */
+    transition: all 0.3s ease;
+}
+
+.pagination-nav a:hover {
+    background: var(--brick-red);
+    color: white !important;
+    border-color: var(--brick-red);
+    text-decoration: none !important;
+    transform: none; /* 호버 애니메이션 제거 */
+}
+
+.pagination-nav a:last-child:hover {
+    transform: none; /* 호버 애니메이션 제거 */
+}
+
+/* WordPress 기본 페이지네이션 리스트 스타일 */
+.page-numbers {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.page-numbers li {
+    list-style: none;
+}
+
+.page-numbers a,
+.page-numbers span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 12px;
+    background: white;
+    border: 1px solid var(--concrete-grey);
+    border-radius: 8px;
+    color: var(--charcoal) !important;
+    text-decoration: none !important;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.page-numbers a:hover {
+    background: var(--brick-red);
+    color: white !important;
+    border-color: var(--brick-red);
+    text-decoration: none !important;
+}
+
+.page-numbers .current {
+    background: var(--brick-red);
+    color: white !important;
+    border-color: var(--brick-red);
+    text-decoration: none !important;
+}
+
+/* 모든 페이지네이션 관련 링크에서 밑줄 제거 */
+.pagination-wrapper a,
+.pagination-wrapper span {
+    text-decoration: none !important;
+}
+
+.pagination-wrapper a:hover,
+.pagination-wrapper a:focus,
+.pagination-wrapper a:active {
+    text-decoration: none !important;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .pagination-wrapper {
+        margin: 40px 0;
+    }
+    
+    .wp-pagenavi {
+        gap: 4px;
+    }
+    
+    .wp-pagenavi a,
+    .wp-pagenavi span {
+        min-width: 36px;
+        height: 36px;
+        padding: 0 8px;
+        font-size: 14px;
+    }
+    
+    .page-numbers a,
+    .page-numbers span {
+        min-width: 36px;
+        height: 36px;
+        padding: 0 8px;
+        font-size: 14px;
+    }
+    
+    .pagination-nav {
+        flex-direction: column;
+        gap: 16px;
+        max-width: 100%;
+    }
+}
+
+/* 특정 페이지별 색상 오버라이드 */
+/* 팝업스토어 페이지: steel-blue 색상 */
+.archive-popup-store .wp-pagenavi a:hover,
+.archive-popup-store .page-numbers a:hover {
+    background: var(--steel-blue);
+    border-color: var(--steel-blue);
+}
+
+.archive-popup-store .wp-pagenavi .current,
+.archive-popup-store .page-numbers .current {
+    background: var(--steel-blue);
+    border-color: var(--steel-blue);
+}
+
+/* WordPress 기본 페이지네이션 (the_posts_pagination) */
+.pagination .nav-links {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.pagination .nav-links a,
+.pagination .nav-links span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 12px;
+    background: white;
+    border: 1px solid var(--concrete-grey);
+    border-radius: 8px;
+    color: var(--charcoal) !important;
+    text-decoration: none !important;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.pagination .nav-links a:hover {
+    background: var(--brick-red);
+    color: white !important;
+    border-color: var(--brick-red);
+    text-decoration: none !important;
+}
+
+.pagination .nav-links .current {
+    background: var(--brick-red);
+    color: white !important;
+    border-color: var(--brick-red);
+    text-decoration: none !important;
+}

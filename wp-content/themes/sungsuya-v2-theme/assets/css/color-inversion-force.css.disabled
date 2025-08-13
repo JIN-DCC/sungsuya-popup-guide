@@ -1,0 +1,101 @@
+/*!
+ * SUNGSUYA 색상 반전 강제 적용
+ * 배경과 텍스트 색상 완전 반전
+ */
+
+/* 기본 body 설정 - 다크 배경, 흰색 텍스트 */
+body {
+    background-color: #2d3748 !important;
+    color: #ffffff !important;
+}
+
+/* 모든 기본 요소들 색상 강제 적용 */
+h1, h2, h3, h4, h5, h6, p, span, div, a {
+    color: #ffffff !important;
+}
+
+/* 링크 색상 */
+a:link, a:visited {
+    color: #ffffff !important;
+}
+
+a:hover {
+    color: #f7fafc !important;
+}
+
+/* 헤더 배경 */
+header, .header, nav, .nav {
+    background-color: #2d3748 !important;
+    color: #ffffff !important;
+}
+
+/* 메인 컨텐츠 배경 */
+main, .main, section, .section {
+    background-color: #2d3748 !important;
+    color: #ffffff !important;
+}
+
+/* 푸터 배경 */
+footer, .footer {
+    background-color: #4a5568 !important;
+    color: #ffffff !important;
+}
+
+/* 카드 요소들 */
+.card, .place-card, .popup-card {
+    background-color: #4a5568 !important;
+    color: #ffffff !important;
+}
+
+/* 버튼 텍스트 */
+button, .button {
+    color: #ffffff !important;
+}
+
+/* 폼 요소들 */
+input, textarea, select {
+    background-color: #4a5568 !important;
+    color: #ffffff !important;
+    border-color: #718096 !important;
+}
+
+/* 전체 컨테이너 */
+.container, .content, .wrapper {
+    background-color: #2d3748 !important;
+    color: #ffffff !important;
+}
+
+/* 특정 클래스들 강제 적용 */
+.text-primary, .text-secondary, .text-muted {
+    color: #ffffff !important;
+}
+
+/* 배경이 흰색인 것들 강제 변경 */
+.bg-white, .bg-light, .bg-primary {
+    background-color: #2d3748 !important;
+}
+
+.bg-secondary {
+    background-color: #4a5568 !important;
+}
+
+/* 그라디언트 배경이 있는 요소들은 유지하되 텍스트만 흰색으로 */
+[style*="gradient"], .gradient {
+    color: #ffffff !important;
+}
+
+/* 모든 텍스트 요소에 강제 적용 */
+* {
+    color: #ffffff !important;
+}
+
+/* HTML과 body 전체 배경 */
+html {
+    background-color: #2d3748 !important;
+}
+
+/* 페이지 래퍼 */
+#page, .page, .site, .site-content {
+    background-color: #2d3748 !important;
+    color: #ffffff !important;
+}

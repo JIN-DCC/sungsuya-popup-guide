@@ -1,0 +1,28 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- 배경 -->
+  <rect width="512" height="512" rx="80" fill="#667eea"/>
+  
+  <!-- 지도 아이콘 -->
+  <g transform="translate(256, 256)">
+    <!-- 지도 베이스 -->
+    <path d="M-120 -80 L-40 -100 L40 -80 L120 -100 L120 100 L40 80 L-40 100 L-120 80 Z" 
+          fill="white" 
+          opacity="0.9"/>
+    
+    <!-- 지도 접힌 부분 -->
+    <line x1="-40" y1="-100" x2="-40" y2="100" stroke="#667eea" stroke-width="3"/>
+    <line x1="40" y1="-80" x2="40" y2="80" stroke="#667eea" stroke-width="3"/>
+    
+    <!-- 위치 마커 -->
+    <circle cx="0" cy="-20" r="40" fill="#ff6b6b"/>
+    <circle cx="0" cy="-20" r="20" fill="white"/>
+    
+    <!-- 성수동 텍스트 -->
+    <text x="0" y="140" 
+          font-family="Arial, sans-serif" 
+          font-size="48" 
+          font-weight="bold" 
+          text-anchor="middle" 
+          fill="white">성수야!</text>
+  </g>
+</svg>

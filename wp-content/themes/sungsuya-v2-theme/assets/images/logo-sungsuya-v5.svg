@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="300" height="70" viewBox="0 0 300 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- 네온 글로우 효과 -->
+    <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feOffset result="offset" in="coloredBlur" dx="0" dy="0"/>
+      <feFlood flood-color="#FF006E" flood-opacity="0.5"/>
+      <feComposite operator="in" in2="offset"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- 텍스트 섀도우 -->
+    <filter id="textShadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.8"/>
+    </filter>
+    
+    <!-- 그라디언트 배경 -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- 배경 박스 (더 큰 여백) -->
+  <rect x="10" y="10" width="280" height="50" rx="25" fill="url(#bgGradient)"/>
+  
+  <!-- 내부 배경 (어두운 색) -->
+  <rect x="12" y="12" width="276" height="46" rx="23" fill="#000000" fill-opacity="0.7"/>
+  
+  <!-- 성수야! 텍스트 (위치 조정) -->
+  <text x="35" y="38" font-family="'Pretendard', 'Noto Sans KR', sans-serif" font-size="26" font-weight="900" fill="#FFFFFF" filter="url(#textShadow)">
+    성수야!
+  </text>
+  
+  <!-- 구분선 -->
+  <rect x="130" y="25" width="2" height="20" fill="#FFFFFF" opacity="0.5"/>
+  
+  <!-- SUNGSUYA 텍스트 (위치 조정) -->
+  <text x="145" y="37" font-family="'Arial', sans-serif" font-size="20" font-weight="700" letter-spacing="2" fill="#FFFFFF" opacity="0.9" filter="url(#textShadow)">
+    SUNGSUYA
+  </text>
+</svg>

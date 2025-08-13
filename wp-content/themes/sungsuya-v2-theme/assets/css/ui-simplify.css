@@ -1,0 +1,291 @@
+/**
+ * 성수야! V2 - UI 간소화 오버라이드
+ * 
+ * Phase 2: 모바일 친화적 UI 개선
+ * - 과도한 애니메이션 제거
+ * - 그라데이션 단순화
+ * - 모바일 터치 영역 최적화
+ * 
+ * @package SungsuyaV2
+ * @version 1.0.0
+ */
+
+/* === 애니메이션 제거/단순화 === */
+.hero::before,
+.hero::after {
+    animation: none !important;
+}
+
+@keyframes float {
+    /* 애니메이션 비활성화 */
+}
+
+.store-card:hover {
+    transform: translateY(-2px) !important;
+    transition: transform 0.2s ease !important;
+}
+
+.feature-card:hover {
+    transform: translateY(-2px) !important;
+    transition: transform 0.2s ease !important;
+}
+
+.store-card:hover .store-image {
+    transform: none !important;
+}
+
+.fade-in,
+.slide-in-left,
+.slide-in-right {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+}
+
+.skeleton {
+    animation: none !important;
+    background: var(--bg-muted) !important;
+}
+
+/* === 그라데이션 단순화 === */
+.hero {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+}
+
+.hero-title,
+.page-title,
+.feature-icon,
+.stat-number {
+    background: var(--color-primary) !important;
+    -webkit-text-fill-color: initial !important;
+    color: var(--color-primary) !important;
+}
+
+.btn-primary,
+.hero-btn-primary {
+    background: var(--color-primary) !important;
+    border: none !important;
+}
+
+.btn-primary:hover,
+.hero-btn-primary:hover {
+    background: var(--color-primary-dark) !important;
+    transform: none !important;
+}
+
+/* === 모바일 터치 영역 확대 === */
+.btn,
+.hero-btn,
+button,
+a.btn {
+    min-height: 48px !important;
+    min-width: 120px !important;
+    padding: 12px 24px !important;
+    font-size: 16px !important;
+}
+
+@media (max-width: 768px) {
+    .btn,
+    .hero-btn,
+    button,
+    a.btn {
+        min-height: 52px !important;
+        padding: 14px 28px !important;
+        font-size: 17px !important;
+    }
+    
+    /* 클릭 가능한 카드들 */
+    .store-card,
+    .feature-card,
+    .category-card {
+        min-height: 120px;
+    }
+    
+    /* 메뉴 항목 터치 영역 */
+    .nav-link,
+    .menu-item a {
+        padding: 16px !important;
+        min-height: 48px !important;
+    }
+}
+
+/* === UI 요소 단순화 === */
+.store-card::before,
+.feature-card::before {
+    display: none !important;
+}
+
+.hero::before,
+.hero::after,
+.cta-section::before {
+    display: none !important;
+}
+
+/* 박스 섀도우 단순화 */
+.store-card {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+}
+
+.store-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+}
+
+.feature-card {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
+    border: 1px solid #e5e7eb !important;
+}
+
+.feature-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12) !important;
+}
+
+/* === 불필요한 장식 요소 제거 === */
+.scroll-progress {
+    display: none !important;
+}
+
+.loading-spinner {
+    border: 3px solid #e5e7eb !important;
+    border-top: 3px solid var(--color-primary) !important;
+    animation: spin 1s linear infinite !important;
+}
+
+/* === 메뉴 구조 단순화 === */
+.nav {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
+}
+
+.nav-menu {
+    gap: 8px !important;
+}
+
+.nav-link {
+    padding: 8px 16px !important;
+    transition: color 0.2s ease !important;
+}
+
+.nav-link:hover {
+    color: var(--color-primary) !important;
+    transform: none !important;
+}
+
+/* === 페이지 전환 효과 제거 === */
+.page-transition {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+}
+
+/* === 히어로 섹션 단순화 === */
+.hero {
+    min-height: 60vh !important;
+    padding: 80px 0 !important;
+}
+
+@media (max-width: 768px) {
+    .hero {
+        min-height: 50vh !important;
+        padding: 60px 0 !important;
+    }
+    
+    .hero-title {
+        font-size: 28px !important;
+        line-height: 1.3 !important;
+        margin-bottom: 16px !important;
+    }
+    
+    .hero-subtitle {
+        font-size: 16px !important;
+        margin-bottom: 24px !important;
+    }
+}
+
+/* === 카드 레이아웃 최적화 === */
+@media (max-width: 768px) {
+    .stores-grid,
+    .features-grid,
+    .category-grid {
+        gap: 16px !important;
+    }
+    
+    .store-content,
+    .feature-card {
+        padding: 16px !important;
+    }
+    
+    .store-title {
+        font-size: 18px !important;
+    }
+    
+    .store-description {
+        font-size: 14px !important;
+    }
+}
+
+/* === 폰트 크기 최적화 === */
+body {
+    font-size: 16px !important;
+    line-height: 1.6 !important;
+}
+
+h1 { font-size: 32px !important; }
+h2 { font-size: 28px !important; }
+h3 { font-size: 24px !important; }
+h4 { font-size: 20px !important; }
+h5 { font-size: 18px !important; }
+h6 { font-size: 16px !important; }
+
+@media (max-width: 768px) {
+    h1 { font-size: 28px !important; }
+    h2 { font-size: 24px !important; }
+    h3 { font-size: 20px !important; }
+    h4 { font-size: 18px !important; }
+    h5 { font-size: 16px !important; }
+    h6 { font-size: 16px !important; }
+}
+
+/* === 폼 요소 최적화 === */
+input,
+select,
+textarea {
+    min-height: 48px !important;
+    padding: 12px 16px !important;
+    font-size: 16px !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 8px !important;
+}
+
+/* === 접근성 개선 === */
+:focus {
+    outline: 2px solid var(--color-primary) !important;
+    outline-offset: 2px !important;
+}
+
+/* === 퍼포먼스 최적화 === */
+* {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+}
+
+/* === 구글 번역 호환성 유지 === */
+.notranslate {
+    /* 유지 */
+}
+
+/* === Places 상세 페이지 개선 === */
+.platform-card {
+    min-height: 100px !important;
+    cursor: pointer !important;
+    transition: transform 0.2s ease !important;
+}
+
+.platform-card:hover {
+    transform: translateY(-2px) !important;
+}
+
+@media (max-width: 768px) {
+    .platform-card {
+        min-height: 120px !important;
+        padding: 20px !important;
+    }
+}

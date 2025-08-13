@@ -1,0 +1,57 @@
+{
+  "name": "sungsuya-popup-guide",
+  "version": "2.3.0",
+  "description": "성수동 팝업스토어 가이드 PWA - 3-AI 협업으로 개발된 혁신적 플랫폼",
+  "keywords": [
+    "popup-store",
+    "seoul",
+    "seongsu",
+    "pwa",
+    "wordpress",
+    "ai-collaboration",
+    "claude",
+    "chatgpt", 
+    "gemini"
+  ],
+  "author": "SUNGSUYA Development Team (3-AI Collaboration)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/[username]/sungsuya-popup-guide.git"
+  },
+  "bugs": {
+    "url": "https://github.com/[username]/sungsuya-popup-guide/issues"
+  },
+  "homepage": "https://sungsuya.com",
+  "scripts": {
+    "build": "webpack --mode=production",
+    "dev": "webpack --mode=development --watch",
+    "test": "jest",
+    "pwa-build": "workbox build",
+    "css-build": "sass wp-content/themes/sungsuya-v2-theme/assets/scss:wp-content/themes/sungsuya-v2-theme/assets/css",
+    "css-watch": "sass --watch wp-content/themes/sungsuya-v2-theme/assets/scss:wp-content/themes/sungsuya-v2-theme/assets/css",
+    "deploy:staging": "node deployment/scripts/deploy-staging.js",
+    "deploy:production": "node deployment/scripts/deploy-production.js",
+    "backup": "node deployment/scripts/backup-system.js"
+  },
+  "devDependencies": {
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4",
+    "workbox-cli": "^7.0.0",
+    "workbox-webpack-plugin": "^7.0.0",
+    "jest": "^29.7.0",
+    "sass": "^1.69.5",
+    "@wordpress/scripts": "^26.19.0"
+  },
+  "dependencies": {
+    "workbox-sw": "^7.0.0"
+  },
+  "browserslist": [
+    "defaults",
+    "not ie < 11"
+  ],
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=7.0.0"
+  }
+}

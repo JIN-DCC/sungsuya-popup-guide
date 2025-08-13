@@ -1,0 +1,90 @@
+# SUNGSUYA WordPress 프로젝트 .gitignore
+# 67% 성능 최적화 완료된 안정적 기반 보호
+
+# WordPress Core Files
+wp-config.php
+wp-config-local.php
+wp-config-production.php
+wp-config-sample.php
+
+# 환경별 설정 파일
+.env
+.env.local
+.env.production
+.env.staging
+
+# 로그 파일
+*.log
+error_log
+debug.log
+wp-content/debug.log
+
+# WordPress 캐시 및 임시 파일
+wp-content/cache/
+wp-content/upgrade/
+wp-content/upgrade-temp-backup/
+wp-content/backup-*/
+wp-content/updraft/
+wp-content/ai1wm-backups/
+
+# 업로드 파일 (용량 관리)
+wp-content/uploads/
+!wp-content/uploads/.gitkeep
+
+# WordPress 플러그인 (선택적 포함)
+wp-content/plugins/
+!wp-content/plugins/custom-*
+!wp-content/plugins/sungsuya-*
+
+# WordPress 코어 파일들
+wp-admin/
+wp-includes/
+*.php
+!wp-content/themes/sungsuya-v2-theme/**/*.php
+!wp-content/plugins/custom-*/**/*.php
+
+# 개발 도구 및 IDE
+node_modules/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 운영체제 파일
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Local WP 전용 파일
+.flywheel/
+local-xdebuginfo.php
+check-db-status.php
+fix-*.php
+force-fix-*.php
+reset-password.php
+
+# 임시 백업 파일
+*-backup-*.php
+*-backup-*.css
+*-backup-*.js
+
+# 민감한 정보
+wp-config-secret.php
+.htpasswd
+*.key
+*.pem
+*.crt
+
+# 빌드 및 배포 파일
+dist/
+build/
+.cache/
+
+# 성능 분석 파일
+*.trace
+*.prof

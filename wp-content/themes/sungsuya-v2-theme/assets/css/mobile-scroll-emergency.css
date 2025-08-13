@@ -1,0 +1,105 @@
+/**
+ * 긴급 모바일 스크롤 수정 - 강제 적용
+ * 
+ * @since 2025-07-04
+ */
+
+/* 모든 요소의 transform 초기화 */
+* {
+    transform: none !important;
+}
+
+/* HTML과 BODY 강제 설정 */
+html {
+    overflow: visible !important;
+    overflow-y: scroll !important;
+    overflow-x: hidden !important;
+    height: 100% !important;
+    position: static !important;
+}
+
+body {
+    overflow: visible !important;
+    overflow-y: visible !important;
+    overflow-x: hidden !important;
+    height: auto !important;
+    min-height: 100% !important;
+    position: static !important;
+    transform: none !important;
+    -webkit-overflow-scrolling: touch !important;
+}
+
+/* 모든 주요 컨테이너 강제 설정 */
+#page,
+.site,
+#content,
+.site-content,
+main,
+.site-main,
+.content-area,
+.primary,
+article,
+.entry-content {
+    overflow: visible !important;
+    height: auto !important;
+    position: static !important;
+    transform: none !important;
+}
+
+/* 모바일에서 특별 처리 */
+@media (max-width: 1024px) {
+    /* viewport 높이 사용하는 요소들 수정 */
+    *[style*="height: 100vh"],
+    *[style*="height:100vh"],
+    *[style*="min-height: 100vh"],
+    *[style*="min-height:100vh"] {
+        height: auto !important;
+        min-height: auto !important;
+    }
+    
+    /* fixed 요소들 처리 */
+    .site-header {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 9999 !important;
+    }
+    
+    /* 메인 컨텐츠 상단 여백 */
+    body > *:first-child:not(.site-header),
+    main:first-of-type,
+    .site-content:first-of-type {
+        margin-top: 80px !important; /* 헤더 높이만큼 */
+        padding-top: 20px !important;
+    }
+}
+
+/* 특정 클래스들 강제 해제 */
+.no-scroll,
+.overflow-hidden,
+.fixed-body,
+.modal-open {
+    overflow: visible !important;
+    position: static !important;
+    height: auto !important;
+}
+
+/* iOS 특별 처리 */
+@supports (-webkit-touch-callout: none) {
+    html, body {
+        position: relative !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+}
+
+/* 디버그용 - 모든 요소 보이기 */
+* {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Z-index 초기화 (헤더 제외) */
+*:not(.site-header):not(.site-header *) {
+    z-index: auto !important;
+}
