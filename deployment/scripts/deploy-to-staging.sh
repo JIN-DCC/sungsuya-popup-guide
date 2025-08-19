@@ -10,7 +10,7 @@ set -e  # 오류 발생 시 스크립트 중단
 # ============================================================================
 
 STAGING_URL="dev.sungsuya.com"
-STAGING_PATH="/home/sungsuya/public_html/dev"
+STAGING_PATH="/home/sungsuya/public_html/dev.sungsuya.com"
 DB_NAME="sungsuya_dev"
 DB_USER="sungsuya_dev_user"
 DB_PASS=""  # 환경변수에서 가져옴
