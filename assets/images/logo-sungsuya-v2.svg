@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="240" height="50" viewBox="0 0 240 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- 그라디언트 정의 -->
+    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#FF006E;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#8338EC;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3A86FF;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- 드롭 섀도우 효과 -->
+    <filter id="dropShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
+      <feOffset dx="0" dy="2" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.5"/>
+      </feComponentTransfer>
+      <feMerge> 
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/> 
+      </feMerge>
+    </filter>
+    
+    <!-- 텍스트 그로우 효과 -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- 배경 (옵션) -->
+  <rect x="0" y="5" width="240" height="40" rx="20" fill="#000000" fill-opacity="0.3"/>
+  
+  <!-- 성수야! 한글 텍스트 -->
+  <text x="20" y="32" font-family="Pretendard, -apple-system, BlinkMacSystemFont, sans-serif" font-size="26" font-weight="900" fill="#FFFFFF" filter="url(#dropShadow)">
+    성수야!
+  </text>
+  
+  <!-- 구분선 -->
+  <rect x="108" y="15" width="2" height="20" fill="#FFFFFF" opacity="0.4"/>
+  
+  <!-- SUNGSUYA 영문 텍스트 -->
+  <text x="120" y="30" font-family="'Bebas Neue', sans-serif" font-size="22" font-weight="400" letter-spacing="2" fill="#FFFFFF" opacity="0.9" filter="url(#dropShadow)">
+    SUNGSUYA
+  </text>
+</svg>

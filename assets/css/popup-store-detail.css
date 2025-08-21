@@ -1,0 +1,1299 @@
+/* 
+==============================================
+성수야! V2 - 팝업스토어 상세페이지 개선 CSS
+==============================================
+파일: popup-store-detail.css
+용도: 팝업스토어 상세페이지의 레이아웃과 디자인 개선
+개선사항:
+1. 지도 높이 문제 해결
+2. 반응형 디자인 개선
+3. 현대적인 UI/UX 디자인 적용
+4. 접근성 개선
+5. 모바일 최적화
+==============================================
+*/
+
+/* 전체 페이지 레이아웃 개선 */
+.popup-store-detail {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+}
+
+/* 컨테이너 최대 너비 조정 */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* 헤더 스타일 개선 */
+.site-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 1rem 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.site-title a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.main-navigation {
+    display: flex;
+    gap: 2rem;
+}
+
+.main-navigation a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    opacity: 0.9;
+    transition: opacity 0.3s ease;
+}
+
+.main-navigation a:hover {
+    opacity: 1;
+}
+
+/* 네비게이션 개선 */
+.store-navigation {
+    background: white;
+    padding: 1rem 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+}
+
+.nav-content {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.nav-item {
+    display: flex;
+}
+
+.nav-prev {
+    justify-content: flex-start;
+}
+
+.nav-next {
+    justify-content: flex-end;
+}
+
+.nav-center {
+    text-align: center;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #374151;
+    transition: all 0.3s ease;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+}
+
+.nav-link:hover {
+    background: #f3f4f6;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.nav-thumbnail img {
+    width: 48px;
+    height: 48px;
+    border-radius: 6px;
+    object-fit: cover;
+}
+
+/* 히어로 섹션 개선 */
+.store-hero {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    margin-bottom: 3rem;
+}
+
+.store-image {
+    position: relative;
+    height: 400px;
+    overflow: hidden;
+}
+
+.hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.store-image:hover .hero-image {
+    transform: scale(1.05);
+}
+
+.store-basic-info {
+    padding: 2rem;
+}
+
+.store-meta-badges {
+    margin-bottom: 1rem;
+}
+
+.featured-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.store-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #1f2937;
+    margin: 1rem 0;
+    line-height: 1.2;
+}
+
+.store-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.status-active {
+    background: #d1fae5;
+    color: #059669;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.store-excerpt {
+    font-size: 1.125rem;
+    color: #6b7280;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+/* 섹션 스타일 개선 */
+.store-content-wrapper > section {
+    margin-bottom: 3rem;
+}
+
+.section-header {
+    margin-bottom: 2rem;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 1.75rem;
+    font-weight: bold;
+    color: #1f2937;
+}
+
+.section-icon {
+    font-size: 1.5rem;
+}
+
+/* 스토어 정보 그리드 개선 */
+.store-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: #f9fafb;
+    border-radius: 8px;
+    border-left: 4px solid #667eea;
+}
+
+.info-icon {
+    font-size: 1.5rem;
+    margin-top: 0.25rem;
+}
+
+.info-title {
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+
+.info-value {
+    color: #6b7280;
+    line-height: 1.5;
+}
+
+.info-link {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.info-link:hover {
+    text-decoration: underline;
+}
+
+.external-icon {
+    margin-left: 0.25rem;
+}
+
+/* 지도 섹션 개선 */
+.location-content {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.address-info {
+    padding: 2rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.address-main {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.address-icon {
+    font-size: 1.25rem;
+    margin-top: 0.25rem;
+}
+
+.address-text {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.address-detail {
+    color: #6b7280;
+    margin-left: 0.5rem;
+}
+
+.address-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.copy-address-btn,
+.naver-map-link,
+.directions-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.copy-address-btn {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.copy-address-btn:hover {
+    background: #e5e7eb;
+}
+
+.naver-map-link {
+    background: #00c73c;
+    color: white;
+}
+
+.naver-map-link:hover {
+    background: #00b33c;
+}
+
+.directions-link {
+    background: #667eea;
+    color: white;
+}
+
+.directions-link:hover {
+    background: #5a67d8;
+}
+
+/* 지도 컨테이너 개선 - 중요: 지도 높이 문제 해결 */
+.map-container {
+    position: relative;
+    height: 400px;
+    background: #f3f4f6;
+}
+
+#store-map {
+    width: 100%;
+    height: 100% !important;
+    min-height: 400px !important;
+    border: none;
+    outline: none;
+}
+
+.map-controls {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    z-index: 10;
+}
+
+.map-control-btn {
+    width: 40px;
+    height: 40px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.map-control-btn:hover {
+    background: #f9fafb;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* 교통 정보 개선 */
+.transport-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.transport-item {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.transport-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.transport-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #1f2937;
+    margin-bottom: 1rem;
+}
+
+.subway-station {
+    background: #f8fafc;
+    padding: 1rem;
+    border-radius: 8px;
+    border-left: 4px solid #3b82f6;
+}
+
+.station-main {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.station-name {
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.station-line {
+    background: #3b82f6;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+}
+
+.station-details {
+    display: flex;
+    gap: 1rem;
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+/* 스토어 설명 개선 */
+.store-description {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    line-height: 1.7;
+}
+
+.store-description p {
+    margin-bottom: 1.5rem;
+    color: #374151;
+}
+
+.store-description img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* 관련 스토어 그리드 개선 */
+.related-stores-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.related-store-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.related-store-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.store-card-image {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+}
+
+.card-thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.related-store-card:hover .card-thumbnail {
+    transform: scale(1.05);
+}
+
+.status-badge {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: #059669;
+    color: white;
+}
+
+.related-stores-section .featured-badge {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.store-card-content {
+    padding: 1.5rem;
+}
+
+.store-card-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #1f2937;
+    margin-bottom: 1rem;
+}
+
+.store-card-meta p {
+    margin-bottom: 0.75rem;
+    color: #6b7280;
+    line-height: 1.5;
+}
+
+.store-period {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+/* 액션 버튼 개선 */
+.store-actions {
+    background: white;
+    padding: 2rem 0;
+    border-top: 1px solid #e5e7eb;
+    margin-top: 3rem;
+}
+
+.actions-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: 2px solid;
+}
+
+.share-btn {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+}
+
+.share-btn:hover {
+    background: #5a67d8;
+    border-color: #5a67d8;
+}
+
+.bookmark-btn {
+    background: transparent;
+    color: #667eea;
+    border-color: #667eea;
+}
+
+.bookmark-btn:hover {
+    background: #667eea;
+    color: white;
+}
+
+.back-btn {
+    background: #6b7280;
+    color: white;
+    border-color: #6b7280;
+}
+
+.back-btn:hover {
+    background: #4b5563;
+    border-color: #4b5563;
+}
+
+/* 푸터 개선 */
+.site-footer {
+    background: #1f2937;
+    color: white;
+    padding: 2rem 0;
+    text-align: center;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 16px;
+    }
+    
+    .header-content {
+        padding: 0 16px;
+    }
+    
+    .nav-content {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        text-align: center;
+        padding: 0 16px;
+    }
+    
+    .nav-thumbnail {
+        display: none;
+    }
+    
+    .store-title {
+        font-size: 2rem;
+    }
+    
+    .store-info-grid {
+        grid-template-columns: 1fr;
+        padding: 1.5rem;
+    }
+    
+    .info-item {
+        padding: 1rem;
+    }
+    
+    .address-actions {
+        flex-direction: column;
+    }
+    
+    .map-container {
+        height: 300px;
+    }
+    
+    #store-map {
+        min-height: 300px !important;
+    }
+    
+    .transport-info-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .related-stores-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .actions-wrapper {
+        flex-direction: column;
+        align-items: center;
+        padding: 0 16px;
+    }
+    
+    .action-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .store-image {
+        height: 250px;
+    }
+    
+    .store-basic-info {
+        padding: 1.5rem;
+    }
+    
+    .store-title {
+        font-size: 1.75rem;
+    }
+    
+    .section-title {
+        font-size: 1.5rem;
+    }
+    
+    .map-container {
+        height: 250px;
+    }
+    
+    #store-map {
+        min-height: 250px !important;
+    }
+    
+    .store-description {
+        padding: 1.5rem;
+    }
+    
+    .related-store-card {
+        margin: 0 -8px;
+    }
+}
+
+/* 접근성 개선 */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* 키보드 포커스 표시 */
+.action-btn:focus,
+.nav-link:focus,
+.info-link:focus {
+    outline: 2px solid #667eea;
+    outline-offset: 2px;
+}
+
+/* 토스트 메시지 스타일 */
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 1000;
+    transform: translateX(400px);
+    transition: transform 0.3s ease;
+}
+
+.toast.show {
+    transform: translateX(0);
+}
+
+.toast--success {
+    border-left: 4px solid #059669;
+}
+
+.toast--error {
+    border-left: 4px solid #dc2626;
+}
+
+.toast--warning {
+    border-left: 4px solid #d97706;
+}
+
+/* 스크롤 진행도 바 */
+.scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: rgba(102, 126, 234, 0.2);
+    z-index: 1000;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #667eea;
+    transition: width 0.1s ease;
+}
+
+/* 키보드 힌트 스타일 */
+.keyboard-hints {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 1000;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s ease;
+    max-width: 250px;
+}
+
+.keyboard-hints.hints-show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.hints-content h4 {
+    margin: 0 0 0.75rem 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+}
+
+.hints-content ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.hints-content li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+.hints-content kbd {
+    background: #f3f4f6;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    padding: 0.125rem 0.25rem;
+    font-size: 0.625rem;
+    font-family: monospace;
+}
+
+/* 추가 개선사항 */
+
+/* 애니메이션 효과 */
+.section-observe {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s ease;
+}
+
+.section-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 로딩 상태 */
+.map-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+.loading-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #e5e7eb;
+    border-top: 2px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* 오류 상태 */
+.map-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 2rem;
+    text-align: center;
+    color: #6b7280;
+}
+
+.map-error-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.retry-map-btn {
+    background: #667eea;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 1rem;
+}
+
+.retry-map-btn:hover {
+    background: #5a67d8;
+}
+
+/* 풀스크린 지도 */
+.map-container.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+    background: white;
+}
+
+.map-container.fullscreen #store-map {
+    height: 100vh !important;
+}
+
+/* 카드 호버 오버레이 */
+.card-hover-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(102, 126, 234, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.related-store-card:hover .card-hover-overlay {
+    opacity: 1;
+}
+
+.view-details {
+    color: white;
+    font-weight: 600;
+    font-size: 1.125rem;
+}
+
+/* 관련 스토어 푸터 */
+.related-stores-footer {
+    text-align: center;
+}
+
+.view-all-stores-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.view-all-stores-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-arrow {
+    transition: transform 0.3s ease;
+}
+
+.view-all-stores-btn:hover .btn-arrow {
+    transform: translateX(3px);
+}
+
+/* 컨텐츠 페이드인 효과 */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.popup-store-detail > * {
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+.popup-store-detail > *:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.popup-store-detail > *:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+/* 인기 배지 애니메이션 */
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.featured-badge {
+    animation: pulse 2s infinite;
+}
+
+/* 상태 배지 개선 */
+.status-badge.status-active {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+.status-badge.status-ending {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+}
+
+.status-badge.status-closed {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+/* 버튼 리플 효과 */
+@keyframes ripple {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+.action-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.action-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.action-btn:active::before {
+    width: 300px;
+    height: 300px;
+}
+
+/* 스크롤바 스타일링 */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* 다크 모드 지원 */
+@media (prefers-color-scheme: dark) {
+    .popup-store-detail {
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        color: #e2e8f0;
+    }
+    
+    .store-hero,
+    .location-content,
+    .transport-item,
+    .store-description,
+    .related-store-card {
+        background: #1e293b;
+        border: 1px solid #334155;
+    }
+    
+    .store-title,
+    .section-title,
+    .info-title,
+    .transport-title,
+    .store-card-title {
+        color: #f1f5f9;
+    }
+    
+    .store-excerpt,
+    .info-value,
+    .store-card-meta p {
+        color: #cbd5e1;
+    }
+    
+    .info-item {
+        background: #334155;
+        border-left-color: #667eea;
+    }
+    
+    .nav-link {
+        background: #334155;
+        border-color: #475569;
+        color: #e2e8f0;
+    }
+    
+    .nav-link:hover {
+        background: #475569;
+    }
+}
+
+/* 프린트 스타일 */
+@media print {
+    .site-header,
+    .store-navigation,
+    .store-actions,
+    .keyboard-hints,
+    .scroll-progress,
+    .map-controls {
+        display: none !important;
+    }
+    
+    .popup-store-detail {
+        background: white !important;
+    }
+    
+    .store-hero,
+    .location-content,
+    .transport-item,
+    .store-description,
+    .related-store-card {
+        background: white !important;
+        box-shadow: none !important;
+        border: 1px solid #e5e7eb !important;
+    }
+    
+    .map-container {
+        height: 200px !important;
+        border: 2px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .map-container::after {
+        content: '지도는 온라인에서 확인하세요';
+        color: #6b7280;
+    }
+    
+    #store-map {
+        display: none !important;
+    }
+}
+
+/* 고대비 모드 지원 */
+@media (prefers-contrast: high) {
+    .action-btn,
+    .nav-link,
+    .info-link {
+        border-width: 2px !important;
+    }
+    
+    .featured-badge,
+    .status-badge {
+        border: 2px solid #000;
+    }
+    
+    .store-hero,
+    .location-content,
+    .transport-item,
+    .store-description,
+    .related-store-card {
+        border: 2px solid #000 !important;
+    }
+}
+
+/* 모션 감소 설정 */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .scroll-progress .progress-fill {
+        transition: none;
+    }
+}
+
+/* 성능 최적화 */
+.related-store-card,
+.transport-item,
+.info-item {
+    will-change: transform;
+}
+
+.hero-image,
+.card-thumbnail {
+    will-change: transform;
+}
+
+/* 최종 정리 및 중요 스타일 */
+.popup-store-detail {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* 지도 강제 높이 설정 - 가장 중요한 수정사항 */
+#store-map {
+    height: 400px !important;
+    min-height: 400px !important;
+    width: 100% !important;
+}
+
+@media (max-width: 768px) {
+    #store-map {
+        height: 300px !important;
+        min-height: 300px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    #store-map {
+        height: 250px !important;
+        min-height: 250px !important;
+    }
+}

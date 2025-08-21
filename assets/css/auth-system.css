@@ -1,0 +1,530 @@
+/**
+ * 성수야 PWA 인증 시스템 스타일
+ * 
+ * 심플하고 모바일 최적화된 디자인
+ */
+
+/* 인증 모달 */
+.sungsuya-auth-modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    animation: fadeIn 0.3s ease;
+}
+
+.auth-modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 30px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    position: relative;
+    animation: slideUp 0.3s ease;
+}
+
+@media (max-width: 768px) {
+    .auth-modal-content {
+        margin: 20% auto;
+        padding: 20px;
+        width: 95%;
+    }
+}
+
+.auth-modal-close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 20px;
+}
+
+.auth-modal-close:hover,
+.auth-modal-close:focus {
+    color: #000;
+}
+
+/* 제목 */
+.auth-modal-content h2 {
+    margin: 0 0 10px 0;
+    color: #333;
+    font-size: 24px;
+    text-align: center;
+}
+
+.auth-modal-content p {
+    color: #666;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* 소셜 로그인 버튼 */
+.auth-social-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.auth-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.auth-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Google 버튼 */
+.auth-google {
+    background-color: #fff;
+    color: #3c4043;
+    border: 1px solid #dadce0;
+}
+
+.auth-google:hover {
+    background-color: #f8f9fa;
+}
+
+/* 카카오 버튼 */
+.auth-kakao {
+    background-color: #FEE500;
+    color: #000000;
+}
+
+.auth-kakao:hover {
+    background-color: #FDDC3F;
+}
+
+/* 이메일 버튼 */
+.auth-email {
+    background-color: #f5f5f5;
+    color: #333;
+    border: 1px solid #ddd;
+}
+
+.auth-email:hover {
+    background-color: #e8e8e8;
+}
+
+/* 구분선 */
+.auth-divider {
+    text-align: center;
+    margin: 20px 0;
+    position: relative;
+    color: #999;
+    font-size: 14px;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 45%;
+    height: 1px;
+    background-color: #ddd;
+}
+
+.auth-divider::before {
+    left: 0;
+}
+
+.auth-divider::after {
+    right: 0;
+}
+
+/* 이메일 폼 */
+.auth-email-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.auth-email-form input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+.auth-email-form input:focus {
+    outline: none;
+    border-color: #FF6B6B;
+}
+
+.auth-submit {
+    background-color: #FF6B6B;
+    color: white;
+    margin-top: 8px;
+}
+
+.auth-submit:hover {
+    background-color: #ff5252;
+}
+
+/* 약관 */
+.auth-terms {
+    font-size: 12px;
+    color: #999;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.auth-terms a {
+    color: #FF6B6B;
+    text-decoration: none;
+}
+
+.auth-terms a:hover {
+    text-decoration: underline;
+}
+
+/* 애니메이션 */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* 로그인 상태 표시 */
+.user-profile-mini {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px;
+    cursor: pointer;
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #f0f0f0;
+}
+
+.user-name {
+    font-size: 14px;
+    color: #333;
+}
+
+/* Progressive Profiling 프롬프트 */
+.profile-prompt {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    max-width: 300px;
+    animation: slideInRight 0.5s ease;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.profile-prompt h3 {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+    color: #333;
+}
+
+.profile-prompt p {
+    margin: 0 0 15px 0;
+    font-size: 14px;
+    color: #666;
+}
+
+.profile-prompt-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.profile-prompt-buttons button {
+    flex: 1;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.profile-prompt-buttons .btn-primary {
+    background-color: #FF6B6B;
+    color: white;
+}
+
+.profile-prompt-buttons .btn-secondary {
+    background-color: #f5f5f5;
+    color: #666;
+}
+
+/* 게스트 모드 표시 */
+.guest-mode-indicator {
+    background-color: #f0f0f0;
+    color: #666;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.guest-mode-indicator::before {
+    content: '👤';
+    font-size: 14px;
+}
+
+/* 국가 선택 프롬프트 */
+.country-options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.country-options button {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 16px;
+}
+
+.country-options button:hover {
+    border-color: #FF6B6B;
+    background: #fff5f5;
+}
+
+/* 다른 나라 섹션 */
+.other-country-section {
+    margin: 15px 0;
+}
+
+.btn-other-country {
+    width: 100%;
+    padding: 12px;
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    background: #f9f9f9;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.btn-other-country:hover {
+    border-color: #FF6B6B;
+    background: #fff5f5;
+}
+
+#country-input-wrapper {
+    margin-top: 10px;
+}
+
+.country-select, .country-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.country-select:focus, .country-input:focus {
+    outline: none;
+    border-color: #FF6B6B;
+}
+
+.btn-confirm {
+    width: 100%;
+    padding: 10px;
+    background: #FF6B6B;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.btn-confirm:hover {
+    background: #ff5252;
+}
+
+.btn-skip {
+    width: 100%;
+    padding: 10px;
+    background: #f5f5f5;
+    border: none;
+    border-radius: 6px;
+    color: #666;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn-skip:hover {
+    background: #e8e8e8;
+}
+
+/* 사용자 계정 */
+.user-account {
+    margin-left: 20px;
+}
+
+.login-button {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.login-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+.guest-mode-indicator {
+    cursor: pointer;
+}
+
+.user-profile-mini img {
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+@media (max-width: 768px) {
+    .user-account {
+        margin-left: 10px;
+    }
+    
+    .login-button {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+}
+
+/* 토스트 메시지 */
+.auth-toast {
+    position: fixed;
+    bottom: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: white;
+    padding: 16px 24px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    transition: bottom 0.3s ease;
+    z-index: 10001;
+}
+
+.auth-toast.show {
+    bottom: 30px;
+}
+
+/* 언어 변경 제안 */
+.language-suggestion {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: white;
+    border: 2px solid #FF6B6B;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    max-width: 300px;
+    animation: slideInRight 0.5s ease;
+}
+
+.language-suggestion p {
+    margin: 0 0 15px 0;
+    font-size: 16px;
+    color: #333;
+}
+
+.suggestion-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.suggestion-buttons button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.suggestion-buttons button:first-child {
+    background: #FF6B6B;
+    color: white;
+}
+
+.suggestion-buttons button:first-child:hover {
+    background: #ff5252;
+}
+
+.suggestion-buttons button:last-child {
+    background: #f5f5f5;
+    color: #666;
+}
+
+.suggestion-buttons button:last-child:hover {
+    background: #e8e8e8;
+}
+
+.profile-prompt .note {
+    font-size: 12px;
+    color: #666;
+    text-align: center;
+    margin: 10px 0 0 0;
+}

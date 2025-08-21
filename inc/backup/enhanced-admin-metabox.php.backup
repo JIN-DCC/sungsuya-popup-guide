@@ -1,0 +1,1110 @@
+<?php
+/**
+ * 성수야! V2 - 혁신적 관리자 메타박스 시스템 (작업 4-5 완성)
+ * 
+ * @package SungsuyaV2
+ * @version 3.0.0
+ */
+
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+class SungsuyaEnhancedAdminMetabox {
+    
+    public function __construct() {
+        add_action('add_meta_boxes', array($this, 'add_enhanced_metabox'));
+        add_action('save_post', array($this, 'save_enhanced_meta_data'));
+        add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_assets'));
+        add_action('wp_ajax_sungsuya_search_address', array($this, 'ajax_search_address'));
+        add_action('wp_ajax_sungsuya_validate_tour_data', array($this, 'ajax_validate_tour_data'));
+        add_action('wp_ajax_sungsuya_find_nearest_subway_enhanced', array($this, 'ajax_find_nearest_subway_enhanced')); // 🚇 새로운 지하철역 검색 핸들러
+        
+        // 기존 메타박스 제거
+        add_action('add_meta_boxes', array($this, 'remove_default_metaboxes'), 999);
+    }
+    
+    public function remove_default_metaboxes() {
+        // 기존 네이버 향상된 메타박스들 제거
+        remove_meta_box('enhanced_store_location', 'popup_store', 'normal');
+        remove_meta_box('enhanced_store_details', 'popup_store', 'normal');
+        
+        // 기존 기본 메타박스들도 제거 (혹시 있을 수 있는)
+        remove_meta_box('popup_store_details', 'popup_store', 'normal');
+        remove_meta_box('popup_store_location', 'popup_store', 'normal');
+        remove_meta_box('popup_store_info', 'popup_store', 'normal');
+        remove_meta_box('popup_store_meta', 'popup_store', 'normal');
+    }
+    
+    public function add_enhanced_metabox() {
+        add_meta_box(
+            'sungsuya-enhanced-metabox',
+            '🎨 혁신적 팝업스토어 관리 시스템',
+            array($this, 'render_enhanced_metabox'),
+            'popup_store',
+            'normal',
+            'high'
+        );
+    }
+    
+    public function enqueue_admin_assets($hook) {
+        global $post_type;
+        
+        if ($post_type !== 'popup_store') {
+            return;
+        }
+        
+        $theme_dir = get_template_directory_uri();
+        
+        // 혁신적 관리자 CSS
+        wp_enqueue_style(
+            'sungsuya-enhanced-admin-ui',
+            $theme_dir . '/assets/css/admin/enhanced-admin-ui.css',
+            array(),
+            '3.0.0'
+        );
+        
+        // 혁신적 관리자 JavaScript
+        wp_enqueue_script(
+            'sungsuya-enhanced-admin-js',
+            $theme_dir . '/assets/js/admin/enhanced-admin.js',
+            array('jquery'),
+            '3.0.0',
+            true
+        );
+        
+        // 네이버 지도 API (조건부 로드) - Places와 동일한 설정 사용
+        $naver_map_client_id = get_option('sungsuya_naver_client_id', '');
+        if (!empty($naver_map_client_id)) {
+            // 올바른 API 로딩 방식 적용 (성공한 공식 테스트 페이지와 동일)
+            wp_enqueue_script(
+                'naver-maps-api-enhanced-admin',
+                'https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=' . $naver_map_client_id . '&submodules=geocoder&callback=naverMapEnhancedAdminReady',
+                array(),
+                null,
+                false // header에 로드
+            );
+        }
+        
+        // JavaScript 설정 전달
+        wp_localize_script('sungsuya-enhanced-admin-js', 'sungsuyaEnhancedAdmin', array(
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('sungsuya_enhanced_admin'),
+            'naverMapClientId' => $naver_map_client_id,
+            'tourPlannerUrl' => home_url('/wp-content/themes/sungsuya-v2-theme/hybrid-tour-planner-test.html'),
+            'messages' => array(
+                'saved' => '저장되었습니다.',
+                'error' => '오류가 발생했습니다.',
+                'loading' => '처리 중...',
+                'required' => '필수 항목입니다.',
+                'addressNotFound' => '주소를 찾을 수 없습니다.'
+            )
+        ));
+    }
+    
+    public function render_enhanced_metabox($post) {
+        wp_nonce_field('sungsuya_enhanced_metabox', 'sungsuya_enhanced_metabox_nonce');
+        
+        $meta_data = $this->get_all_meta_data($post->ID);
+        
+        ?>
+        <div id="sungsuya-enhanced-metabox" class="enhanced-metabox-container">
+            
+            <!-- 📊 상단 진행률 위젯 -->
+            <div class="progress-widget">
+                <div class="progress-header">
+                    <h3>📊 입력 진행률</h3>
+                    <div class="auto-save-controls">
+                        <label>
+                            <input type="checkbox" id="auto-save-toggle" checked>
+                            자동 저장 <span id="auto-save-status">ON</span>
+                        </label>
+                        <span id="last-saved-time">마지막 저장: -</span>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%"></div>
+                </div>
+                <div class="progress-text">0% 완료</div>
+            </div>
+            
+            <!-- 🎯 투어 호환성 위젯 -->
+            <div class="tour-compatibility-widget">
+                <div class="compatibility-header">
+                    <h3>🎯 투어 호환성 체크</h3>
+                    <div class="compatibility-score">
+                        <div class="score-circle">
+                            <span class="score-number">0%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-details">
+                    <div class="status-error">
+                        <span class="status-icon">❌</span>
+                        <span class="status-text">필수 정보 입력 필요</span>
+                    </div>
+                </div>
+                <div class="compatibility-actions">
+                    <button type="button" id="check-tour-compatibility" class="btn btn-primary">
+                        🔍 호환성 검사
+                    </button>
+                    <button type="button" id="validate-all-data" class="btn btn-secondary">
+                        📋 전체 검증
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 📑 탭 네비게이션 -->
+            <div class="tab-navigation">
+                <div class="tab-nav-item active" data-tab="basic">
+                    <span class="tab-icon">📝</span>
+                    <span class="tab-title">기본 정보</span>
+                    <span class="tab-status" id="status-basic">⚪</span>
+                </div>
+                <div class="tab-nav-item" data-tab="location">
+                    <span class="tab-icon">📍</span>
+                    <span class="tab-title">위치 정보</span>
+                    <span class="tab-status" id="status-location">⚪</span>
+                </div>
+                <div class="tab-nav-item" data-tab="operation">
+                    <span class="tab-icon">⏰</span>
+                    <span class="tab-title">운영 정보</span>
+                    <span class="tab-status" id="status-operation">⚪</span>
+                </div>
+                <div class="tab-nav-item" data-tab="social">
+                    <span class="tab-icon">📱</span>
+                    <span class="tab-title">소셜 & 연락처</span>
+                    <span class="tab-status" id="status-social">⚪</span>
+                </div>
+                <div class="tab-nav-item" data-tab="tour">
+                    <span class="tab-icon">🗺️</span>
+                    <span class="tab-title">투어 최적화</span>
+                    <span class="tab-status" id="status-tour">⚪</span>
+                </div>
+            </div>
+            
+            <!-- 📑 탭 컨텐츠 -->
+            <div class="tab-content">
+                
+                <!-- 📝 기본 정보 탭 -->
+                <div id="tab-basic" class="tab-pane active">
+                    <?php $this->render_basic_info_tab($meta_data); ?>
+                </div>
+                
+                <!-- 📍 위치 정보 탭 -->
+                <div id="tab-location" class="tab-pane">
+                    <?php $this->render_location_info_tab($meta_data); ?>
+                </div>
+                
+                <!-- ⏰ 운영 정보 탭 -->
+                <div id="tab-operation" class="tab-pane">
+                    <?php $this->render_operation_info_tab($meta_data); ?>
+                </div>
+                
+                <!-- 📱 소셜 & 연락처 탭 -->
+                <div id="tab-social" class="tab-pane">
+                    <?php $this->render_social_info_tab($meta_data); ?>
+                </div>
+                
+                <!-- 🗺️ 투어 최적화 탭 -->
+                <div id="tab-tour" class="tab-pane">
+                    <?php $this->render_tour_optimization_tab($meta_data); ?>
+                </div>
+                
+            </div>
+            
+            <!-- 🚀 빠른 액션 버튼들 -->
+            <div class="quick-actions">
+                <button type="button" id="quick-save" class="btn btn-success">
+                    💾 빠른 저장
+                </button>
+                <button type="button" id="preview-in-tour" class="btn btn-info">
+                    👁️ 투어에서 미리보기
+                </button>
+                <button type="button" id="test-in-tour-planner" class="btn btn-primary">
+                    🧪 투어 플래너 테스트
+                </button>
+            </div>
+            
+        </div>
+        <?php
+    }
+    
+    private function render_basic_info_tab($meta_data) {
+        ?>
+        <div class="form-section">
+            <h3>🏪 스토어 기본 정보</h3>
+            
+            <div class="form-group">
+                <label for="store_name" class="form-label required">스토어명</label>
+                <input type="text" 
+                       id="store_name" 
+                       name="store_name" 
+                       class="form-control validation-required" 
+                       value="<?php echo esc_attr($meta_data['store_name'] ?? ''); ?>"
+                       data-validation="required|min:2|max:100"
+                       placeholder="예: 성수동 팝업스토어">
+                <div id="validation-store_name" class="field-validation"></div>
+                <div class="field-hint">투어 플래너에서 표시될 스토어명을 입력해주세요.</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="store_description" class="form-label">스토어 설명</label>
+                <textarea id="store_description" 
+                          name="store_description" 
+                          class="form-control" 
+                          rows="4"
+                          maxlength="500"
+                          placeholder="스토어의 특징, 분위기, 주요 상품 등을 간단히 설명해주세요..."><?php echo esc_textarea($meta_data['store_description'] ?? ''); ?></textarea>
+                <div class="character-counter">
+                    <span id="description-count">0</span>/500자
+                </div>
+                <div class="field-hint">매력적인 설명은 투어 선택률을 높입니다.</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="category" class="form-label required">카테고리</label>
+                <select id="category" 
+                        name="category" 
+                        class="form-control validation-required"
+                        data-validation="required">
+                    <option value="">카테고리를 선택해주세요</option>
+                    <?php
+                    $categories = array(
+                        'fashion' => '👗 패션 & 의류',
+                        'beauty' => '💄 뷰티 & 코스메틱',
+                        'lifestyle' => '🏠 라이프스타일',
+                        'food' => '🍽️ 푸드 & 음료',
+                        'art' => '🎨 아트 & 디자인',
+                        'tech' => '📱 테크 & 가젯',
+                        'sports' => '⚽ 스포츠 & 아웃도어',
+                        'music' => '🎵 음악 & 엔터테인먼트',
+                        'book' => '📚 북 & 문구',
+                        'kids' => '🧸 키즈 & 토이',
+                        'pet' => '🐕 펫 & 용품',
+                        'other' => '🎁 기타'
+                    );
+                    
+                    foreach ($categories as $value => $label) {
+                        $selected = selected($meta_data['category'] ?? '', $value, false);
+                        echo "<option value=\"{$value}\" {$selected}>{$label}</option>";
+                    }
+                    ?>
+                </select>
+                <div id="validation-category" class="field-validation"></div>
+                <div class="field-hint">투어 필터링과 추천에 사용됩니다.</div>
+            </div>
+            
+            <div class="form-group special-options">
+                <label class="form-label">특별 옵션</label>
+                <div class="checkbox-grid">
+                    <?php
+                    $special_options = array(
+                        'limited_edition' => '🌟 한정판매',
+                        'collaboration' => '🤝 콜라보레이션',
+                        'first_store' => '🎉 첫 매장',
+                        'exclusive' => '💎 독점 상품',
+                        'experience' => '🎭 체험형 스토어',
+                        'photo_zone' => '📸 포토존 운영',
+                        'celebrity' => '⭐ 셀럽 관련',
+                        'sustainable' => '🌱 친환경'
+                    );
+                    
+                    foreach ($special_options as $value => $label) {
+                        $checked = checked(in_array($value, $meta_data['special_options'] ?? array()), true, false);
+                        echo "<label class=\"checkbox-label\">";
+                        echo "<input type=\"checkbox\" name=\"special_options[]\" value=\"{$value}\" {$checked}>";
+                        echo "<span class=\"checkbox-text\">{$label}</span>";
+                        echo "</label>";
+                    }
+                    ?>
+                </div>
+                <div class="field-hint">해당하는 모든 옵션을 선택해주세요. 투어 추천 시 활용됩니다.</div>
+            </div>
+            
+        </div>
+        <?php
+    }
+    
+    private function render_location_info_tab($meta_data) {
+        ?>
+        <div class="form-section">
+            <h3>📍 위치 & 접근성 정보</h3>
+            
+            <div class="location-search-section">
+                <h4>🔍 주소 검색</h4>
+                <div class="search-container">
+                    <input type="text" 
+                           id="address_search" 
+                           class="form-control search-input"
+                           placeholder="주소나 건물명을 입력하여 검색..."
+                           value="">
+                    <button type="button" id="search-address-btn" class="btn btn-primary search-btn">
+                        🔍 검색
+                    </button>
+                </div>
+                <div class="search-hint">예: 성수동1가, 카카오 아지트, 서울숲 등</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="address" class="form-label required">주소</label>
+                <input type="text" 
+                       id="address" 
+                       name="address" 
+                       class="form-control validation-required" 
+                       value="<?php echo esc_attr($meta_data['address'] ?? ''); ?>"
+                       data-validation="required|min:10"
+                       placeholder="서울특별시 성동구 성수동1가...">
+                <div id="validation-address" class="field-validation"></div>
+                <div class="field-hint">정확한 도로명주소를 입력해주세요.</div>
+            </div>
+            
+            <div class="coordinate-fields">
+                <div class="form-group half-width">
+                    <label for="latitude" class="form-label">위도</label>
+                    <input type="text" 
+                           id="latitude" 
+                           name="latitude" 
+                           class="form-control coordinate-input" 
+                           value="<?php echo esc_attr($meta_data['latitude'] ?? ''); ?>"
+                           placeholder="37.5447"
+                           readonly>
+                    <div class="field-hint">주소 검색 시 자동 입력</div>
+                </div>
+                <div class="form-group half-width">
+                    <label for="longitude" class="form-label">경도</label>
+                    <input type="text" 
+                           id="longitude" 
+                           name="longitude" 
+                           class="form-control coordinate-input" 
+                           value="<?php echo esc_attr($meta_data['longitude'] ?? ''); ?>"
+                           placeholder="127.0557"
+                           readonly>
+                    <div class="field-hint">주소 검색 시 자동 입력</div>
+                </div>
+            </div>
+            
+            <div class="map-section">
+                <h4>🗺️ 지도 미리보기</h4>
+                <div id="enhanced-map-preview" class="map-container"></div>
+                <div class="map-controls">
+                    <button type="button" id="center-sungsudong" class="btn btn-secondary">
+                        🎯 성수동 중심으로
+                    </button>
+                    <button type="button" id="manual-adjust" class="btn btn-outline">
+                        ✋ 수동 조정
+                    </button>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="district" class="form-label">구역</label>
+                <select id="district" name="district" class="form-control">
+                    <option value="">구역을 선택해주세요</option>
+                    <?php
+                    $districts = array(
+                        'seongsu1ga' => '성수동1가 (카카오 아지트 근처)',
+                        'seongsu2ga' => '성수동2가 (서울숲 근처)',
+                        'seongsu_station' => '성수역 인근',
+                        'ttukseom_park' => '뚝섬유원지역 인근',
+                        'seoul_forest' => '서울숲 인근',
+                        'seongsu_bridge' => '성수대교 인근'
+                    );
+                    
+                    foreach ($districts as $value => $label) {
+                        $selected = selected($meta_data['district'] ?? '', $value, false);
+                        echo "<option value=\"{$value}\" {$selected}>{$label}</option>";
+                    }
+                    ?>
+                </select>
+                <div class="field-hint">투어 경로 최적화에 사용됩니다.</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="nearest_subway_station" class="form-label">🚇 가장 가까운 지하철역 (자동 입력)</label>
+                <input type="text" id="nearest_subway_display" class="form-control" placeholder="주소 입력 시 자동으로 설정됩니다" readonly>
+                <input type="hidden" id="nearest_subway_station" name="nearest_subway_station" value="<?php echo esc_attr($meta_data['nearest_subway_station'] ?? ''); ?>">
+                <input type="hidden" id="subway_exit_info" name="subway_exit_info" value="<?php echo esc_attr($meta_data['subway_exit_info'] ?? ''); ?>">
+                <div class="field-hint">
+                    <span id="subway_status_indicator" class="status-indicator"></span>
+                    <span id="subway_exit_description" class="exit-description"></span>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="walking_time_from_station" class="form-label">🚶‍♀️ 지하철역에서 도보시간 (자동 계산)</label>
+                <input type="text" id="walking_time_display" class="form-control" placeholder="주소 입력 시 자동으로 계산됩니다" readonly>
+                <input type="hidden" id="walking_time_from_station" name="walking_time_from_station" value="<?php echo esc_attr($meta_data['walking_time_from_station'] ?? ''); ?>">
+                <div class="field-hint">실제 거리 기반으로 정확한 도보시간이 자동 계산됩니다.</div>
+            </div>
+            
+        </div>
+        <?php
+    }
+    
+    private function render_operation_info_tab($meta_data) {
+        ?>
+        <div class="form-section">
+            <h3>⏰ 운영 정보</h3>
+            
+            <div class="date-range-section">
+                <h4>📅 운영 기간</h4>
+                <div class="date-fields">
+                    <div class="form-group half-width">
+                        <label for="start_date" class="form-label required">시작일</label>
+                        <input type="date" 
+                               id="start_date" 
+                               name="start_date" 
+                               class="form-control validation-required" 
+                               value="<?php echo esc_attr($meta_data['start_date'] ?? ''); ?>"
+                               data-validation="required">
+                        <div id="validation-start_date" class="field-validation"></div>
+                    </div>
+                    <div class="form-group half-width">
+                        <label for="end_date" class="form-label required">종료일</label>
+                        <input type="date" 
+                               id="end_date" 
+                               name="end_date" 
+                               class="form-control validation-required" 
+                               value="<?php echo esc_attr($meta_data['end_date'] ?? ''); ?>"
+                               data-validation="required">
+                        <div id="validation-end_date" class="field-validation"></div>
+                    </div>
+                </div>
+                <div class="field-hint">정확한 운영 기간을 입력해주세요. 투어 가능 여부 판단에 사용됩니다.</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="opening_hours" class="form-label">운영시간</label>
+                <input type="text" 
+                       id="opening_hours" 
+                       name="opening_hours" 
+                       class="form-control" 
+                       value="<?php echo esc_attr($meta_data['opening_hours'] ?? ''); ?>"
+                       placeholder="예: 평일 10:00-20:00, 주말 11:00-19:00">
+                <div class="field-hint">운영시간을 자세히 입력해주세요.</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="operation_status" class="form-label">운영 상태</label>
+                <select id="operation_status" name="operation_status" class="form-control">
+                    <option value="upcoming" <?php selected($meta_data['operation_status'] ?? '', 'upcoming'); ?>>🔜 오픈 예정</option>
+                    <option value="open" <?php selected($meta_data['operation_status'] ?? '', 'open'); ?>>✅ 운영 중</option>
+                    <option value="closing_soon" <?php selected($meta_data['operation_status'] ?? '', 'closing_soon'); ?>>⏰ 곧 종료</option>
+                    <option value="closed" <?php selected($meta_data['operation_status'] ?? '', 'closed'); ?>>❌ 종료됨</option>
+                    <option value="temporary_closed" <?php selected($meta_data['operation_status'] ?? '', 'temporary_closed'); ?>>⏸️ 임시 휴업</option>
+                </select>
+                <div class="field-hint">현재 운영 상태를 정확히 선택해주세요.</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="special_notes" class="form-label">특별 안내사항</label>
+                <textarea id="special_notes" 
+                          name="special_notes" 
+                          class="form-control" 
+                          rows="3"
+                          placeholder="방문 시 주의사항, 특별 이벤트, 예약 필요 여부 등..."><?php echo esc_textarea($meta_data['special_notes'] ?? ''); ?></textarea>
+                <div class="field-hint">방문자가 알아야 할 중요한 정보를 입력해주세요.</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="reservation_required" class="form-label">예약 필요 여부</label>
+                <select id="reservation_required" name="reservation_required" class="form-control">
+                    <option value="no" <?php selected($meta_data['reservation_required'] ?? '', 'no'); ?>>❌ 예약 불필요</option>
+                    <option value="recommended" <?php selected($meta_data['reservation_required'] ?? '', 'recommended'); ?>>⭐ 예약 권장</option>
+                    <option value="required" <?php selected($meta_data['reservation_required'] ?? '', 'required'); ?>>✅ 예약 필수</option>
+                </select>
+                <div class="field-hint">투어 계획 시 중요한 정보입니다.</div>
+            </div>
+            
+        </div>
+        <?php
+    }
+    
+    private function render_social_info_tab($meta_data) {
+        ?>
+        <div class="form-section">
+            <h3>📱 소셜 미디어 & 연락처</h3>
+            
+            <div class="contact-section">
+                <h4>📞 연락처 정보</h4>
+                
+                <div class="form-group">
+                    <label for="phone_number" class="form-label">전화번호</label>
+                    <input type="tel" 
+                           id="phone_number" 
+                           name="phone_number" 
+                           class="form-control" 
+                           value="<?php echo esc_attr($meta_data['phone_number'] ?? ''); ?>"
+                           placeholder="02-1234-5678 또는 010-1234-5678">
+                    <div class="field-hint">문의 가능한 전화번호를 입력해주세요.</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email" class="form-label">이메일</label>
+                    <input type="email" 
+                           id="email" 
+                           name="email" 
+                           class="form-control" 
+                           value="<?php echo esc_attr($meta_data['email'] ?? ''); ?>"
+                           placeholder="contact@example.com">
+                    <div class="field-hint">문의나 협업 관련 이메일 주소입니다.</div>
+                </div>
+            </div>
+            
+            <div class="social-section">
+                <h4>🌐 소셜 미디어</h4>
+                
+                <div class="form-group">
+                    <label for="instagram_url" class="form-label">인스타그램</label>
+                    <input type="url" 
+                           id="instagram_url" 
+                           name="instagram_url" 
+                           class="form-control" 
+                           value="<?php echo esc_attr($meta_data['instagram_url'] ?? ''); ?>"
+                           placeholder="https://instagram.com/username">
+                    <div class="field-hint">인스타그램 계정 URL을 입력해주세요.</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="facebook_url" class="form-label">페이스북</label>
+                    <input type="url" 
+                           id="facebook_url" 
+                           name="facebook_url" 
+                           class="form-control" 
+                           value="<?php echo esc_attr($meta_data['facebook_url'] ?? ''); ?>"
+                           placeholder="https://facebook.com/page">
+                    <div class="field-hint">페이스북 페이지 URL을 입력해주세요.</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="youtube_url" class="form-label">유튜브</label>
+                    <input type="url" 
+                           id="youtube_url" 
+                           name="youtube_url" 
+                           class="form-control" 
+                           value="<?php echo esc_attr($meta_data['youtube_url'] ?? ''); ?>"
+                           placeholder="https://youtube.com/channel/...">
+                    <div class="field-hint">유튜브 채널 URL을 입력해주세요.</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="website_url" class="form-label">공식 웹사이트</label>
+                    <input type="url" 
+                           id="website_url" 
+                           name="website_url" 
+                           class="form-control" 
+                           value="<?php echo esc_attr($meta_data['website_url'] ?? ''); ?>"
+                           placeholder="https://example.com">
+                    <div class="field-hint">브랜드 공식 웹사이트 URL입니다.</div>
+                </div>
+            </div>
+            
+            <div class="hashtag-section">
+                <h4>#️⃣ 해시태그</h4>
+                
+                <div class="form-group">
+                    <label for="hashtags" class="form-label">관련 해시태그</label>
+                    <input type="text" 
+                           id="hashtags" 
+                           name="hashtags" 
+                           class="form-control" 
+                           value="<?php echo esc_attr($meta_data['hashtags'] ?? ''); ?>"
+                           placeholder="#성수동 #팝업스토어 #브랜드명 #한정판">
+                    <div class="field-hint"># 포함하여 쉼표로 구분해서 입력해주세요.</div>
+                </div>
+            </div>
+            
+            <div class="booking-section">
+                <h4>📝 예약 & 참여 링크</h4>
+                
+                <div class="form-group">
+                    <label for="booking_url" class="form-label">예약 링크</label>
+                    <input type="url" 
+                           id="booking_url" 
+                           name="booking_url" 
+                           class="form-control" 
+                           value="<?php echo esc_attr($meta_data['booking_url'] ?? ''); ?>"
+                           placeholder="https://booking.example.com">
+                    <div class="field-hint">사전 예약이 필요한 경우 예약 링크를 입력해주세요.</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="event_url" class="form-label">이벤트 참여 링크</label>
+                    <input type="url" 
+                           id="event_url" 
+                           name="event_url" 
+                           class="form-control" 
+                           value="<?php echo esc_attr($meta_data['event_url'] ?? ''); ?>"
+                           placeholder="https://event.example.com">
+                    <div class="field-hint">특별 이벤트나 체험 프로그램 참여 링크입니다.</div>
+                </div>
+            </div>
+            
+        </div>
+        <?php
+    }
+    
+    private function render_tour_optimization_tab($meta_data) {
+        ?>
+        <div class="form-section">
+            <h3>🗺️ 투어 최적화 정보</h3>
+            
+            <div class="time-optimization-section">
+                <h4>⏱️ 시간 최적화</h4>
+                
+                <div class="form-group">
+                    <label for="recommended_visit_duration" class="form-label">권장 체류시간</label>
+                    <select id="recommended_visit_duration" name="recommended_visit_duration" class="form-control">
+                        <option value="">체류시간을 선택해주세요</option>
+                        <option value="15-30" <?php selected($meta_data['recommended_visit_duration'] ?? '', '15-30'); ?>>⏱️ 15-30분 (빠른 구경)</option>
+                        <option value="30-60" <?php selected($meta_data['recommended_visit_duration'] ?? '', '30-60'); ?>>⏱️ 30분-1시간 (여유롭게)</option>
+                        <option value="60-90" <?php selected($meta_data['recommended_visit_duration'] ?? '', '60-90'); ?>>⏱️ 1-1.5시간 (충분히)</option>
+                        <option value="90-120" <?php selected($meta_data['recommended_visit_duration'] ?? '', '90-120'); ?>>⏱️ 1.5-2시간 (깊이 있게)</option>
+                        <option value="120+" <?php selected($meta_data['recommended_visit_duration'] ?? '', '120+'); ?>>⏱️ 2시간 이상 (체험형)</option>
+                    </select>
+                    <div class="field-hint">일반적인 방문객의 체류시간을 기준으로 선택해주세요.</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="best_visit_time" class="form-label">권장 방문시간대</label>
+                    <select id="best_visit_time" name="best_visit_time" class="form-control">
+                        <option value="">방문시간대를 선택해주세요</option>
+                        <option value="morning" <?php selected($meta_data['best_visit_time'] ?? '', 'morning'); ?>>🌅 오전 (10:00-12:00)</option>
+                        <option value="lunch" <?php selected($meta_data['best_visit_time'] ?? '', 'lunch'); ?>>🍽️ 점심 (12:00-14:00)</option>
+                        <option value="afternoon" <?php selected($meta_data['best_visit_time'] ?? '', 'afternoon'); ?>>☀️ 오후 (14:00-17:00)</option>
+                        <option value="evening" <?php selected($meta_data['best_visit_time'] ?? '', 'evening'); ?>>🌆 저녁 (17:00-20:00)</option>
+                        <option value="night" <?php selected($meta_data['best_visit_time'] ?? '', 'night'); ?>>🌙 밤 (20:00 이후)</option>
+                        <option value="anytime" <?php selected($meta_data['best_visit_time'] ?? '', 'anytime'); ?>>🕐 언제든지</option>
+                    </select>
+                    <div class="field-hint">가장 좋은 경험을 할 수 있는 시간대를 선택해주세요.</div>
+                </div>
+            </div>
+            
+            <div class="crowd-optimization-section">
+                <h4>👥 혼잡도 정보</h4>
+                
+                <div class="form-group">
+                    <label for="crowd_level_weekday" class="form-label">평일 혼잡도</label>
+                    <select id="crowd_level_weekday" name="crowd_level_weekday" class="form-control">
+                        <option value="">평일 혼잡도를 선택해주세요</option>
+                        <option value="low" <?php selected($meta_data['crowd_level_weekday'] ?? '', 'low'); ?>>🟢 여유로움 (대기 없음)</option>
+                        <option value="medium" <?php selected($meta_data['crowd_level_weekday'] ?? '', 'medium'); ?>>🟡 보통 (짧은 대기)</option>
+                        <option value="high" <?php selected($meta_data['crowd_level_weekday'] ?? '', 'high'); ?>>🟠 혼잡함 (대기 예상)</option>
+                        <option value="very_high" <?php selected($meta_data['crowd_level_weekday'] ?? '', 'very_high'); ?>>🔴 매우 혼잡 (긴 대기)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="crowd_level_weekend" class="form-label">주말 혼잡도</label>
+                    <select id="crowd_level_weekend" name="crowd_level_weekend" class="form-control">
+                        <option value="">주말 혼잡도를 선택해주세요</option>
+                        <option value="low" <?php selected($meta_data['crowd_level_weekend'] ?? '', 'low'); ?>>🟢 여유로움 (대기 없음)</option>
+                        <option value="medium" <?php selected($meta_data['crowd_level_weekend'] ?? '', 'medium'); ?>>🟡 보통 (짧은 대기)</option>
+                        <option value="high" <?php selected($meta_data['crowd_level_weekend'] ?? '', 'high'); ?>>🟠 혼잡함 (대기 예상)</option>
+                        <option value="very_high" <?php selected($meta_data['crowd_level_weekend'] ?? '', 'very_high'); ?>>🔴 매우 혼잡 (긴 대기)</option>
+                    </select>
+                </div>
+                
+                <div class="field-hint">투어 일정 계획 시 대기시간 예측에 활용됩니다.</div>
+            </div>
+            
+            <div class="accessibility-section">
+                <h4>♿ 접근성 정보</h4>
+                
+                <div class="checkbox-grid">
+                    <?php
+                    $accessibility_options = array(
+                        'wheelchair_accessible' => '♿ 휠체어 접근 가능',
+                        'elevator_available' => '🛗 엘리베이터 이용 가능',
+                        'parking_available' => '🅿️ 주차 가능',
+                        'stroller_friendly' => '🍼 유모차 접근 가능',
+                        'guide_dog_allowed' => '🦮 안내견 출입 가능',
+                        'audio_guide' => '🎧 음성 가이드 제공',
+                        'sign_language' => '🤟 수어 서비스',
+                        'senior_friendly' => '👴 고령자 친화'
+                    );
+                    
+                    foreach ($accessibility_options as $value => $label) {
+                        $checked = checked(in_array($value, $meta_data['accessibility_features'] ?? array()), true, false);
+                        echo "<label class=\"checkbox-label\">";
+                        echo "<input type=\"checkbox\" name=\"accessibility_features[]\" value=\"{$value}\" {$checked}>";
+                        echo "<span class=\"checkbox-text\">{$label}</span>";
+                        echo "</label>";
+                    }
+                    ?>
+                </div>
+                <div class="field-hint">접근성 옵션은 포용적 투어 계획에 중요합니다.</div>
+            </div>
+            
+            <div class="connection-section">
+                <h4>🔗 연계 장소 추천</h4>
+                
+                <div class="form-group">
+                    <label for="nearby_recommendations" class="form-label">주변 추천 장소</label>
+                    <textarea id="nearby_recommendations" 
+                              name="nearby_recommendations" 
+                              class="form-control" 
+                              rows="3"
+                              placeholder="주변 카페, 식당, 다른 팝업스토어 등 함께 방문하면 좋은 장소들..."><?php echo esc_textarea($meta_data['nearby_recommendations'] ?? ''); ?></textarea>
+                    <div class="field-hint">투어 경로 구성 시 추천 장소로 활용됩니다.</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="combination_tips" class="form-label">조합 팁</label>
+                    <textarea id="combination_tips" 
+                              name="combination_tips" 
+                              class="form-control" 
+                              rows="3"
+                              placeholder="이 스토어와 함께 방문하면 좋은 다른 장소나 순서 등의 팁..."><?php echo esc_textarea($meta_data['combination_tips'] ?? ''); ?></textarea>
+                    <div class="field-hint">효율적인 투어 계획을 위한 전문가 팁입니다.</div>
+                </div>
+            </div>
+            
+        </div>
+        <?php
+    }
+    
+    private function get_all_meta_data($post_id) {
+        $all_meta = get_post_meta($post_id);
+        $processed_meta = array();
+        
+        foreach ($all_meta as $key => $value) {
+            if (is_array($value) && count($value) === 1) {
+                $processed_meta[$key] = $value[0];
+            } else {
+                $processed_meta[$key] = $value;
+            }
+        }
+        
+        // 특별 옵션과 접근성 기능은 배열로 처리
+        $processed_meta['special_options'] = get_post_meta($post_id, 'special_options', false);
+        $processed_meta['accessibility_features'] = get_post_meta($post_id, 'accessibility_features', false);
+        
+        return $processed_meta;
+    }
+    
+    public function save_enhanced_meta_data($post_id) {
+        if (!isset($_POST['sungsuya_enhanced_metabox_nonce']) || 
+            !wp_verify_nonce($_POST['sungsuya_enhanced_metabox_nonce'], 'sungsuya_enhanced_metabox')) {
+            return;
+        }
+        
+        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+            return;
+        }
+        
+        if (!current_user_can('edit_post', $post_id)) {
+            return;
+        }
+        
+        $meta_fields = array(
+            // 기본 정보
+            'store_name' => 'sanitize_text_field',
+            'store_description' => 'sanitize_textarea_field',
+            'category' => 'sanitize_text_field',
+            
+            // 위치 정보
+            'address' => 'sanitize_text_field',
+            'latitude' => 'sanitize_text_field',
+            'longitude' => 'sanitize_text_field',
+            'district' => 'sanitize_text_field',
+            'nearest_subway_station' => 'sanitize_text_field',
+            'walking_time_from_station' => 'sanitize_text_field',
+            
+            // 운영 정보
+            'start_date' => 'sanitize_text_field',
+            'end_date' => 'sanitize_text_field',
+            'opening_hours' => 'sanitize_text_field',
+            'operation_status' => 'sanitize_text_field',
+            'special_notes' => 'sanitize_textarea_field',
+            'reservation_required' => 'sanitize_text_field',
+            
+            // 소셜 & 연락처
+            'phone_number' => 'sanitize_text_field',
+            'email' => 'sanitize_email',
+            'instagram_url' => 'esc_url_raw',
+            'facebook_url' => 'esc_url_raw',
+            'youtube_url' => 'esc_url_raw',
+            'website_url' => 'esc_url_raw',
+            'hashtags' => 'sanitize_text_field',
+            'booking_url' => 'esc_url_raw',
+            'event_url' => 'esc_url_raw',
+            
+            // 🚇 지하철역 자동 입력 정보
+            'subway_exit_info' => 'sanitize_text_field',  // JSON 형태로 저장
+            
+            // 투어 최적화
+            'recommended_visit_duration' => 'sanitize_text_field',
+            'best_visit_time' => 'sanitize_text_field',
+            'crowd_level_weekday' => 'sanitize_text_field',
+            'crowd_level_weekend' => 'sanitize_text_field',
+            'nearby_recommendations' => 'sanitize_textarea_field',
+            'combination_tips' => 'sanitize_textarea_field'
+        );
+        
+        foreach ($meta_fields as $field => $sanitize_function) {
+            if (isset($_POST[$field])) {
+                $value = call_user_func($sanitize_function, $_POST[$field]);
+                update_post_meta($post_id, $field, $value);
+            }
+        }
+        
+        // 배열 필드 처리
+        $array_fields = array('special_options', 'accessibility_features');
+        
+        foreach ($array_fields as $field) {
+            delete_post_meta($post_id, $field);
+            if (isset($_POST[$field]) && is_array($_POST[$field])) {
+                foreach ($_POST[$field] as $value) {
+                    add_post_meta($post_id, $field, sanitize_text_field($value));
+                }
+            }
+        }
+        
+        // 투어 호환성 점수 자동 계산 및 저장
+        $this->calculate_and_save_tour_compatibility_score($post_id);
+    }
+    
+    private function calculate_and_save_tour_compatibility_score($post_id) {
+        $required_fields = array('store_name', 'address', 'category', 'latitude', 'longitude');
+        $score = 0;
+        
+        foreach ($required_fields as $field) {
+            $value = get_post_meta($post_id, $field, true);
+            if (!empty($value)) {
+                $score += 20;
+            }
+        }
+        
+        // 보너스 점수
+        $bonus_fields = array('store_description', 'nearest_subway_station');
+        foreach ($bonus_fields as $field) {
+            $value = get_post_meta($post_id, $field, true);
+            if (!empty($value)) {
+                $score += 10;
+            }
+        }
+        
+        update_post_meta($post_id, 'tour_compatibility_score', min(100, $score));
+    }
+    
+    public function ajax_search_address() {
+        // 디버깅을 위한 로그
+        error_log('🔍 [팝업스토어] AJAX 주소 검색 호출됨');
+        error_log('🔍 [팝업스토어] POST 데이터: ' . print_r($_POST, true));
+        
+        check_ajax_referer('sungsuya_enhanced_admin', 'nonce');
+        
+        $query = sanitize_text_field($_POST['query'] ?? '');
+        error_log('🔍 [팝업스토어] 검색 쿼리: ' . $query);
+        
+        if (empty($query)) {
+            error_log('❌ [팝업스토어] 검색어 없음');
+            wp_send_json_error('검색어가 없습니다.');
+        }
+        
+        // Places 시스템의 지오코딩 매니저 사용
+        global $sungsuya_geocoding_manager;
+        if (!$sungsuya_geocoding_manager && class_exists('Sungsuya_Geocoding_Manager')) {
+            $sungsuya_geocoding_manager = new Sungsuya_Geocoding_Manager();
+        }
+        
+        if (!$sungsuya_geocoding_manager) {
+            error_log('❌ [팝업스토어] 지오코딩 매니저 사용 불가');
+            wp_send_json_error('주소 검색 기능을 사용할 수 없습니다.');
+        }
+        
+        $result = $sungsuya_geocoding_manager->search_address($query, 10);
+        
+        error_log('📍 [팝업스토어] 지오코딩 결과: ' . wp_json_encode($result));
+        
+        if ($result['success'] && !empty($result['results'])) {
+            // 첫 번째 결과를 반환 (기존 코드 호환성)
+            $first_result = $result['results'][0];
+            
+            // 기존 형식에 맞춰 데이터 변환
+            $response_data = array(
+                'roadAddress' => $first_result['roadAddress'],
+                'jibunAddress' => $first_result['jibunAddress'],
+                'x' => $first_result['longitude'],
+                'y' => $first_result['latitude'],
+                'formatted_address' => $first_result['formatted_address'],
+                'latitude' => $first_result['latitude'],
+                'longitude' => $first_result['longitude'],
+                'district' => $first_result['district']
+            );
+            
+            error_log('✅ [팝업스토어] 주소 검색 성공');
+            wp_send_json_success($response_data);
+        } else {
+            error_log('❌ [팝업스토어] 주소 검색 실패: ' . ($result['message'] ?? '알 수 없는 오류'));
+            wp_send_json_error($result['message'] ?? '검색 결과가 없습니다.');
+        }
+    }
+    
+    public function ajax_validate_tour_data() {
+        check_ajax_referer('sungsuya_enhanced_admin', 'nonce');
+        
+        $post_id = intval($_POST['post_id'] ?? 0);
+        
+        if (!$post_id) {
+            wp_send_json_error('잘못된 포스트 ID입니다.');
+        }
+        
+        $score = $this->calculate_tour_compatibility_score($post_id);
+        
+        wp_send_json_success(array(
+            'score' => $score,
+            'status' => $this->get_compatibility_status($score)
+        ));
+    }
+    
+    private function calculate_tour_compatibility_score($post_id) {
+        $required_fields = array('store_name', 'address', 'category', 'latitude', 'longitude');
+        $score = 0;
+        
+        foreach ($required_fields as $field) {
+            $value = get_post_meta($post_id, $field, true);
+            if (!empty($value)) {
+                $score += 20;
+            }
+        }
+        
+        $bonus_fields = array('store_description', 'nearest_subway_station');
+        foreach ($bonus_fields as $field) {
+            $value = get_post_meta($post_id, $field, true);
+            if (!empty($value)) {
+                $score += 10;
+            }
+        }
+        
+        return min(100, $score);
+    }
+    
+    private function get_compatibility_status($score) {
+        if ($score >= 80) {
+            return array(
+                'class' => 'status-excellent',
+                'icon' => '🎉',
+                'text' => '투어 플래너 준비 완료!'
+            );
+        } elseif ($score >= 60) {
+            return array(
+                'class' => 'status-good',
+                'icon' => '✅',
+                'text' => '투어 플래너 사용 가능'
+            );
+        } elseif ($score >= 40) {
+            return array(
+                'class' => 'status-warning',
+                'icon' => '⚠️',
+                'text' => '일부 정보 추가 필요'
+            );
+        } else {
+            return array(
+                'class' => 'status-error',
+                'icon' => '❌',
+                'text' => '필수 정보 입력 필요'
+            );
+        }
+    }
+    
+    /**
+     * 🚇 AJAX: 혁신적 팝업스토어 관리시스템용 지하철역 자동 검색
+     * Places 시스템의 개선된 출구 추천 시스템을 활용
+     */
+    public function ajax_find_nearest_subway_enhanced() {
+        // nonce 검증
+        if (!wp_verify_nonce($_POST['nonce'], 'sungsuya_enhanced_admin')) {
+            wp_send_json_error('보안 검증에 실패했습니다.');
+            return;
+        }
+        
+        $latitude = floatval($_POST['latitude']);
+        $longitude = floatval($_POST['longitude']);
+        
+        if (empty($latitude) || empty($longitude)) {
+            wp_send_json_error('좌표 정보가 필요합니다.');
+            return;
+        }
+        
+        // 지오코딩 매니저 인스턴스 확인
+        global $sungsuya_geocoding_manager;
+        if (!$sungsuya_geocoding_manager && class_exists('Sungsuya_Geocoding_Manager')) {
+            $sungsuya_geocoding_manager = new Sungsuya_Geocoding_Manager();
+        }
+        
+        if (!$sungsuya_geocoding_manager || !method_exists($sungsuya_geocoding_manager, 'find_nearest_subway_for_places')) {
+            wp_send_json_error('지하철역 검색 기능을 사용할 수 없습니다.');
+            return;
+        }
+        
+        // Places 시스템의 개선된 지하철역 검색 함수 활용
+        $subway_info = $sungsuya_geocoding_manager->find_nearest_subway_for_places($latitude, $longitude);
+        
+        if ($subway_info) {
+            // 혁신적 관리자 시스템에서 사용할 수 있는 형태로 변환
+            $walking_time_range = '';
+            $walking_time_minutes = $subway_info['walking_time'];
+            
+            // 도보시간을 기존 선택지에 맞게 변환
+            if ($walking_time_minutes <= 3) {
+                $walking_time_range = '1-3';
+            } elseif ($walking_time_minutes <= 7) {
+                $walking_time_range = '4-7';
+            } elseif ($walking_time_minutes <= 12) {
+                $walking_time_range = '8-12';
+            } elseif ($walking_time_minutes <= 20) {
+                $walking_time_range = '13-20';
+            } else {
+                $walking_time_range = '20+';
+            }
+            
+            // 역 이름을 기존 시스템의 키로 변환
+            $station_key = '';
+            switch ($subway_info['station_name']) {
+                case '성수역':
+                    $station_key = 'seongsu';
+                    break;
+                case '건대입구역':
+                    $station_key = 'konkuk_univ';
+                    break;
+                case '왕십리역':
+                    $station_key = 'wangsimni';
+                    break;
+                case '뚝섬역':
+                    $station_key = 'ttukseom_park';
+                    break;
+                case '서울숲역':
+                    $station_key = 'seoul_forest';
+                    break;
+                default:
+                    // 기본값 (가장 가까운 역이므로 성수역으로 설정)
+                    $station_key = 'seongsu';
+                    break;
+            }
+            
+            error_log("🚇 [Enhanced Admin] 지하철역 검색 결과: {$subway_info['station_name']} {$subway_info['recommended_exit']} ({$walking_time_minutes}분)");
+            
+            wp_send_json_success(array(
+                'station_name' => $subway_info['station_name'],
+                'station_key' => $station_key,
+                'line' => $subway_info['line'],
+                'recommended_exit' => $subway_info['recommended_exit'],
+                'exit_description' => $subway_info['exit_description'],
+                'walking_time' => $walking_time_minutes,
+                'walking_time_range' => $walking_time_range,
+                'distance' => $subway_info['distance'],
+                'display_text' => $subway_info['recommended_exit'] 
+                    ? "{$subway_info['station_name']} {$subway_info['recommended_exit']} ({$walking_time_minutes}분)"
+                    : "{$subway_info['station_name']} ({$walking_time_minutes}분)"
+            ));
+        } else {
+            wp_send_json_error('주변 지하철역을 찾을 수 없습니다.');
+        }
+    }
+}
+
+// 클래스 초기화
+new SungsuyaEnhancedAdminMetabox();

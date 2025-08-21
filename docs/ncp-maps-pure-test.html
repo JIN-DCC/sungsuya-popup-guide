@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🗺️ NCP Maps API 순수 테스트</title>
+    <style>
+        /* 완전히 격리된 스타일 - 다른 CSS와 충돌 방지 */
+        .ncp-test-container {
+            font-family: Arial, sans-serif !important;
+            margin: 0 !important;
+            padding: 20px !important;
+            background: #f5f5f5 !important;
+            min-height: 100vh !important;
+            box-sizing: border-box !important;
+        }
+        
+        .ncp-test-header {
+            background: #2c5aa0 !important;
+            color: white !important;
+            padding: 20px !important;
+            text-align: center !important;
+            border-radius: 8px !important;
+            margin-bottom: 20px !important;
+        }
+        
+        .ncp-test-section {
+            background: white !important;
+            border-radius: 8px !important;
+            padding: 20px !important;
+            margin-bottom: 20px !important;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+        }
+        
+        .ncp-test-map {
+            width: 100% !important;
+            height: 500px !important;
+            border: 2px solid #ddd !important;
+            border-radius: 8px !important;
+            background: #f9f9f9 !important;
+            position: relative !important;
+            z-index: 1 !important;
+        }
+        
+        .ncp-test-status {
+            padding: 15px !important;
+            border-radius: 6px !important;
+            margin-bottom: 15px !important;
+            font-weight: bold !important;
+        }
+        
+        .ncp-test-loading {
+            background: #fff3cd !important;
+            color: #856404 !important;
+            border: 1px solid #ffeaa7 !important;
+        }
+        
+        .ncp-test-success {
+            background: #d4edda !important;
+            color: #155724 !important;
+            border: 1px solid #c3e6cb !important;
+        }
+        
+        .ncp-test-error {
+            background: #f8d7da !important;
+            color: #721c24 !important;
+            border: 1px solid #f5c6cb !important;
+        }
+        
+        .ncp-test-log {
+            background: #2d3748 !important;
+            color: #e2e8f0 !important;
+            padding: 15px !important;
+            border-radius: 6px !important;
+            font-family: monospace !important;
+            font-size: 12px !important;
+            max-height: 200px !important;
+            overflow-y: auto !important;
+            white-space: pre-wrap !important;
+        }
+        
+        .ncp-test-input {
+            width: 100% !important;
+            padding: 12px !important;
+            border: 1px solid #ddd !important;
+            border-radius: 6px !important;
+            font-size: 14px !important;
+            margin-bottom: 10px !important;
+            box-sizing: border-box !important;
+        }
+        
+        .ncp-test-button {
+            background: #2c5aa0 !important;
+            color: white !important;
+            border: none !important;
+            padding: 12px 20px !important;
+            border-radius: 6px !important;
+            cursor: pointer !important;
+            font-size: 14px !important;
+        }
+        
+        .ncp-test-button:hover {
+            background: #1a4480 !important;
+        }
+        
+        /* 중요: 다른 CSS의 간섭을 완전히 차단 */
+        .ncp-test-container * {
+            box-sizing: border-box !important;
+        }
+        
+        /* 지도 컨테이너 강제 설정 */
+        #ncpTestMap {
+            position: relative !important;
+            overflow: hidden !important;
+            background-color: #e5e3df !important;
+        }
+        
+        /* 네이버 지도 타일 이미지 보호 */
+        #ncpTestMap img {
+            max-width: none !important;
+            height: auto !important;
+            border: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="ncp-test-container">
+        <div class="ncp-test-header">
+            <h1>🗺️ NCP Maps API 순수 테스트</h1>
+            <p>다른 스크립트와 완전히 격리된 테스트 환경</p>
+        </div>
+        
+        <div class="ncp-test-section">
+            <h3>📊 API 상태 모니터링</h3>
+            <div id="ncpTestStatus" class="ncp-test-status ncp-test-loading">
+                ⏳ 네이버 지도 API 로딩 중...
+            </div>
+            
+            <div id="ncpTestLog" class="ncp-test-log">=== NCP Maps API 순수 테스트 시작 ===</div>
+        </div>
+        
+        <div class="ncp-test-section">
+            <h3>🗺️ 지도 테스트</h3>
+            <div id="ncpTestMap" class="ncp-test-map">
+                <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666;">
+                    지도 로딩 중... API 응답 대기
+                </div>
+            </div>
+        </div>
+        
+        <div class="ncp-test-section">
+            <h3>📍 Geocoding 테스트</h3>
+            <input type="text" id="ncpTestAddress" class="ncp-test-input" 
+                   placeholder="주소 입력 (예: 서울특별시 성동구 성수동1가)" 
+                   value="서울특별시 성동구 성수동1가">
+            <button class="ncp-test-button" onclick="testGeocoding()">주소 → 좌표 변환</button>
+            <div id="ncpTestGeoResult" style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 6px;">
+                주소를 입력하고 변환 버튼을 클릭하세요.
+            </div>
+        </div>
+    </div>
+
+    <!-- 네이버 지도 API - 순수하게 로드 -->
+    <script>
+        // 전역 네임스페이스로 격리
+        window.NCPTest = {
+            map: null,
+            logElement: null,
+            statusElement: null,
+            
+            log: function(message, type = 'info') {
+                if (!this.logElement) {
+                    this.logElement = document.getElementById('ncpTestLog');
+                }
+                
+                const timestamp = new Date().toLocaleTimeString();
+                const icons = {
+                    'info': 'ℹ️',
+                    'success': '✅', 
+                    'error': '❌',
+                    'warning': '⚠️'
+                };
+                
+                this.logElement.textContent += `\n[${timestamp}] ${icons[type]} ${message}`;
+                this.logElement.scrollTop = this.logElement.scrollHeight;
+                console.log(`[NCP Test] ${message}`);
+            },
+            
+            updateStatus: function(message, type) {
+                if (!this.statusElement) {
+                    this.statusElement = document.getElementById('ncpTestStatus');
+                }
+                
+                this.statusElement.textContent = message;
+                this.statusElement.className = `ncp-test-status ncp-test-${type}`;
+            },
+            
+            initMap: function() {
+                this.log('지도 초기화 시작...', 'info');
+                
+                try {
+                    // API 로드 확인
+                    if (typeof naver === 'undefined') {
+                        throw new Error('naver 객체가 정의되지 않음');
+                    }
+                    
+                    if (typeof naver.maps === 'undefined') {
+                        throw new Error('naver.maps 객체가 정의되지 않음');
+                    }
+                    
+                    this.log('✅ 네이버 지도 API 객체 확인됨', 'success');
+                    
+                    // 성수동 좌표
+                    const center = new naver.maps.LatLng(37.5447, 127.0557);
+                    
+                    // 지도 옵션 (최소한으로)
+                    const mapOptions = {
+                        center: center,
+                        zoom: 15,
+                        mapTypeControl: false,
+                        scaleControl: false,
+                        logoControl: false,
+                        mapDataControl: false,
+                        zoomControl: true,
+                        zoomControlOptions: {
+                            position: naver.maps.Position.TOP_LEFT
+                        }
+                    };
+                    
+                    // 지도 생성
+                    this.map = new naver.maps.Map('ncpTestMap', mapOptions);
+                    
+                    this.log('✅ 지도 객체 생성 성공', 'success');
+                    this.updateStatus('✅ 지도 로딩 완료!', 'success');
+                    
+                    // 지도 로드 완료 이벤트
+                    naver.maps.Event.addListener(this.map, 'idle', () => {
+                        this.log('✅ 지도 렌더링 완료 (idle 이벤트)', 'success');
+                    });
+                    
+                    // 중심 마커 추가
+                    const marker = new naver.maps.Marker({
+                        position: center,
+                        map: this.map,
+                        title: '성수동'
+                    });
+                    
+                    this.log('✅ 마커 추가 완료', 'success');
+                    
+                    // 마커 클릭 이벤트
+                    naver.maps.Event.addListener(marker, 'click', () => {
+                        this.log('마커 클릭됨', 'info');
+                        alert('성수동 마커가 클릭되었습니다! 🌟');
+                    });
+                    
+                    // 5초 후 상태 재확인
+                    setTimeout(() => {
+                        if (this.map && this.map.getCenter) {
+                            this.log('✅ 5초 후 지도 상태 정상 확인', 'success');
+                        } else {
+                            this.log('⚠️ 5초 후 지도 상태 이상 감지', 'warning');
+                        }
+                    }, 5000);
+                    
+                } catch (error) {
+                    this.log(`❌ 지도 초기화 실패: ${error.message}`, 'error');
+                    this.updateStatus(`❌ 지도 초기화 실패: ${error.message}`, 'error');
+                    
+                    document.getElementById('ncpTestMap').innerHTML = `
+                        <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #dc3545; text-align: center;">
+                            <div>
+                                <h3>❌ 지도 초기화 실패</h3>
+                                <p>${error.message}</p>
+                                <p style="font-size: 12px;">콘솔에서 자세한 오류를 확인하세요.</p>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+        };
+        
+        // Geocoding 테스트 함수
+        function testGeocoding() {
+            const address = document.getElementById('ncpTestAddress').value.trim();
+            const resultDiv = document.getElementById('ncpTestGeoResult');
+            
+            if (!address) {
+                alert('주소를 입력해주세요.');
+                return;
+            }
+            
+            NCPTest.log(`주소 변환 시도: ${address}`, 'info');
+            resultDiv.innerHTML = '⏳ 변환 중...';
+            
+            // 실제 구현에서는 서버 사이드에서 호출해야 함
+            resultDiv.innerHTML = `
+                <h5>⚠️ Geocoding API 테스트</h5>
+                <p><strong>입력 주소:</strong> ${address}</p>
+                <p><strong>참고:</strong> Geocoding API는 CORS 정책으로 인해 클라이언트에서 직접 호출할 수 없습니다.</p>
+                <p><strong>해결책:</strong> WordPress REST API를 통해 서버 사이드에서 호출해야 합니다.</p>
+            `;
+            
+            NCPTest.log('Geocoding API는 서버 사이드 구현 필요', 'warning');
+        }
+        
+        // API 로드 대기 및 초기화
+        function waitForNaverAPI() {
+            NCPTest.log('네이버 지도 API 로드 상태 확인...', 'info');
+            
+            if (typeof naver !== 'undefined' && typeof naver.maps !== 'undefined') {
+                NCPTest.log('✅ 네이버 지도 API 로드 완료', 'success');
+                NCPTest.initMap();
+            } else {
+                NCPTest.log('⏳ API 로드 대기 중...', 'info');
+                setTimeout(waitForNaverAPI, 100);
+            }
+        }
+        
+        // 페이지 로드 완료 후 시작
+        document.addEventListener('DOMContentLoaded', function() {
+            NCPTest.log('페이지 DOM 로드 완료', 'info');
+            NCPTest.log('Client ID: qosb7em5i9', 'info');
+            
+            // Enter 키 지원
+            document.getElementById('ncpTestAddress').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    testGeocoding();
+                }
+            });
+            
+            // API 로드 대기 시작
+            setTimeout(waitForNaverAPI, 100);
+        });
+    </script>
+    
+    <!-- 네이버 지도 API 스크립트 -->
+    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=qosb7em5i9"></script>
+</body>
+</html>

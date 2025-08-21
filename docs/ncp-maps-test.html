@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🗺️ NCP Maps API 테스트 - 성수야!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 2px solid #f0f0f0;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+        
+        .test-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .status {
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .status.loading {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        #map {
+            width: 100%;
+            height: 500px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: #f9f9f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .geocoding-test {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .geocoding-input {
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        
+        .geocoding-input input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .geocoding-input button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+        
+        .geocoding-input button:hover {
+            background: #5a67d8;
+        }
+        
+        .geocoding-result {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .log {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 15px;
+        }
+        
+        .api-info {
+            background: #e6fffa;
+            border: 1px solid #81e6d9;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .api-info h4 {
+            color: #2c7a7b;
+            margin-bottom: 10px;
+        }
+        
+        .api-info code {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🗺️ NCP Maps API 완전 새로운 테스트</h1>
+            <p>네이버 클라우드 플랫폼 Maps API 연동 테스트</p>
+        </div>
+        
+        <div class="content">
+            <!-- API 정보 표시 -->
+            <div class="api-info">
+                <h4>📋 사용 중인 API 정보</h4>
+                <p><strong>Client ID:</strong> <code>qosb7em5i9</code></p>
+                <p><strong>도메인:</strong> <code>sungsuya-v2.local</code></p>
+                <p><strong>API 문서:</strong> <a href="https://api.ncloud-docs.com/docs/ko/application-maps-dynamic" target="_blank">Dynamic Maps</a> | <a href="https://api.ncloud-docs.com/docs/ko/application-maps-geocoding" target="_blank">Geocoding</a></p>
+            </div>
+            
+            <!-- Dynamic Maps 테스트 -->
+            <div class="test-section">
+                <h3>🌍 1. Dynamic Maps API 테스트</h3>
+                <div id="maps-status" class="status loading">
+                    ⏳ Maps API 로딩 중...
+                </div>
+                <div id="map">지도 로딩 중...</div>
+            </div>
+            
+            <!-- Geocoding 테스트 -->
+            <div class="test-section">
+                <h3>📍 2. Geocoding API 테스트</h3>
+                <div id="geocoding-status" class="status loading">
+                    ⏳ Geocoding API 준비 중...
+                </div>
+                
+                <div class="geocoding-test">
+                    <div class="geocoding-input">
+                        <h4>주소 → 좌표 변환</h4>
+                        <input type="text" id="address-input" placeholder="예: 서울특별시 성동구 성수동1가" value="서울특별시 성동구 성수동1가">
+                        <button onclick="geocodeAddress()">좌표 변환</button>
+                    </div>
+                    
+                    <div class="geocoding-result">
+                        <h4>📍 변환 결과</h4>
+                        <div id="geocoding-result">주소를 입력하고 변환 버튼을 클릭하세요.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 실시간 로그 -->
+            <div class="test-section">
+                <h3>📝 실시간 테스트 로그</h3>
+                <div id="log" class="log">
+=== NCP Maps API 테스트 시작 ===
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NCP Maps API 로드 -->
+    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=qosb7em5i9"></script>
+    
+    <script>
+        // 로그 함수
+        function log(message, type = 'info') {
+            const logElement = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            const typeIcon = {
+                'info': 'ℹ️',
+                'success': '✅',
+                'error': '❌',
+                'warning': '⚠️'
+            };
+            
+            logElement.innerHTML += `\n[${timestamp}] ${typeIcon[type]} ${message}`;
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+        
+        // Maps API 상태 업데이트
+        function updateMapsStatus(message, type) {
+            const statusElement = document.getElementById('maps-status');
+            statusElement.textContent = message;
+            statusElement.className = `status ${type}`;
+        }
+        
+        // Geocoding API 상태 업데이트
+        function updateGeocodingStatus(message, type) {
+            const statusElement = document.getElementById('geocoding-status');
+            statusElement.textContent = message;
+            statusElement.className = `status ${type}`;
+        }
+        
+        // 전역 지도 변수
+        let map = null;
+        
+        // 네이버 지도 초기화
+        function initializeMap() {
+            log('네이버 지도 초기화 시작...', 'info');
+            
+            try {
+                // API 로드 확인
+                if (typeof naver === 'undefined' || typeof naver.maps === 'undefined') {
+                    throw new Error('네이버 지도 API가 로드되지 않았습니다.');
+                }
+                
+                log('✅ 네이버 지도 API 객체 확인됨', 'success');
+                
+                // 성수동 중심 좌표
+                const seongsuCenter = new naver.maps.LatLng(37.5447, 127.0557);
+                
+                // 지도 옵션
+                const mapOptions = {
+                    center: seongsuCenter,
+                    zoom: 15,
+                    mapTypeControl: true,
+                    mapTypeControlOptions: {
+                        style: naver.maps.MapTypeControlStyle.BUTTON,
+                        position: naver.maps.Position.TOP_RIGHT
+                    },
+                    zoomControl: true,
+                    zoomControlOptions: {
+                        style: naver.maps.ZoomControlStyle.LARGE,
+                        position: naver.maps.Position.TOP_LEFT
+                    }
+                };
+                
+                // 지도 생성
+                map = new naver.maps.Map('map', mapOptions);
+                
+                log('✅ 지도 객체 생성 완료', 'success');
+                updateMapsStatus('✅ 지도 로딩 완료! 성수동 중심으로 표시됨', 'success');
+                
+                // 성수동 마커 추가
+                const marker = new naver.maps.Marker({
+                    position: seongsuCenter,
+                    map: map,
+                    title: '성수동 🌟'
+                });
+                
+                log('✅ 성수동 마커 추가 완료', 'success');
+                
+                // 정보창 추가
+                const infoWindow = new naver.maps.InfoWindow({
+                    content: `
+                        <div style="padding: 10px; text-align: center;">
+                            <h3 style="margin: 0; color: #667eea;">🌟 성수동</h3>
+                            <p style="margin: 5px 0; font-size: 12px;">성수야! 팝업스토어의 중심지</p>
+                        </div>
+                    `
+                });
+                
+                // 마커 클릭 이벤트
+                naver.maps.Event.addListener(marker, 'click', function() {
+                    if (infoWindow.getMap()) {
+                        infoWindow.close();
+                    } else {
+                        infoWindow.open(map, marker);
+                    }
+                    log('마커 클릭됨 - 정보창 토글', 'info');
+                });
+                
+                log('✅ 지도 이벤트 설정 완료', 'success');
+                updateGeocodingStatus('✅ Geocoding API 테스트 준비 완료', 'success');
+                
+            } catch (error) {
+                log(`❌ 지도 초기화 실패: ${error.message}`, 'error');
+                updateMapsStatus(`❌ 지도 로딩 실패: ${error.message}`, 'error');
+                
+                // 지도 컨테이너에 오류 메시지 표시
+                document.getElementById('map').innerHTML = `
+                    <div style="text-align: center; color: #dc3545;">
+                        <h3>⚠️ 지도 로딩 실패</h3>
+                        <p>${error.message}</p>
+                        <p style="font-size: 12px; margin-top: 10px;">개발자 콘솔을 확인해주세요.</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Geocoding 함수
+        async function geocodeAddress() {
+            const address = document.getElementById('address-input').value.trim();
+            const resultDiv = document.getElementById('geocoding-result');
+            
+            if (!address) {
+                alert('주소를 입력해주세요.');
+                return;
+            }
+            
+            log(`주소 변환 요청: ${address}`, 'info');
+            resultDiv.innerHTML = '⏳ 변환 중...';
+            
+            try {
+                // NCP Geocoding API 호출
+                const response = await fetch('https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode', {
+                    method: 'GET',
+                    headers: {
+                        'X-NCP-APIGW-API-KEY-ID': 'qosb7em5i9',
+                        'X-NCP-APIGW-API-KEY': 'K0AciQ4G9nyLdfwNeICJQ3CUSwWMuU3D8rebUHc'
+                    },
+                    params: new URLSearchParams({
+                        query: address
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                log(`✅ Geocoding API 응답 수신`, 'success');
+                
+                if (data.addresses && data.addresses.length > 0) {
+                    const result = data.addresses[0];
+                    const lat = parseFloat(result.y);
+                    const lng = parseFloat(result.x);
+                    
+                    resultDiv.innerHTML = `
+                        <h5>✅ 변환 성공</h5>
+                        <p><strong>주소:</strong> ${result.roadAddress || result.jibunAddress}</p>
+                        <p><strong>위도:</strong> ${lat}</p>
+                        <p><strong>경도:</strong> ${lng}</p>
+                    `;
+                    
+                    log(`좌표 변환 성공: ${lat}, ${lng}`, 'success');
+                    
+                    // 지도가 있으면 해당 위치로 이동
+                    if (map) {
+                        const newPosition = new naver.maps.LatLng(lat, lng);
+                        map.setCenter(newPosition);
+                        map.setZoom(16);
+                        
+                        // 새 마커 추가
+                        new naver.maps.Marker({
+                            position: newPosition,
+                            map: map,
+                            title: '검색된 주소',
+                            icon: {
+                                content: '<div style="background: #ff4757; color: white; padding: 5px 8px; border-radius: 15px; font-size: 12px;">📍 검색결과</div>',
+                                anchor: new naver.maps.Point(40, 15)
+                            }
+                        });
+                        
+                        log('지도에 검색 결과 마커 추가됨', 'success');
+                    }
+                    
+                } else {
+                    resultDiv.innerHTML = '⚠️ 검색 결과가 없습니다.';
+                    log('검색 결과 없음', 'warning');
+                }
+                
+            } catch (error) {
+                log(`❌ Geocoding 오류: ${error.message}`, 'error');
+                resultDiv.innerHTML = `
+                    <h5>❌ 변환 실패</h5>
+                    <p>${error.message}</p>
+                `;
+            }
+        }
+        
+        // 페이지 로드 시 실행
+        document.addEventListener('DOMContentLoaded', function() {
+            log('페이지 로드 완료', 'info');
+            
+            // 네이버 지도 API 로드 대기
+            function waitForNaverMaps() {
+                if (typeof naver !== 'undefined' && typeof naver.maps !== 'undefined') {
+                    log('네이버 지도 API 로드 완료', 'success');
+                    initializeMap();
+                } else {
+                    log('네이버 지도 API 로드 대기 중...', 'info');
+                    setTimeout(waitForNaverMaps, 100);
+                }
+            }
+            
+            waitForNaverMaps();
+        });
+        
+        // Enter 키 지원
+        document.getElementById('address-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                geocodeAddress();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="220" height="40" viewBox="0 0 220 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 성수야! 텍스트 -->
+  <text x="0" y="28" font-family="Pretendard, -apple-system, BlinkMacSystemFont, sans-serif" font-size="28" font-weight="900" fill="#FFFFFF">
+    성수야!
+  </text>
+  
+  <!-- SUNGSUYA 텍스트 -->
+  <text x="100" y="26" font-family="'Bebas Neue', sans-serif" font-size="24" font-weight="400" letter-spacing="2" fill="#FFFFFF" opacity="0.8">
+    SUNGSUYA
+  </text>
+</svg>

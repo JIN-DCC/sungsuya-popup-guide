@@ -1,0 +1,433 @@
+/**
+ * 성수야! V2 - 실시간 주소 검색 스타일
+ * 
+ * 네이버 Geocoder 기반 자동완성 UI 스타일링
+ * 
+ * @package SungsuyaV2
+ * @version 2.0.0
+ */
+
+/* ========================================
+   주소 검색 컨테이너
+======================================== */
+
+.address-input-section {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.search-input-wrapper {
+    position: relative;
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+#store-address-search {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    background: #ffffff;
+}
+
+#store-address-search:focus {
+    outline: none;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+#search-address-btn {
+    padding: 0.75rem 1.5rem;
+    background: #4f46e5;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+#search-address-btn:hover {
+    background: #3730a3;
+    transform: translateY(-1px);
+}
+
+/* ========================================
+   자동완성 드롭다운
+======================================== */
+
+.address-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    max-height: 400px;
+    overflow-y: auto;
+    display: none;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.2s ease;
+}
+
+.address-suggestions.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ========================================
+   자동완성 항목들
+======================================== */
+
+.suggestion-item {
+    padding: 1rem;
+    border-bottom: 1px solid #f3f4f6;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    background: white;
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+    border-radius: 0 0 0.5rem 0.5rem;
+}
+
+.suggestion-item:first-child {
+    border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.suggestion-item:hover,
+.suggestion-item.highlighted {
+    background: #f8fafc;
+    border-left: 3px solid #4f46e5;
+    padding-left: calc(1rem - 3px);
+}
+
+.suggestion-main {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.address-type {
+    display: inline-block;
+    padding: 0.125rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #4f46e5;
+    background: #eef2ff;
+    border-radius: 1rem;
+    flex-shrink: 0;
+}
+
+.main-address {
+    font-weight: 600;
+    color: #1f2937;
+    flex: 1;
+    word-break: break-all;
+}
+
+.main-address mark {
+    background: #fef3c7;
+    color: #92400e;
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    font-weight: 700;
+}
+
+.suggestion-sub {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+    padding-left: 0.5rem;
+    border-left: 2px solid #e5e7eb;
+}
+
+.suggestion-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.district-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 0.375rem;
+    color: white;
+}
+
+.district-sungsu { background: #10b981; }
+.district-seongdong { background: #3b82f6; }
+.district-gangnam { background: #8b5cf6; }
+.district-hongdae { background: #ef4444; }
+.district-itaewon { background: #f59e0b; }
+.district-myeongdong { background: #06b6d4; }
+.district-insadong { background: #84cc16; }
+.district-gangbuk { background: #6366f1; }
+.district-gwangjin { background: #ec4899; }
+.district-etc { background: #6b7280; }
+
+.coordinates {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    font-family: 'Courier New', monospace;
+}
+
+/* ========================================
+   특별 상태들
+======================================== */
+
+.suggestion-loading,
+.suggestion-error,
+.suggestion-no-results {
+    padding: 1.5rem;
+    text-align: center;
+    color: #6b7280;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.loading-spinner {
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 2px solid #e5e7eb;
+    border-top: 2px solid #4f46e5;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.suggestion-error {
+    color: #dc2626;
+}
+
+.error-icon {
+    font-size: 1.5rem;
+}
+
+.suggestion-no-results {
+    color: #6b7280;
+}
+
+.no-results-icon {
+    font-size: 2rem;
+    opacity: 0.5;
+}
+
+.suggestion-no-results small {
+    font-size: 0.75rem;
+    opacity: 0.7;
+}
+
+/* ========================================
+   검색 상태 메시지
+======================================== */
+
+.search-status {
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+}
+
+.search-status.loading {
+    background: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #93c5fd;
+}
+
+.search-status.success {
+    background: #d1fae5;
+    color: #065f46;
+    border: 1px solid #6ee7b7;
+}
+
+.search-status.error {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
+
+/* ========================================
+   반응형 디자인
+======================================== */
+
+@media (max-width: 768px) {
+    .search-input-wrapper {
+        flex-direction: column;
+    }
+    
+    #search-address-btn {
+        justify-content: center;
+    }
+    
+    .address-suggestions {
+        max-height: 300px;
+    }
+    
+    .suggestion-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+    }
+    
+    .main-address {
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+}
+
+/* ========================================
+   접근성 개선
+======================================== */
+
+.suggestion-item:focus {
+    outline: 2px solid #4f46e5;
+    outline-offset: -2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .address-suggestions,
+    .suggestion-item,
+    #store-address-search,
+    #search-address-btn {
+        transition: none;
+    }
+    
+    .loading-spinner {
+        animation: none;
+    }
+}
+
+/* ========================================
+   고대비 모드 지원
+======================================== */
+
+@media (prefers-contrast: high) {
+    .suggestion-item {
+        border-color: #000;
+    }
+    
+    .address-suggestions {
+        border-color: #000;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+    
+    .suggestion-item:hover,
+    .suggestion-item.highlighted {
+        background: #000;
+        color: #fff;
+    }
+}
+
+/* ========================================
+   다크 모드 대응 (미래 확장용)
+======================================== */
+
+@media (prefers-color-scheme: dark) {
+    .address-suggestions {
+        background: #1f2937;
+        border-color: #374151;
+    }
+    
+    .suggestion-item {
+        background: #1f2937;
+        border-color: #374151;
+        color: #f9fafb;
+    }
+    
+    .suggestion-item:hover,
+    .suggestion-item.highlighted {
+        background: #374151;
+    }
+    
+    .main-address {
+        color: #f9fafb;
+    }
+    
+    .suggestion-sub {
+        color: #9ca3af;
+        border-color: #4b5563;
+    }
+    
+    .coordinates {
+        color: #6b7280;
+    }
+    
+    #store-address-search {
+        background: #374151;
+        border-color: #4b5563;
+        color: #f9fafb;
+    }
+    
+    #store-address-search:focus {
+        border-color: #6366f1;
+    }
+}
+
+/* ========================================
+   애니메이션 효과
+======================================== */
+
+.suggestion-item {
+    position: relative;
+    overflow: hidden;
+}
+
+.suggestion-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(79, 70, 229, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.suggestion-item:hover::before {
+    left: 100%;
+}
+
+/* 로딩 상태 개선 */
+.suggestion-loading {
+    position: relative;
+}
+
+.suggestion-loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #4f46e5, #7c3aed, #4f46e5);
+    background-size: 200% 100%;
+    animation: shimmer 2s linear infinite;
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}

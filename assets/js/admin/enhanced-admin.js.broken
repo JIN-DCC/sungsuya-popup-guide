@@ -1,0 +1,983 @@
+/**
+ * 성수야! V2 - 혁신적 관리자 JavaScript (작업 4-5 완성)
+ * 
+ * @package SungsuyaV2
+ * @version 3.0.0
+ */
+
+class SungsuyaEnhancedAdmin {
+    constructor() {
+        this.config = sungsuyaEnhancedAdmin || {};
+        this.autoSaveEnabled = true;
+        this.autoSaveInterval = null;
+        this.validationTimeout = null;
+        this.naverMap = null;
+        this.naverMarker = null;
+        
+        this.init();
+    }
+    
+    init() {
+        console.log('🚀 혁신적 관리자 시스템 초기화 시작');
+        
+        this.setupTabNavigation();
+        this.setupFormValidation();
+        this.setupAutoSave();
+        this.setupProgressTracking();
+        this.setupCharacterCounters();
+        this.setupAddressSearch();
+        this.setupNaverMap();
+        this.setupTourCompatibilityCheck();
+        this.setupActionButtons();
+        
+        this.updateProgress();
+        this.checkTourCompatibility();
+        
+        console.log('✅ 혁신적 관리자 시스템 초기화 완료');
+    }
+    
+    setupTabNavigation() {
+        const tabNavItems = document.querySelectorAll('.tab-nav-item');
+        
+        tabNavItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetTab = item.dataset.tab;
+                this.switchTab(targetTab);
+            });
+        });
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key >= '1' && e.key <= '5') {
+                e.preventDefault();
+                const tabIndex = parseInt(e.key) - 1;
+                const tabs = ['basic', 'location', 'operation', 'social', 'tour'];
+                if (tabs[tabIndex]) {
+                    this.switchTab(tabs[tabIndex]);
+                }
+            }
+        });
+    }
+    
+    switchTab(targetTab) {
+        const tabNavItems = document.querySelectorAll('.tab-nav-item');
+        const tabPanes = document.querySelectorAll('.tab-pane');
+        
+        tabNavItems.forEach(nav => nav.classList.remove('active'));
+        tabPanes.forEach(pane => pane.classList.remove('active'));
+        
+        const activeNavItem = document.querySelector(`[data-tab="${targetTab}"]`);
+        const activePane = document.getElementById(`tab-${targetTab}`);
+        
+        if (activeNavItem && activePane) {
+            activeNavItem.classList.add('active');
+            activePane.classList.add('active');
+            
+            activePane.style.opacity = '0';
+            activePane.style.transform = 'translateY(10px)';
+            
+            requestAnimationFrame(() => {
+                activePane.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                activePane.style.opacity = '1';
+                activePane.style.transform = 'translateY(0)';
+            });
+            
+            this.validateTab(targetTab);
+        }
+    }
+    
+    setupFormValidation() {
+        const requiredFields = document.querySelectorAll('.validation-required');
+        
+        requiredFields.forEach(field => {
+            field.addEventListener('input', () => {
+                clearTimeout(this.validationTimeout);
+                this.validationTimeout = setTimeout(() => {
+                    this.validateField(field);
+                }, 1000);
+            });
+            
+            field.addEventListener('blur', () => {
+                this.validateField(field);
+            });
+        });
+    }
+    
+    validateField(field) {
+        const validation = field.dataset.validation;
+        const value = field.value.trim();
+        const validationElement = document.getElementById(`validation-${field.name}`);
+        
+        if (!validation || !validationElement) return true;
+        
+        const rules = validation.split('|');
+        let isValid = true;
+        let errorMessage = '';
+        
+        for (const rule of rules) {
+            if (rule === 'required' && !value) {
+                isValid = false;
+                errorMessage = '이 항목은 필수입니다.';
+                break;
+            }
+            
+            if (rule.startsWith('min:')) {
+                const minLength = parseInt(rule.split(':')[1]);
+                if (value.length < minLength) {
+                    isValid = false;
+                    errorMessage = `최소 ${minLength}자 이상 입력해주세요.`;
+                    break;
+                }
+            }
+            
+            if (rule.startsWith('max:')) {
+                const maxLength = parseInt(rule.split(':')[1]);
+                if (value.length > maxLength) {
+                    isValid = false;
+                    errorMessage = `최대 ${maxLength}자까지 입력 가능합니다.`;
+                    break;
+                }
+            }
+        }
+        
+        validationElement.className = `field-validation ${isValid ? 'success' : 'error'}`;
+        validationElement.textContent = isValid ? '✓ 올바른 형식입니다.' : errorMessage;
+        field.style.borderColor = isValid ? '#27ae60' : '#e74c3c';
+        
+        return isValid;
+    }
+    
+    validateTab(tabId) {
+        const tabPane = document.getElementById(`tab-${tabId}`);
+        if (!tabPane) return true;
+        
+        const requiredFields = tabPane.querySelectorAll('.validation-required');
+        let validCount = 0;
+        let totalCount = requiredFields.length;
+        
+        requiredFields.forEach(field => {
+            if (this.validateField(field)) {
+                validCount++;
+            }
+        });
+        
+        const tabStatus = document.getElementById(`status-${tabId}`);
+        if (tabStatus) {
+            if (totalCount === 0) {
+                tabStatus.textContent = '⚪';
+            } else if (validCount === totalCount) {
+                tabStatus.textContent = '✅';
+            } else if (validCount > 0) {
+                tabStatus.textContent = '🟡';
+            } else {
+                tabStatus.textContent = '❌';
+            }
+        }
+        
+        return validCount === totalCount;
+    }
+    
+    setupAutoSave() {
+        const autoSaveToggle = document.getElementById('auto-save-toggle');
+        const autoSaveStatus = document.getElementById('auto-save-status');
+        
+        if (autoSaveToggle) {
+            autoSaveToggle.addEventListener('click', () => {
+                this.autoSaveEnabled = !this.autoSaveEnabled;
+                autoSaveStatus.textContent = this.autoSaveEnabled ? 'ON' : 'OFF';
+                
+                if (this.autoSaveEnabled) {
+                    this.startAutoSave();
+                } else {
+                    this.stopAutoSave();
+                }
+            });
+        }
+        
+        this.startAutoSave();
+    }
+    
+    startAutoSave() {
+        if (this.autoSaveInterval) {
+            clearInterval(this.autoSaveInterval);
+        }
+        
+        this.autoSaveInterval = setInterval(() => {
+            if (this.autoSaveEnabled) {
+                this.performAutoSave();
+            }
+        }, 30000);
+    }
+    
+    stopAutoSave() {
+        if (this.autoSaveInterval) {
+            clearInterval(this.autoSaveInterval);
+            this.autoSaveInterval = null;
+        }
+    }
+    
+    performAutoSave() {
+        const formData = this.collectFormData();
+        const lastSavedTime = document.getElementById('last-saved-time');
+        
+        console.log('🔄 자동 저장 실행', formData);
+        
+        if (lastSavedTime) {
+            const now = new Date();
+            lastSavedTime.textContent = `마지막 저장: ${now.toLocaleTimeString()}`;
+        }
+        
+        this.showNotification('자동 저장되었습니다.', 'success');
+    }
+    
+    collectFormData() {
+        const formData = {};
+        const inputs = document.querySelectorAll('#sungsuya-enhanced-metabox input, #sungsuya-enhanced-metabox textarea, #sungsuya-enhanced-metabox select');
+        
+        inputs.forEach(input => {
+            if (input.type === 'checkbox') {
+                formData[input.name] = input.checked ? '1' : '0';
+            } else {
+                formData[input.name] = input.value;
+            }
+        });
+        
+        return formData;
+    }
+    
+    setupProgressTracking() {
+        const requiredFields = document.querySelectorAll('.validation-required');
+        
+        requiredFields.forEach(field => {
+            field.addEventListener('input', () => {
+                requestAnimationFrame(() => this.updateProgress());
+            });
+            
+            field.addEventListener('change', () => {
+                requestAnimationFrame(() => this.updateProgress());
+            });
+        });
+    }
+    
+    updateProgress() {
+        const requiredFields = document.querySelectorAll('.validation-required');
+        let completed = 0;
+        
+        requiredFields.forEach(field => {
+            if (field.value.trim() !== '') {
+                completed++;
+            }
+        });
+        
+        const progress = Math.round((completed / requiredFields.length) * 100);
+        const progressFill = document.querySelector('.progress-fill');
+        const progressText = document.querySelector('.progress-text');
+        
+        if (progressFill) {
+            progressFill.style.width = progress + '%';
+        }
+        
+        if (progressText) {
+            progressText.textContent = progress + '% 완료';
+        }
+        
+        if (progressFill) {
+            if (progress >= 80) {
+                progressFill.style.background = 'linear-gradient(90deg, #27ae60, #2ecc71)';
+            } else if (progress >= 60) {
+                progressFill.style.background = 'linear-gradient(90deg, #f39c12, #f1c40f)';
+            } else {
+                progressFill.style.background = 'linear-gradient(90deg, #e74c3c, #ec7063)';
+            }
+        }
+        
+        return progress;
+    }
+    
+    setupCharacterCounters() {
+        const descriptionTextarea = document.getElementById('store_description');
+        const descriptionCounter = document.getElementById('description-count');
+        
+        if (descriptionTextarea && descriptionCounter) {
+            const updateCounter = () => {
+                const count = descriptionTextarea.value.length;
+                descriptionCounter.textContent = count;
+                
+                if (count > 500) {
+                    descriptionCounter.style.color = '#e74c3c';
+                } else if (count > 400) {
+                    descriptionCounter.style.color = '#f39c12';
+                } else {
+                    descriptionCounter.style.color = '#95a5a6';
+                }
+            };
+            
+            descriptionTextarea.addEventListener('input', updateCounter);
+            updateCounter();
+        }
+    }
+    
+    setupAddressSearch() {
+        const searchInput = document.getElementById('address_search');
+        const searchButton = document.getElementById('search-address-btn');
+        
+        if (searchButton) {
+            searchButton.addEventListener('click', () => {
+                const query = searchInput?.value.trim();
+                if (query) {
+                    this.searchAddress(query);
+                }
+            });
+        }
+        
+        if (searchInput) {
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const query = searchInput.value.trim();
+                    if (query) {
+                        this.searchAddress(query);
+                    }
+                }
+            });
+        }
+    }
+    
+    searchAddress(query) {
+        console.log('🔍 주소 검색:', query);
+        
+        if (window.naver && window.naver.maps && window.naver.maps.Service) {
+            naver.maps.Service.geocode({
+                query: query
+            }, (status, response) => {
+                if (status === naver.maps.Service.Status.ERROR) {
+                    console.error('❌ 지오코딩 오류');
+                    this.showNotification('주소 검색 중 오류가 발생했습니다.', 'error');
+                    return;
+                }
+                
+                const results = response.v2.addresses;
+                if (results.length > 0) {
+                    this.selectAddress(results[0]);
+                } else {
+                    this.showNotification('검색 결과가 없습니다.', 'warning');
+                }
+            });
+        } else {
+            console.log('⚠️ 네이버 지도 API 미사용 가능, 서버 사이드 AJAX 사용');
+            this.searchAddressAjax(query);
+        }
+    }
+    
+    selectAddress(address) {
+        console.log('✅ 주소 선택:', address);
+        
+        const addressInput = document.getElementById('address');
+        const latitudeInput = document.getElementById('latitude');
+        const longitudeInput = document.getElementById('longitude');
+        const districtInput = document.getElementById('district');
+        
+        if (addressInput) {
+            addressInput.value = address.roadAddress || address.jibunAddress;
+        }
+        
+        const latitude = address.y;
+        const longitude = address.x;
+        
+        if (latitudeInput && latitude) {
+            latitudeInput.value = latitude;
+        }
+        
+        if (longitudeInput && longitude) {
+            longitudeInput.value = longitude;
+        }
+        
+        if (districtInput) {
+            const district = address.addressElements?.find(e => e.types.includes('SIDO'))?.longName + ' ' +
+                           address.addressElements?.find(e => e.types.includes('SIGUGUN'))?.longName;
+            districtInput.value = district || '';
+        }
+        
+        if (this.naverMap && longitude && latitude) {
+            this.updateMapLocation(parseFloat(latitude), parseFloat(longitude), address.roadAddress || address.jibunAddress);
+        }
+        
+        // 🚇 새로운 기능: 지하철역 자동 검색
+        if (latitude && longitude) {
+            this.findNearestSubwayEnhanced(latitude, longitude);
+        }
+        
+        this.updateProgress();
+        this.showNotification('주소가 설정되었습니다.', 'success');
+    }
+    
+    setupNaverMap() {
+        const mapContainer = document.getElementById('enhanced-map-preview');
+        if (!mapContainer || !window.naver || !window.naver.maps) {
+            console.log('ℹ️ 네이버 지도 컨테이너 또는 API 없음');
+            return;
+        }
+        
+        try {
+            const defaultLocation = new naver.maps.LatLng(37.5447, 127.0557);
+            
+            const mapOptions = {
+                center: defaultLocation,
+                zoom: 16,
+                minZoom: 10,
+                maxZoom: 19
+            };
+            
+            this.naverMap = new naver.maps.Map(mapContainer, mapOptions);
+            
+            this.naverMarker = new naver.maps.Marker({
+                position: defaultLocation,
+                map: this.naverMap,
+                title: '성수동'
+            });
+            
+            this.setupMapControls();
+            
+            console.log('✅ 네이버 지도 초기화 완료');
+            
+        } catch (error) {
+            console.error('❌ 네이버 지도 초기화 오류:', error);
+        }
+    }
+    
+    setupMapControls() {
+        const centerButton = document.getElementById('center-sungsudong');
+        const manualAdjustButton = document.getElementById('manual-adjust');
+        
+        if (centerButton) {
+            centerButton.addEventListener('click', () => {
+                if (this.naverMap) {
+                    const sungsudongCenter = new naver.maps.LatLng(37.5447, 127.0557);
+                    this.naverMap.setCenter(sungsudongCenter);
+                    this.naverMap.setZoom(16);
+                    this.showNotification('성수동 중심으로 이동했습니다.', 'info');
+                }
+            });
+        }
+        
+        if (manualAdjustButton) {
+            manualAdjustButton.addEventListener('click', () => {
+                this.showNotification('지도를 클릭하여 위치를 조정하세요.', 'info');
+            });
+        }
+    }
+    
+    updateMapLocation(lat, lng, address) {
+        if (!this.naverMap || !this.naverMarker) {
+            return;
+        }
+        
+        const newPosition = new naver.maps.LatLng(lat, lng);
+        
+        this.naverMap.setCenter(newPosition);
+        this.naverMap.setZoom(16);
+        
+        this.naverMarker.setPosition(newPosition);
+        
+        console.log('✅ 지도 위치 업데이트 완료:', address);
+    }
+    
+    setupTourCompatibilityCheck() {
+        const checkButton = document.getElementById('check-tour-compatibility');
+        const validateAllButton = document.getElementById('validate-all-data');
+        
+        if (checkButton) {
+            checkButton.addEventListener('click', () => {
+                this.checkTourCompatibility();
+            });
+        }
+        
+        if (validateAllButton) {
+            validateAllButton.addEventListener('click', () => {
+                this.validateAllData();
+            });
+        }
+        
+        const keyFields = ['store_name', 'address', 'category', 'latitude', 'longitude'];
+        keyFields.forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                field.addEventListener('change', () => {
+                    setTimeout(() => this.checkTourCompatibility(), 500);
+                });
+            }
+        });
+    }
+    
+    checkTourCompatibility() {
+        const formData = this.collectFormData();
+        const score = this.calculateCompatibilityScore(formData);
+        
+        const scoreNumber = document.querySelector('.score-number');
+        if (scoreNumber) {
+            scoreNumber.textContent = score + '%';
+        }
+        
+        this.updateCompatibilityStatus(score);
+        
+        console.log('🔍 투어 호환성 체크 완료:', score + '%');
+    }
+    
+    calculateCompatibilityScore(formData) {
+        let score = 0;
+        
+        const requiredFields = {
+            'store_name': 20,
+            'address': 20,
+            'category': 20,
+            'latitude': 10,
+            'longitude': 10
+        };
+        
+        for (const [field, points] of Object.entries(requiredFields)) {
+            if (formData[field] && formData[field].trim() !== '') {
+                score += points;
+            }
+        }
+        
+        const bonusFields = {
+            'store_description': 10,
+            'nearest_subway_station': 10
+        };
+        
+        for (const [field, points] of Object.entries(bonusFields)) {
+            if (formData[field] && formData[field].trim() !== '') {
+                score += points;
+            }
+        }
+        
+        return Math.min(100, score);
+    }
+    
+    updateCompatibilityStatus(score) {
+        const statusDetails = document.querySelector('.status-details');
+        if (!statusDetails) return;
+        
+        let statusClass, statusIcon, statusText;
+        
+        if (score >= 80) {
+            statusClass = 'status-excellent';
+            statusIcon = '🎉';
+            statusText = '투어 플래너 준비 완료!';
+        } else if (score >= 60) {
+            statusClass = 'status-good';
+            statusIcon = '✅';
+            statusText = '투어 플래너 사용 가능';
+        } else if (score >= 40) {
+            statusClass = 'status-warning';
+            statusIcon = '⚠️';
+            statusText = '일부 정보 추가 필요';
+        } else {
+            statusClass = 'status-error';
+            statusIcon = '❌';
+            statusText = '필수 정보 입력 필요';
+        }
+        
+        statusDetails.innerHTML = `
+            <div class="${statusClass}">
+                <span class="status-icon">${statusIcon}</span>
+                <span class="status-text">${statusText}</span>
+            </div>
+        `;
+    }
+    
+    setupActionButtons() {
+        const quickSaveButton = document.getElementById('quick-save');
+        if (quickSaveButton) {
+            quickSaveButton.addEventListener('click', () => {
+                this.performQuickSave();
+            });
+        }
+        
+        const previewButton = document.getElementById('preview-in-tour');
+        if (previewButton) {
+            previewButton.addEventListener('click', () => {
+                this.openTourPreview();
+            });
+        }
+        
+        const testButton = document.getElementById('test-in-tour-planner');
+        if (testButton) {
+            testButton.addEventListener('click', () => {
+                this.testInTourPlanner();
+            });
+        }
+    }
+    
+    performQuickSave() {
+        const formData = this.collectFormData();
+        console.log('💾 빠른 저장 실행', formData);
+        
+        this.showNotification('빠르게 저장되었습니다.', 'success');
+        
+        const lastSavedTime = document.getElementById('last-saved-time');
+        if (lastSavedTime) {
+            const now = new Date();
+            lastSavedTime.textContent = `마지막 저장: ${now.toLocaleTimeString()}`;
+        }
+    }
+    
+    openTourPreview() {
+        const testUrl = '/wp-content/themes/sungsuya-v2-theme/hybrid-tour-planner-test.html';
+        window.open(testUrl, '_blank');
+        
+        this.showNotification('투어 플래너를 새 창에서 열었습니다.', 'info');
+    }
+    
+    testInTourPlanner() {
+        const formData = this.collectFormData();
+        const score = this.calculateCompatibilityScore(formData);
+        
+        if (score < 60) {
+            this.showNotification('필수 정보를 먼저 입력해주세요.', 'error');
+            return;
+        }
+        
+        const testUrl = '/wp-content/themes/sungsuya-v2-theme/hybrid-tour-planner-test.html';
+        window.open(testUrl, '_blank');
+        
+        this.showNotification('투어 플래너 테스트 페이지를 열었습니다.', 'info');
+    }
+    
+    validateAllData() {
+        const tabs = ['basic', 'location'];
+        let allValid = true;
+        let validationResults = {};
+        
+        tabs.forEach(tabId => {
+            const isValid = this.validateTab(tabId);
+            validationResults[tabId] = isValid;
+            if (!isValid) {
+                allValid = false;
+            }
+        });
+        
+        const validationStatus = document.getElementById('validation-status');
+        if (validationStatus) {
+            const statusIcon = validationStatus.querySelector('.status-icon');
+            const statusText = validationStatus.querySelector('.status-text');
+            
+            if (allValid) {
+                statusIcon.textContent = '✅';
+                statusText.textContent = '모든 데이터 유효';
+                validationStatus.style.color = '#27ae60';
+            } else {
+                statusIcon.textContent = '⚠️';
+                statusText.textContent = '일부 수정 필요';
+                validationStatus.style.color = '#f39c12';
+            }
+        }
+        
+        if (allValid) {
+            this.showNotification('모든 데이터가 유효합니다!', 'success');
+        } else {
+            this.showNotification('일부 탭에서 수정이 필요합니다.', 'warning');
+        }
+        
+        console.log('📋 전체 데이터 검증 결과:', validationResults);
+        return allValid;
+    }
+    
+    showNotification(message, type = 'info') {
+        const existingNotification = document.querySelector('.sungsuya-notification');
+        if (existingNotification) {
+            existingNotification.remove();
+        }
+        
+        const notification = document.createElement('div');
+        notification.className = `sungsuya-notification notification-${type}`;
+        
+        const icons = {
+            'success': '✅',
+            'error': '❌',
+            'warning': '⚠️',
+            'info': 'ℹ️'
+        };
+        
+        notification.innerHTML = `
+            <div class="notification-content">
+                <span class="notification-icon">${icons[type] || icons.info}</span>
+                <span class="notification-message">${message}</span>
+                <button type="button" class="notification-close">&times;</button>
+            </div>
+        `;
+        
+        Object.assign(notification.style, {
+            position: 'fixed',
+            top: '20px',
+            right: '20px',
+            zIndex: '10000',
+            padding: '12px 16px',
+            borderRadius: '8px',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+            fontFamily: 'inherit',
+            fontSize: '14px',
+            fontWeight: '500',
+            maxWidth: '400px'
+        });
+        
+        const colors = {
+            'success': { bg: '#d5f4e6', text: '#1e7e34' },
+            'error': { bg: '#f8d7da', text: '#721c24' },
+            'warning': { bg: '#fff3cd', text: '#856404' },
+            'info': { bg: '#cce7ff', text: '#004085' }
+        };
+        
+        const color = colors[type] || colors.info;
+        notification.style.backgroundColor = color.bg;
+        notification.style.color = color.text;
+        
+        const closeButton = notification.querySelector('.notification-close');
+        closeButton.style.cssText = 'background: none; border: none; font-size: 16px; cursor: pointer; margin-left: 10px;';
+        closeButton.addEventListener('click', () => {
+            notification.remove();
+        });
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.remove();
+            }
+        }, 3000);
+    }
+    
+    searchAddressAjax(query) {
+        console.log('🔍 서버 사이드 주소 검색:', query);
+        console.log('🔍 AJAX URL:', sungsuyaEnhancedAdmin.ajaxUrl);
+        console.log('🔍 Nonce:', sungsuyaEnhancedAdmin.nonce);
+        
+        jQuery.ajax({
+            url: sungsuyaEnhancedAdmin.ajaxUrl,
+            type: 'POST',
+            data: {
+                action: 'sungsuya_search_address',
+                query: query,
+                nonce: sungsuyaEnhancedAdmin.nonce
+            },
+            success: (response) => {
+                console.log('🔍 서버 응답 전체:', response);
+                if (response.success && response.data) {
+                    console.log('✅ 서버 사이드 지오코딩 성공:', response.data);
+                    this.selectAddress(response.data);
+                } else {
+                    console.error('❌ 서버 사이드 지오코딩 실패:', response);
+                    console.error('❌ response.success:', response.success);
+                    console.error('❌ response.data:', response.data);
+                    this.showNotification(response.data || '주소를 찾을 수 없습니다.', 'error');
+                }
+            },
+            error: (xhr, status, error) => {
+                console.error('❌ AJAX 오류 상세:', {
+                    status: status,
+                    error: error,
+                    responseText: xhr.responseText,
+                    statusCode: xhr.status
+                });
+                this.showNotification('주소 검색 중 오류가 발생했습니다.', 'error');
+            }
+        });
+    }
+}
+
+// DOM 로드 완료 시 초기화
+document.addEventListener('DOMContentLoaded', function() {
+    window.sungsuyaEnhancedAdmin = new SungsuyaEnhancedAdmin();
+});
+
+// 네이버 지도 API 로드 완료 콜백 (팝업스토어용, geocoder 포함)
+window.naverMapPopupStoreReady = function() {
+    console.log('✅ 네이버 지도 + 지오코더 API 로드 완료 (팝업스토어)');
+    if (window.sungsuyaEnhancedAdmin) {
+        // 지도 초기화
+        setTimeout(() => {
+            window.sungsuyaEnhancedAdmin.setupNaverMap();
+        }, 500);
+        
+        // Service 객체 확인
+        setTimeout(() => {
+            if (window.naver && window.naver.maps && window.naver.maps.Service) {
+                console.log('✅ 네이버 지오코더 Service 객체 사용 가능');
+            } else {
+                console.error('❌ 네이버 지오코더 Service 객체 없음');
+            }
+        }, 1000);
+    }
+};
+
+// 혁신적 관리자 시스템 전용 콜백 함수 (새로운 API 로딩 방식)
+window.naverMapEnhancedAdminReady = function() {
+    console.log('✅ 네이버 지도 + 지오코더 API 로드 완료 (혁신적 관리자 시스템)');
+    if (window.sungsuyaEnhancedAdmin) {
+        // 지도 초기화
+        setTimeout(() => {
+            window.sungsuyaEnhancedAdmin.setupNaverMap();
+        }, 500);
+        
+        // Service 객체 및 지오코더 확인
+        setTimeout(() => {
+            if (window.naver && window.naver.maps && window.naver.maps.Service) {
+                console.log('✅ 네이버 지오코더 Service 객체 사용 가능 (혁신적 관리자)');
+                
+                // 지오코딩 테스트
+                const testAddress = '서울시 성동구 성수일로 13';
+                naver.maps.Service.geocode({
+                    query: testAddress
+                }, function(status, response) {
+                    if (status === naver.maps.Service.Status.OK) {
+                        console.log('✅ 지오코딩 테스트 성공 (혁신적 관리자):', response);
+                    } else {
+                        console.error('❌ 지오코딩 테스트 실패 (혁신적 관리자):', status);
+                    }
+                });
+            } else {
+                console.error('❌ 네이버 지오코더 Service 객체 없음 (혁신적 관리자)');
+            }
+        }, 1000);
+    }
+    
+    /**
+     * 🚇 지하철역 자동 검색 (개선된 출구 추천 시스템 활용)
+     */
+    findNearestSubwayEnhanced(latitude, longitude) {
+        console.log('🚇 지하철역 자동 검색 시작:', { latitude, longitude });
+        
+        // UI 상태 표시
+        const subwayDisplay = document.getElementById('nearest_subway_display');
+        const walkingTimeDisplay = document.getElementById('walking_time_display');
+        const statusIndicator = document.getElementById('subway_status_indicator');
+        
+        if (subwayDisplay) {
+            subwayDisplay.value = '🔍 지하철역 검색 중...';
+        }
+        if (walkingTimeDisplay) {
+            walkingTimeDisplay.value = '⏳ 계산 중...';
+        }
+        if (statusIndicator) {
+            statusIndicator.textContent = '🔍 검색 중...';
+            statusIndicator.className = 'status-indicator searching';
+        }
+        
+        // AJAX 요청
+        jQuery.post(this.config.ajaxUrl, {
+            action: 'sungsuya_find_nearest_subway_enhanced',
+            nonce: this.config.nonce,
+            latitude: latitude,
+            longitude: longitude
+        }, (response) => {
+            if (response.success) {
+                const subwayData = response.data;
+                console.log('🚇 지하철역 검색 성공:', subwayData);
+                
+                // 숨겨진 필드 업데이트
+                const subwayStationInput = document.getElementById('nearest_subway_station');
+                const walkingTimeInput = document.getElementById('walking_time_from_station');
+                const subwayExitInfoInput = document.getElementById('subway_exit_info');
+                
+                if (subwayStationInput) {
+                    subwayStationInput.value = subwayData.station_key;
+                }
+                if (walkingTimeInput) {
+                    walkingTimeInput.value = subwayData.walking_time_range;
+                }
+                if (subwayExitInfoInput) {
+                    subwayExitInfoInput.value = JSON.stringify({
+                        station_name: subwayData.station_name,
+                        recommended_exit: subwayData.recommended_exit,
+                        exit_description: subwayData.exit_description,
+                        walking_time: subwayData.walking_time,
+                        distance: subwayData.distance
+                    });
+                }
+                
+                // 표시 필드 업데이트
+                if (subwayDisplay) {
+                    subwayDisplay.value = subwayData.display_text;
+                }
+                if (walkingTimeDisplay) {
+                    const walkingTimeText = this.getWalkingTimeText(subwayData.walking_time_range, subwayData.walking_time);
+                    walkingTimeDisplay.value = walkingTimeText;
+                }
+                
+                // 상태 및 설명 업데이트
+                if (statusIndicator) {
+                    statusIndicator.textContent = '✅ 자동 설정 완료';
+                    statusIndicator.className = 'status-indicator success';
+                }
+                
+                const exitDescription = document.getElementById('subway_exit_description');
+                if (exitDescription && subwayData.exit_description) {
+                    exitDescription.textContent = `📍 ${subwayData.exit_description}`;
+                    exitDescription.className = 'exit-description show';
+                }
+                
+                // 진행률 업데이트
+                this.updateProgress();
+                
+                // 성공 알림
+                this.showNotification(`${subwayData.station_name} ${subwayData.recommended_exit || ''}이 자동으로 설정되었습니다.`, 'success');
+                
+            } else {
+                console.error('❌ 지하철역 검색 실패:', response.data);
+                
+                // 실패 시 UI 복원
+                if (subwayDisplay) {
+                    subwayDisplay.value = '❌ 지하철역을 찾을 수 없습니다';
+                }
+                if (walkingTimeDisplay) {
+                    walkingTimeDisplay.value = '❌ 계산할 수 없습니다';
+                }
+                if (statusIndicator) {
+                    statusIndicator.textContent = '❌ 검색 실패';
+                    statusIndicator.className = 'status-indicator error';
+                }
+                
+                this.showNotification('지하철역 정보를 가져올 수 없습니다.', 'warning');
+            }
+        }).fail((jqXHR, textStatus, errorThrown) => {
+            console.error('❌ AJAX 요청 실패:', textStatus, errorThrown);
+            
+            if (subwayDisplay) {
+                subwayDisplay.value = '❌ 네트워크 오류';
+            }
+            if (walkingTimeDisplay) {
+                walkingTimeDisplay.value = '❌ 네트워크 오류';
+            }
+            if (statusIndicator) {
+                statusIndicator.textContent = '❌ 네트워크 오류';
+                statusIndicator.className = 'status-indicator error';
+            }
+            
+            this.showNotification('네트워크 오류가 발생했습니다.', 'error');
+        });
+    }
+    
+    /**
+     * 도보시간 텍스트 변환
+     */
+    getWalkingTimeText(timeRange, exactTime) {
+        const rangeTexts = {
+            '1-3': '🚶‍♀️ 1-3분 (매우 가까움)',
+            '4-7': '🚶‍♀️ 4-7분 (가까움)', 
+            '8-12': '🚶‍♀️ 8-12분 (보통)',
+            '13-20': '🚶‍♀️ 13-20분 (조금 멀음)',
+            '20+': '🚶‍♀️ 20분 이상 (멀음)'
+        };
+        
+        const baseText = rangeTexts[timeRange] || '🚶‍♀️ 도보시간';
+        return exactTime ? `${baseText} - 정확히 ${exactTime}분` : baseText;
+    }
+};
+
+// 인증 실패 처리 함수 (공식 문서 권장)
+window.navermap_authFailure = function() {
+    console.error('❌ 네이버 지도 API 인증 실패');
+    if (window.sungsuyaEnhancedAdmin) {
+        window.sungsuyaEnhancedAdmin.showNotification('네이버 지도 API 인증에 실패했습니다. 설정을 확인해주세요.', 'error');
+    }
+};

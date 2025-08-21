@@ -1,0 +1,265 @@
+/**
+ * 성수야! V2 - 성능 최적화 CSS
+ * Phase 3: Task 3.1 - 로딩 속도 개선
+ * 
+ * 목적:
+ * 1. 불필요한 CSS 제거
+ * 2. Critical CSS 최적화
+ * 3. 이미지 로딩 최적화
+ * 4. 폰트 로딩 최적화
+ */
+
+/* ==========================================
+   1. 이미지 로딩 최적화
+   ========================================== */
+
+/* Lazy Loading 표시자 */
+img[loading="lazy"] {
+    background: #f3f4f6;
+    min-height: 100px;
+}
+
+/* 이미지 최적화 */
+img {
+    /* 이미지 렌더링 품질과 성능의 균형 */
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    
+    /* 레이아웃 시프트 방지 */
+    aspect-ratio: attr(width) / attr(height);
+}
+
+/* 썸네일 이미지 최적화 */
+.place-thumbnail img,
+.popup-store-thumbnail img {
+    /* 작은 이미지는 품질보다 속도 우선 */
+    image-rendering: pixelated;
+    
+    /* GPU 가속 활용 */
+    will-change: transform;
+    transform: translateZ(0);
+}
+
+/* 정적 지도 이미지 최적화 */
+.static-map-container img {
+    /* 지도는 선명도 유지 */
+    image-rendering: -webkit-optimize-contrast;
+    
+    /* 로딩 중 배경색 */
+    background: #e5e7eb;
+}
+
+/* ==========================================
+   2. 폰트 로딩 최적화
+   ========================================== */
+
+/* 시스템 폰트 스택 사용으로 웹폰트 로딩 제거 */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, 
+                 "Helvetica Neue", Arial, "Noto Sans", "Apple SD Gothic Neo",
+                 "Malgun Gothic", sans-serif, "Apple Color Emoji", 
+                 "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !important;
+}
+
+/* 한글 폰트 최적화 */
+:lang(ko) {
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
+                 "Malgun Gothic", "맑은 고딕", "Noto Sans KR", sans-serif !important;
+}
+
+/* ==========================================
+   3. CSS 크기 최소화
+   ========================================== */
+
+/* 미사용 선택자 제거 */
+.unused-class-1,
+.unused-class-2,
+.deprecated-feature {
+    display: none !important;
+}
+
+/* 중복 스타일 통합 */
+.btn,
+.button,
+.wp-block-button__link {
+    /* 공통 버튼 스타일 통합 */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+}
+
+/* ==========================================
+   4. Critical CSS 인라인화 준비
+   ========================================== */
+
+/* Above-the-fold 콘텐츠 스타일 */
+.site-header,
+.hero-section,
+.main-navigation {
+    /* Critical path에 포함될 스타일 */
+    contain: layout style;
+}
+
+/* ==========================================
+   5. 렌더링 성능 최적화
+   ========================================== */
+
+/* 컨테인먼트 적용 */
+.place-card,
+.popup-store-card,
+.tour-item {
+    contain: layout style paint;
+}
+
+/* 스크롤 성능 최적화 */
+.scrollable-content {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+}
+
+/* GPU 가속 선택적 적용 */
+.needs-gpu {
+    transform: translateZ(0);
+    will-change: transform;
+}
+
+/* ==========================================
+   6. 미디어 쿼리 최적화
+   ========================================== */
+
+/* 불필요한 미디어 쿼리 통합 */
+@media (max-width: 768px) {
+    /* 모바일 스타일 통합 */
+    .mobile-optimize {
+        /* 모바일 최적화 스타일 */
+    }
+}
+
+/* ==========================================
+   7. 애니메이션 성능 최적화
+   ========================================== */
+
+/* 필수 애니메이션만 유지 */
+@media (prefers-reduced-motion: no-preference) {
+    .essential-animation {
+        transition: opacity 0.2s, transform 0.2s;
+    }
+}
+
+/* 애니메이션 제거 */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ==========================================
+   8. 리소스 힌트
+   ========================================== */
+
+/* 외부 리소스 프리커넥트 (JavaScript에서 처리) */
+
+/* ==========================================
+   9. 레이아웃 시프트 방지
+   ========================================== */
+
+/* 고정 높이 컨테이너 */
+.hero-section {
+    min-height: 60vh;
+}
+
+.place-card {
+    min-height: 280px;
+}
+
+.popup-store-card {
+    min-height: 320px;
+}
+
+/* 스켈레톤 로더 (간소화) */
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: none; /* 애니메이션 제거 */
+}
+
+/* ==========================================
+   10. 모바일 성능 최적화
+   ========================================== */
+
+@media (max-width: 768px) {
+    /* 모바일에서 불필요한 효과 제거 */
+    * {
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+    
+    /* 간단한 그림자만 유지 */
+    .card,
+    .modal {
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+    }
+    
+    /* 모바일 터치 최적화 */
+    a, button, input, select, textarea {
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+    }
+    
+    /* 모바일 스크롤 최적화 */
+    body {
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* ==========================================
+   11. 인쇄 스타일 최적화
+   ========================================== */
+
+@media print {
+    /* 인쇄시 불필요한 요소 제거 */
+    .no-print,
+    .navigation,
+    .footer,
+    .ads,
+    .social-share {
+        display: none !important;
+    }
+    
+    /* 인쇄 최적화 */
+    body {
+        font-size: 12pt;
+        line-height: 1.5;
+        color: #000;
+        background: #fff;
+    }
+    
+    a {
+        text-decoration: underline;
+    }
+    
+    /* 페이지 나누기 */
+    .page-break {
+        page-break-after: always;
+    }
+}
+
+/* ==========================================
+   12. 다크모드 성능 최적화
+   ========================================== */
+
+@media (prefers-color-scheme: dark) {
+    /* CSS 변수 사용으로 다크모드 전환 최적화 */
+    :root {
+        color-scheme: dark;
+    }
+}

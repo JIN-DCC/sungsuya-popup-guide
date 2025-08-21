@@ -1,0 +1,136 @@
+/* 
+ * SUNGSUYA 커스텀 스타일 
+ * v2.1.0 - functions.php에서 분리됨
+ * Phase 1: CSS 분리 작업으로 성능 최적화
+ */
+
+:root {
+    /* Modern Color Palette */
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --neon-pink: #FF006E;
+    --neon-blue: #3A86FF;
+    --neon-purple: #8338EC;
+    --neon-yellow: #FFBE0B;
+    --dark-bg: #0A0A0A;
+    --dark-surface: #1A1A1A;
+    --dark-border: #2A2A2A;
+    --light-text: #FFFFFF;
+    --muted-text: #A0A0A0;
+    
+    /* Typography */
+    --font-display: "Bebas Neue", sans-serif;
+    --font-body: "Pretendard", -apple-system, BlinkMacSystemFont, sans-serif;
+    
+    /* Spacing */
+    --header-height: 80px;
+    --header-height-mobile: 60px;
+    
+    /* Override minimal design system */
+    --color-background: var(--dark-bg) !important;
+    --color-text: var(--light-text) !important;
+    --color-black: var(--light-text) !important;
+    --color-white: var(--dark-bg) !important;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    font-family: var(--font-body) !important;
+    background: #0A0A0A !important;
+    background-color: #0A0A0A !important;
+    color: #FFFFFF !important;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+/* Force all text to be white */
+body, body *, 
+p, span, div, a, h1, h2, h3, h4, h5, h6,
+.nav-link, .nav-link span,
+.btn, .btn span,
+.section-label,
+.section-title,
+.section-subtitle,
+.feature-title,
+.feature-description,
+.place-name,
+.place-info {
+    color: #FFFFFF !important;
+}
+
+a {
+    color: inherit !important;
+    text-decoration: none !important;
+}
+
+/* Hide ALL Skip Links and Screen Reader Text */
+.skip-link,
+.screen-reader-text,
+.skip-to-content,
+a[href="#content"],
+a[href="#main"],
+.skip-navigation,
+.assistive-text,
+.visuallyhidden,
+.sr-only,
+#skip-link,
+#skip-to-content,
+[class*="skip-"],
+[id*="skip-"] {
+    display: none !important;
+    visibility: hidden !important;
+    position: absolute !important;
+    left: -9999px !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0,0,0,0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+/* Remove first child links that might be skip links */
+body > a:first-child,
+body > :first-child:not(header):not(script):not(style) {
+    display: none !important;
+}
+
+/* Scrollbar Styles */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--dark-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--dark-border);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--muted-text);
+}
+
+/* Page Transitions */
+main {
+    animation: pageLoad 0.6s ease;
+}
+
+@keyframes pageLoad {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

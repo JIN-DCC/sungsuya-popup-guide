@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 NCP Maps API 진단</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        
+        .diagnostic-container {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .status {
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .warning { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        
+        #map {
+            width: 100%;
+            height: 400px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: #f9f9f9;
+            position: relative;
+        }
+        
+        .log {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        
+        .api-check {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .check-item {
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: #f8f9fa;
+        }
+        
+        .check-item h4 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+        
+        code {
+            background: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        
+        .network-info {
+            background: #e3f2fd;
+            border: 1px solid #bbdefb;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="diagnostic-container">
+        <h1>🔍 NCP Maps API 상세 진단</h1>
+        <p>지도가 나타났다가 사라지는 문제를 정밀 분석합니다.</p>
+    </div>
+    
+    <!-- API 상태 체크 -->
+    <div class="diagnostic-container">
+        <h3>📊 API 로드 상태 체크</h3>
+        <div class="api-check" id="apiChecks">
+            <!-- JavaScript로 동적 생성 -->
+        </div>
+    </div>
+    
+    <!-- 네트워크 정보 -->
+    <div class="network-info">
+        <h4>🌐 현재 네트워크 정보</h4>
+        <p><strong>현재 URL:</strong> <code id="currentUrl"></code></p>
+        <p><strong>도메인:</strong> <code id="currentDomain"></code></p>
+        <p><strong>프로토콜:</strong> <code id="currentProtocol"></code></p>
+        <p><strong>사용자 에이전트:</strong> <code id="userAgent"></code></p>
+    </div>
+    
+    <!-- 지도 상태 -->
+    <div class="diagnostic-container">
+        <h3>🗺️ 지도 상태 모니터링</h3>
+        <div id="mapStatus" class="status info">지도 초기화 대기 중...</div>
+        <div id="map">지도 로딩 중...</div>
+        
+        <!-- 지도 상태 체크 버튼들 -->
+        <div style="margin-top: 15px;">
+            <button onclick="checkMapStatus()" style="padding: 8px 15px; margin-right: 10px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">지도 상태 체크</button>
+            <button onclick="recreateMap()" style="padding: 8px 15px; margin-right: 10px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer;">지도 재생성</button>
+            <button onclick="checkDOMChanges()" style="padding: 8px 15px; background: #ffc107; color: black; border: none; border-radius: 4px; cursor: pointer;">DOM 변화 감지</button>
+        </div>
+    </div>
+    
+    <!-- 실시간 로그 -->
+    <div class="diagnostic-container">
+        <h3>📝 실시간 진단 로그</h3>
+        <div id="diagnosticLog" class="log">=== NCP Maps API 진단 시작 ===</div>
+    </div>
+
+    <script>
+        // 진단 시스템
+        window.MapDiagnostic = {
+            map: null,
+            mapContainer: null,
+            observer: null,
+            checkInterval: null,
+            
+            log: function(message, type = 'info') {
+                const logElement = document.getElementById('diagnosticLog');
+                const timestamp = new Date().toLocaleTimeString();
+                const icons = { info: 'ℹ️', success: '✅', error: '❌', warning: '⚠️' };
+                
+                logElement.textContent += `\n[${timestamp}] ${icons[type]} ${message}`;
+                logElement.scrollTop = logElement.scrollHeight;
+                console.log(`[진단] ${message}`);
+            },
+            
+            updateStatus: function(message, type) {
+                const statusElement = document.getElementById('mapStatus');
+                statusElement.textContent = message;
+                statusElement.className = `status ${type}`;
+            },
+            
+            checkAPI: function() {
+                const checks = [
+                    {
+                        name: 'naver 객체',
+                        test: () => typeof naver !== 'undefined',
+                        value: () => typeof naver !== 'undefined' ? '✅ 로드됨' : '❌ 없음'
+                    },
+                    {
+                        name: 'naver.maps 객체',
+                        test: () => typeof naver !== 'undefined' && typeof naver.maps !== 'undefined',
+                        value: () => typeof naver !== 'undefined' && typeof naver.maps !== 'undefined' ? '✅ 로드됨' : '❌ 없음'
+                    },
+                    {
+                        name: 'naver.maps.Map',
+                        test: () => typeof naver !== 'undefined' && typeof naver.maps !== 'undefined' && typeof naver.maps.Map !== 'undefined',
+                        value: () => typeof naver !== 'undefined' && typeof naver.maps !== 'undefined' && typeof naver.maps.Map !== 'undefined' ? '✅ 사용 가능' : '❌ 없음'
+                    },
+                    {
+                        name: 'naver.maps.LatLng',
+                        test: () => typeof naver !== 'undefined' && typeof naver.maps !== 'undefined' && typeof naver.maps.LatLng !== 'undefined',
+                        value: () => typeof naver !== 'undefined' && typeof naver.maps !== 'undefined' && typeof naver.maps.LatLng !== 'undefined' ? '✅ 사용 가능' : '❌ 없음'
+                    },
+                    {
+                        name: 'naver.maps.Marker',
+                        test: () => typeof naver !== 'undefined' && typeof naver.maps !== 'undefined' && typeof naver.maps.Marker !== 'undefined',
+                        value: () => typeof naver !== 'undefined' && typeof naver.maps !== 'undefined' && typeof naver.maps.Marker !== 'undefined' ? '✅ 사용 가능' : '❌ 없음'
+                    },
+                    {
+                        name: '지도 컨테이너',
+                        test: () => document.getElementById('map') !== null,
+                        value: () => {
+                            const container = document.getElementById('map');
+                            return container ? `✅ 존재 (${container.offsetWidth}x${container.offsetHeight})` : '❌ 없음';
+                        }
+                    }
+                ];
+                
+                const checksContainer = document.getElementById('apiChecks');
+                checksContainer.innerHTML = '';
+                
+                checks.forEach(check => {
+                    const div = document.createElement('div');
+                    div.className = 'check-item';
+                    div.innerHTML = `
+                        <h4>${check.name}</h4>
+                        <p>${check.value()}</p>
+                    `;
+                    checksContainer.appendChild(div);
+                    
+                    this.log(`${check.name}: ${check.test() ? '✅' : '❌'}`, check.test() ? 'success' : 'error');
+                });
+            },
+            
+            initMap: function() {
+                this.log('지도 초기화 시작...', 'info');
+                this.mapContainer = document.getElementById('map');
+                
+                try {
+                    if (typeof naver === 'undefined' || typeof naver.maps === 'undefined') {
+                        throw new Error('네이버 지도 API가 로드되지 않음');
+                    }
+                    
+                    this.log('네이버 지도 API 확인됨', 'success');
+                    
+                    const center = new naver.maps.LatLng(37.5447, 127.0557);
+                    
+                    const mapOptions = {
+                        center: center,
+                        zoom: 15,
+                        mapTypeControl: true,
+                        zoomControl: true
+                    };
+                    
+                    this.map = new naver.maps.Map('map', mapOptions);
+                    this.log('지도 객체 생성 완료', 'success');
+                    this.updateStatus('✅ 지도 생성 완료', 'success');
+                    
+                    // 지도 이벤트 리스너
+                    naver.maps.Event.addListener(this.map, 'idle', () => {
+                        this.log('지도 idle 이벤트 발생 (렌더링 완료)', 'success');
+                    });
+                    
+                    naver.maps.Event.addListener(this.map, 'tilesloaded', () => {
+                        this.log('지도 타일 로드 완료', 'success');
+                    });
+                    
+                    // 마커 추가
+                    const marker = new naver.maps.Marker({
+                        position: center,
+                        map: this.map,
+                        title: '성수동'
+                    });
+                    
+                    this.log('마커 추가 완료', 'success');
+                    
+                    // DOM 변화 감지 시작
+                    this.startDOMObserver();
+                    
+                    // 주기적 상태 체크 시작
+                    this.startPeriodicCheck();
+                    
+                } catch (error) {
+                    this.log(`지도 초기화 실패: ${error.message}`, 'error');
+                    this.updateStatus(`❌ 지도 초기화 실패: ${error.message}`, 'error');
+                }
+            },
+            
+            startDOMObserver: function() {
+                if (!this.mapContainer) return;
+                
+                this.observer = new MutationObserver((mutations) => {
+                    mutations.forEach((mutation) => {
+                        if (mutation.type === 'childList') {
+                            this.log(`DOM 변화 감지: ${mutation.addedNodes.length}개 노드 추가, ${mutation.removedNodes.length}개 노드 제거`, 'warning');
+                        }
+                        if (mutation.type === 'attributes') {
+                            this.log(`DOM 속성 변화: ${mutation.attributeName}`, 'warning');
+                        }
+                    });
+                });
+                
+                this.observer.observe(this.mapContainer, {
+                    childList: true,
+                    subtree: true,
+                    attributes: true
+                });
+                
+                this.log('DOM 변화 감지 시작', 'info');
+            },
+            
+            startPeriodicCheck: function() {
+                this.checkInterval = setInterval(() => {
+                    if (this.map && this.mapContainer) {
+                        const mapDiv = this.mapContainer.querySelector('.map_canvas');
+                        if (mapDiv) {
+                            this.log(`지도 상태 체크: 지도 캔버스 존재 (${mapDiv.children.length}개 자식 요소)`, 'info');
+                        } else {
+                            this.log('⚠️ 지도 캔버스가 사라짐!', 'warning');
+                        }
+                    }
+                }, 3000);
+            },
+            
+            fillNetworkInfo: function() {
+                document.getElementById('currentUrl').textContent = window.location.href;
+                document.getElementById('currentDomain').textContent = window.location.hostname;
+                document.getElementById('currentProtocol').textContent = window.location.protocol;
+                document.getElementById('userAgent').textContent = navigator.userAgent.substring(0, 100) + '...';
+            }
+        };
+        
+        // 외부에서 호출 가능한 함수들
+        function checkMapStatus() {
+            MapDiagnostic.log('=== 수동 지도 상태 체크 ===', 'info');
+            MapDiagnostic.checkAPI();
+            
+            if (MapDiagnostic.map) {
+                try {
+                    const center = MapDiagnostic.map.getCenter();
+                    const zoom = MapDiagnostic.map.getZoom();
+                    MapDiagnostic.log(`지도 중심: ${center.lat()}, ${center.lng()}, 줌: ${zoom}`, 'success');
+                } catch (error) {
+                    MapDiagnostic.log(`지도 상태 조회 실패: ${error.message}`, 'error');
+                }
+            } else {
+                MapDiagnostic.log('지도 객체가 null입니다', 'error');
+            }
+        }
+        
+        function recreateMap() {
+            MapDiagnostic.log('=== 지도 재생성 시도 ===', 'info');
+            
+            if (MapDiagnostic.observer) {
+                MapDiagnostic.observer.disconnect();
+            }
+            
+            if (MapDiagnostic.checkInterval) {
+                clearInterval(MapDiagnostic.checkInterval);
+            }
+            
+            document.getElementById('map').innerHTML = '지도 재생성 중...';
+            
+            setTimeout(() => {
+                MapDiagnostic.initMap();
+            }, 1000);
+        }
+        
+        function checkDOMChanges() {
+            MapDiagnostic.log('=== DOM 구조 분석 ===', 'info');
+            
+            const mapContainer = document.getElementById('map');
+            MapDiagnostic.log(`지도 컨테이너 자식 수: ${mapContainer.children.length}`, 'info');
+            
+            Array.from(mapContainer.children).forEach((child, index) => {
+                MapDiagnostic.log(`자식 ${index}: ${child.tagName} (클래스: ${child.className})`, 'info');
+            });
+        }
+        
+        // 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            MapDiagnostic.log('페이지 로드 완료', 'info');
+            MapDiagnostic.fillNetworkInfo();
+            
+            function waitForAPI() {
+                if (typeof naver !== 'undefined' && typeof naver.maps !== 'undefined') {
+                    MapDiagnostic.log('네이버 지도 API 로드 완료', 'success');
+                    MapDiagnostic.checkAPI();
+                    MapDiagnostic.initMap();
+                } else {
+                    MapDiagnostic.log('API 로드 대기 중...', 'info');
+                    setTimeout(waitForAPI, 100);
+                }
+            }
+            
+            waitForAPI();
+        });
+    </script>
+    
+    <!-- 네이버 지도 API -->
+    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=qosb7em5i9"></script>
+</body>
+</html>

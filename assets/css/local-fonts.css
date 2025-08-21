@@ -1,0 +1,38 @@
+/**
+ * Pretendard 로컬 폰트 설정
+ * Google Fonts 대신 로컬 폰트 파일 사용
+ */
+
+/* Regular (400) */
+@font-face {
+    font-family: 'Pretendard';
+    font-weight: 400;
+    font-style: normal;
+    src: url('../fonts/pretendard-regular.woff2') format('woff2');
+    font-display: swap; /* 폰트 로딩 중에도 텍스트 표시 */
+}
+
+/* Bold (700) */
+@font-face {
+    font-family: 'Pretendard';
+    font-weight: 700;
+    font-style: normal;
+    src: url('../fonts/pretendard-bold.woff2') format('woff2');
+    font-display: swap;
+}
+
+/* 폰트 적용 - 이미 있는 CSS 규칙 덮어쓰기 */
+body,
+.site-header,
+.nav-link,
+.btn,
+.section-title,
+.feature-title,
+.place-name,
+input,
+textarea,
+select {
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+}
+
+/* Bebas Neue는 그대로 Google Fonts 사용 (디스플레이 폰트) */

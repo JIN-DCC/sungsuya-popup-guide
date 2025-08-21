@@ -1,0 +1,434 @@
+/**
+ * 팝업스토어 탭 UI 스타일
+ */
+
+/* 탭 컨테이너 */
+.popup-store-tabs-container {
+    margin: 20px 0;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* 탭 헤더 */
+.tabs-header {
+    background: #f8f9fa;
+    border-bottom: 1px solid #e1e1e1;
+}
+
+/* 탭 네비게이션 */
+.tab-nav {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.tab-nav-item {
+    flex: 1;
+    text-align: center;
+    padding: 15px 10px;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.tab-nav-item:hover {
+    background: #f1f1f1;
+}
+
+.tab-nav-item.active {
+    background: #fff;
+    border-bottom-color: #0073aa;
+}
+
+.tab-nav-item.error {
+    border-bottom-color: #dc3545;
+}
+
+.tab-nav-item.complete {
+    border-bottom-color: #28a745;
+}
+
+/* 탭 아이콘 및 라벨 */
+.tab-icon {
+    display: block;
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+.tab-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: #333;
+}
+
+/* 탭 상태 표시 */
+.tab-status {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: none;
+}
+
+.tab-nav-item.error .tab-status {
+    display: block;
+    background: #dc3545;
+}
+
+.tab-nav-item.complete .tab-status {
+    display: block;
+    background: #28a745;
+}
+
+/* 진행률 표시 */
+.tabs-progress {
+    padding: 10px 20px;
+    background: #f8f9fa;
+    position: relative;
+}
+
+.progress-bar {
+    height: 4px;
+    background: #e1e1e1;
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-bar::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background: #0073aa;
+    transition: width 0.5s ease;
+    width: var(--progress, 0%);
+}
+
+.progress-text {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    color: #666;
+}
+
+/* 탭 콘텐츠 */
+.tabs-content {
+    padding: 20px;
+    min-height: 400px;
+}
+
+.tab-pane {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* 탭 내 필드 그룹 */
+.tab-field-group {
+    margin-bottom: 30px;
+}
+
+.tab-field-group h4 {
+    margin: 0 0 15px 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e1e1e1;
+    font-size: 16px;
+    font-weight: 600;
+    color: #23282d;
+}
+
+/* 필드 스타일 개선 */
+.tab-field {
+    margin-bottom: 20px;
+}
+
+.tab-field label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #23282d;
+}
+
+.tab-field .required {
+    color: #dc3545;
+    margin-left: 3px;
+}
+
+.tab-field input[type="text"],
+.tab-field input[type="email"],
+.tab-field input[type="url"],
+.tab-field input[type="date"],
+.tab-field textarea,
+.tab-field select {
+    width: 100%;
+    max-width: 500px;
+}
+
+.tab-field .description {
+    margin-top: 5px;
+    color: #666;
+    font-size: 13px;
+    font-style: italic;
+}
+
+/* 체크박스 그룹 */
+.checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    font-weight: normal;
+    cursor: pointer;
+}
+
+.checkbox-group input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+/* 탭 푸터 */
+.tabs-footer {
+    padding: 20px;
+    background: #f8f9fa;
+    border-top: 1px solid #e1e1e1;
+}
+
+/* 검증 요약 */
+.validation-summary {
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.validation-summary h4 {
+    margin: 0 0 10px 0;
+    color: #721c24;
+    font-size: 16px;
+}
+
+.validation-errors {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.validation-errors li {
+    color: #721c24;
+    padding: 5px 0;
+    padding-left: 20px;
+    position: relative;
+}
+
+.validation-errors li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+}
+
+/* 탭 네비게이션 버튼 */
+.tab-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tab-navigation button {
+    min-width: 100px;
+}
+
+/* 필드 오류 상태 */
+.field-error input,
+.field-error textarea,
+.field-error select {
+    border-color: #dc3545 !important;
+    background-color: #fff5f5;
+}
+
+.field-error-message {
+    color: #dc3545;
+    font-size: 12px;
+    margin-top: 5px;
+    display: block;
+}
+
+/* 완료된 필드 */
+.field-complete input,
+.field-complete textarea,
+.field-complete select {
+    border-color: #28a745 !important;
+    background-color: #f5fff5;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+    .tab-nav {
+        flex-wrap: wrap;
+    }
+    
+    .tab-nav-item {
+        flex: 0 0 50%;
+    }
+    
+    .checkbox-group {
+        grid-template-columns: 1fr;
+    }
+    
+    .tab-navigation {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .tab-navigation button {
+        width: 100%;
+    }
+}
+
+/* 로딩 상태 */
+.tabs-content.loading {
+    position: relative;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.tabs-content.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 30px;
+    height: 30px;
+    margin: -15px 0 0 -15px;
+    border: 3px solid #0073aa;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* 툴팁 */
+.field-tooltip {
+    display: inline-block;
+    margin-left: 5px;
+    width: 16px;
+    height: 16px;
+    background: #666;
+    color: #fff;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 16px;
+    font-size: 12px;
+    cursor: help;
+    position: relative;
+}
+
+.field-tooltip:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 4px;
+    white-space: nowrap;
+    font-size: 12px;
+    margin-bottom: 5px;
+    z-index: 1000;
+}
+
+.field-tooltip:hover::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: #333;
+    margin-bottom: -5px;
+}
+
+/* 탭 전환 애니메이션 */
+.tab-pane {
+    transform-origin: center top;
+}
+
+.tab-pane.slide-out-left {
+    animation: slideOutLeft 0.3s ease forwards;
+}
+
+.tab-pane.slide-in-right {
+    animation: slideInRight 0.3s ease forwards;
+}
+
+.tab-pane.slide-out-right {
+    animation: slideOutRight 0.3s ease forwards;
+}
+
+.tab-pane.slide-in-left {
+    animation: slideInLeft 0.3s ease forwards;
+}
+
+@keyframes slideOutLeft {
+    to {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}

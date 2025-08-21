@@ -1,0 +1,317 @@
+/* 🗺️ 통합 지도생성 시스템 - 간소화된 관리자 스타일 */
+
+.integrated-map-system {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.integrated-map-system h1 {
+    color: #23282d;
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+.system-description {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 25px;
+    background: #f9f9f9;
+    padding: 15px;
+    border-left: 4px solid #0073aa;
+}
+
+/* 상태 요약 */
+.status-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.status-card {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 15px;
+    text-align: center;
+}
+
+.status-card h3 {
+    font-size: 14px;
+    color: #666;
+    margin: 0 0 8px 0;
+}
+
+.status-number {
+    font-size: 24px;
+    font-weight: bold;
+    color: #23282d;
+    margin-bottom: 5px;
+}
+
+.status-label {
+    font-size: 12px;
+    color: #666;
+}
+
+/* 액션 버튼 */
+.action-buttons {
+    margin-bottom: 25px;
+}
+
+.btn-primary {
+    background: #0073aa;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.btn-primary:hover {
+    background: #005a87;
+}
+
+.btn-primary:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.btn-secondary {
+    background: #fff;
+    color: #0073aa;
+    border: 1px solid #0073aa;
+    padding: 9px 19px;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.btn-secondary:hover {
+    background: #f0f8ff;
+}
+
+/* 진행상황 */
+.progress-section {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 20px;
+    margin-bottom: 25px;
+    display: none;
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.progress-title {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.progress-percentage {
+    font-size: 14px;
+    color: #0073aa;
+}
+
+.progress-bar-container {
+    background: #e0e0e0;
+    height: 8px;
+    margin-bottom: 15px;
+}
+
+.progress-bar {
+    background: #0073aa;
+    height: 100%;
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+.progress-log {
+    background: #23282d;
+    color: #fff;
+    padding: 12px;
+    font-family: monospace;
+    font-size: 12px;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+/* 테이블 */
+.places-table-container {
+    background: #fff;
+    border: 1px solid #ddd;
+    margin-bottom: 25px;
+}
+
+.places-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.places-table th {
+    background: #f9f9f9;
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 1px solid #ddd;
+}
+
+.places-table td {
+    padding: 12px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.places-table tr:hover {
+    background: #f9f9f9;
+}
+
+.place-name {
+    font-weight: 600;
+}
+
+.place-address {
+    color: #666;
+    max-width: 250px;
+}
+
+.place-category {
+    background: #e1f5fe;
+    color: #0277bd;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+}
+
+.status-badge {
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+}
+
+.status-badge.pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-badge.completed {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-badge.error {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* 테이블 액션 버튼 */
+.table-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.btn-small {
+    padding: 4px 8px;
+    font-size: 11px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.btn-fix {
+    background: #ffc107;
+    color: #212529;
+}
+
+.btn-regen {
+    background: #6f42c1;
+    color: white;
+}
+
+.btn-view {
+    background: #28a745;
+    color: white;
+}
+
+/* API 상태 */
+.api-status-section {
+    background: #fff;
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-top: 25px;
+}
+
+.api-status-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+}
+
+.api-status-label {
+    font-weight: 500;
+}
+
+.api-status-value {
+    color: #666;
+}
+
+/* 알림 */
+.notice {
+    padding: 12px 15px;
+    margin-bottom: 15px;
+    border-left: 4px solid;
+}
+
+.notice-success {
+    background: #dff0d8;
+    border-color: #d6e9c6;
+    color: #3c763d;
+}
+
+.notice-warning {
+    background: #fcf8e3;
+    border-color: #faebcc;
+    color: #8a6d3b;
+}
+
+.notice-error {
+    background: #f2dede;
+    border-color: #ebccd1;
+    color: #a94442;
+}
+
+.notice-info {
+    background: #d9edf7;
+    border-color: #bce8f1;
+    color: #31708f;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+    .status-summary {
+        grid-template-columns: 1fr;
+    }
+    
+    .action-buttons {
+        text-align: left;
+    }
+    
+    .btn-primary,
+    .btn-secondary {
+        display: block;
+        margin: 5px 0;
+    }
+    
+    .places-table-container {
+        overflow-x: auto;
+    }
+    
+    .places-table {
+        min-width: 600px;
+    }
+}

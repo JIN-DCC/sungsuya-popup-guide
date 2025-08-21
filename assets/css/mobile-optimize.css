@@ -1,0 +1,363 @@
+/**
+ * 모바일 최적화 CSS
+ * 모바일 디바이스에서의 성능과 UX 개선
+ * 
+ * @since 2025-07-02
+ */
+
+/* ===================================
+   모바일 전용 리셋 
+   =================================== */
+   
+@media (max-width: 768px) {
+    /* 터치 최적화 */
+    * {
+        -webkit-tap-highlight-color: transparent;
+        -webkit-touch-callout: none;
+    }
+    
+    /* 스크롤 성능 개선 */
+    body {
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-y: contain;
+    }
+    
+    /* 터치 타겟 크기 확보 */
+    button,
+    a,
+    input,
+    select,
+    textarea,
+    .clickable {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    /* 텍스트 가독성 개선 */
+    body {
+        font-size: 16px;
+        line-height: 1.6;
+    }
+    
+    /* 폼 입력 최적화 */
+    input,
+    select,
+    textarea {
+        font-size: 16px; /* iOS 자동 줌 방지 */
+    }
+}
+
+/* ===================================
+   모바일 성능 최적화
+   =================================== */
+   
+/* GPU 가속 활용 */
+.mobile-accelerated {
+    transform: translateZ(0);
+    will-change: transform;
+}
+
+/* 애니메이션 최적화 */
+@media (max-width: 768px) {
+    /* 복잡한 애니메이션 간소화 */
+    .animated {
+        animation-duration: 0.3s !important;
+    }
+    
+    /* 호버 효과 제거 */
+    *:hover {
+        transition: none !important;
+    }
+    
+    /* 그림자 효과 간소화 */
+    .shadow,
+    .shadow-sm,
+    .shadow-md,
+    .shadow-lg {
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
+    }
+}
+
+/* ===================================
+   모바일 레이아웃 최적화
+   =================================== */
+   
+@media (max-width: 768px) {
+    /* 패딩/마진 조정 */
+    .container {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+    
+    /* 그리드 단순화 */
+    .grid {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+    }
+    
+    /* 플렉스박스 방향 변경 */
+    .flex-responsive {
+        flex-direction: column;
+    }
+    
+    /* 테이블 반응형 처리 */
+    table {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* ===================================
+   모바일 이미지 최적화
+   =================================== */
+   
+@media (max-width: 768px) {
+    /* 이미지 크기 제한 */
+    img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+    }
+    
+    /* 백그라운드 이미지 비활성화 */
+    .bg-image-mobile-hide {
+        background-image: none !important;
+    }
+    
+    /* 지연 로딩 표시 */
+    img[loading="lazy"] {
+        background: #f0f0f0;
+        min-height: 200px;
+    }
+}
+
+/* ===================================
+   모바일 네비게이션
+   =================================== */
+   
+@media (max-width: 768px) {
+    /* 하단 고정 네비게이션 */
+    .mobile-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        border-top: 1px solid #e5e7eb;
+        z-index: 50;
+        display: flex;
+        justify-content: space-around;
+        padding: 8px 0;
+        padding-bottom: env(safe-area-inset-bottom, 8px);
+    }
+    
+    /* 네비게이션 아이템 */
+    .mobile-nav-item {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 8px;
+        color: #6b7280;
+        text-decoration: none;
+    }
+    
+    .mobile-nav-item.active {
+        color: #3b82f6;
+    }
+    
+    /* 아이콘 크기 */
+    .mobile-nav-icon {
+        width: 24px;
+        height: 24px;
+        margin-bottom: 4px;
+    }
+}
+
+/* ===================================
+   모바일 모달/팝업
+   =================================== */
+   
+@media (max-width: 768px) {
+    /* 전체화면 모달 */
+    .modal-mobile {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        max-width: none !important;
+        max-height: none !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+    }
+    
+    /* 바텀시트 스타일 */
+    .bottom-sheet {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        border-radius: 16px 16px 0 0;
+        padding: 20px;
+        padding-bottom: env(safe-area-inset-bottom, 20px);
+        transform: translateY(100%);
+        transition: transform 0.3s ease;
+    }
+    
+    .bottom-sheet.active {
+        transform: translateY(0);
+    }
+}
+
+/* ===================================
+   모바일 폼 최적화
+   =================================== */
+   
+@media (max-width: 768px) {
+    /* 폼 레이아웃 */
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    /* 입력 필드 스타일 */
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="password"],
+    input[type="number"],
+    input[type="date"],
+    select,
+    textarea {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 16px;
+        -webkit-appearance: none;
+    }
+    
+    /* 버튼 스타일 */
+    button,
+    input[type="submit"] {
+        width: 100%;
+        padding: 16px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 8px;
+    }
+}
+
+/* ===================================
+   투어플래너 모바일 최적화
+   =================================== */
+   
+@media (max-width: 768px) {
+    /* 투어플래너 레이아웃 */
+    .tour-planner-mobile {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+    }
+    
+    /* 지도 영역 */
+    .tour-map-mobile {
+        flex: 1;
+        position: relative;
+    }
+    
+    /* 장소 목록 */
+    .tour-places-mobile {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        border-radius: 16px 16px 0 0;
+        padding: 16px;
+        max-height: 50vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    /* 장소 카드 */
+    .place-card-mobile {
+        display: flex;
+        align-items: center;
+        padding: 12px;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        margin-bottom: 8px;
+    }
+}
+
+/* ===================================
+   Safe Area 대응
+   =================================== */
+   
+@supports (padding: env(safe-area-inset-bottom)) {
+    .safe-area-bottom {
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+    
+    .safe-area-top {
+        padding-top: env(safe-area-inset-top);
+    }
+}
+
+/* ===================================
+   다크모드 대응
+   =================================== */
+   
+@media (prefers-color-scheme: dark) and (max-width: 768px) {
+    body {
+        background-color: #111827;
+        color: #f9fafb;
+    }
+    
+    .mobile-nav {
+        background: #1f2937;
+        border-top-color: #374151;
+    }
+    
+    .bottom-sheet {
+        background: #1f2937;
+    }
+    
+    input,
+    select,
+    textarea {
+        background: #374151;
+        border-color: #4b5563;
+        color: #f9fafb;
+    }
+}
+
+/* ===================================
+   성능 힌트
+   =================================== */
+   
+/* contain 속성으로 레이아웃 격리 */
+.performance-contain {
+    contain: layout style paint;
+}
+
+/* 스크롤 컨테이너 최적화 */
+.scroll-container {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+}
+
+/* 하드웨어 가속 */
+.hardware-accelerated {
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
