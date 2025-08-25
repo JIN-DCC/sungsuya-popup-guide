@@ -1,0 +1,156 @@
+/**
+ * SUNGSUYA - Pages CSS v3.0
+ * 페이지별 현대적 레이아웃 시스템
+ * 
+ * @package SungsuyaV2
+ * @version 3.0.0
+ * @author 3-AI Collaboration Team
+ * @date 2025-08-21
+ */
+
+/* ==========================================
+   🏠 HOMEPAGE - 메인페이지 레이아웃
+   ========================================== */
+
+.homepage-hero {
+  position: relative;
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--brand-hero);
+  overflow: hidden;
+}
+
+.homepage-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(26, 26, 46, 0.3);
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: var(--text-inverse);
+  max-width: 800px;
+  padding: var(--space-8);
+}
+
+.hero-title {
+  font-size: var(--text-6xl);
+  font-weight: var(--font-black);
+  margin-bottom: var(--space-6);
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  line-height: 1.1;
+}
+
+.hero-subtitle {
+  font-size: var(--text-xl);
+  font-weight: var(--font-medium);
+  margin-bottom: var(--space-8);
+  opacity: 0.9;
+  line-height: 1.5;
+}
+
+/* === 팝업스토어 그리드 === */
+.popup-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--space-6);
+  padding: var(--space-8) var(--space-4);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* ==========================================
+   🏪 POPUP STORE DETAIL - 팝업스토어 상세페이지
+   ========================================== */
+
+.store-detail-hero {
+  position: relative;
+  height: 50vh;
+  background: var(--brand-primary);
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+
+.store-title {
+  font-size: var(--text-5xl);
+  font-weight: var(--font-black);
+  margin-bottom: var(--space-4);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* ==========================================
+   🗺️ TOUR PLANNER PWA - 투어플래너 페이지
+   ========================================== */
+
+.tour-planner-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-primary);
+}
+
+.planner-header {
+  background: var(--glass-card);
+  backdrop-filter: var(--glass-backdrop);
+  border-bottom: 1px solid var(--glass-border);
+  padding: var(--space-4);
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+}
+
+/* ==========================================
+   👤 AUTH PAGES - 인증 시스템 페이지
+   ========================================== */
+
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--brand-hero);
+  padding: var(--space-4);
+}
+
+.auth-card {
+  background: var(--glass-card);
+  backdrop-filter: var(--glass-backdrop);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-8);
+  width: 100%;
+  max-width: 400px;
+  box-shadow: var(--glass-shadow);
+}
+
+/* ==========================================
+   📱 MOBILE RESPONSIVE - 모바일 최적화
+   ========================================== */
+
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: var(--text-4xl);
+  }
+  
+  .popup-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+    padding: var(--space-4);
+  }
+  
+  .store-title {
+    font-size: var(--text-3xl);
+  }
+}
+
+/* 🎊 SUNGSUYA PAGES v3.0 완성! */

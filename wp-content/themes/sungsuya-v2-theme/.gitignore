@@ -1,0 +1,68 @@
+# SUNGSUYA WordPress 프로젝트 .gitignore
+# 67% 성능 최적화 완료된 안정적 기반 보호
+
+# WordPress Core Files
+wp-config.php
+wp-config-local.php
+wp-config-production.php
+wp-config-sample.php
+
+# 환경별 설정 파일
+.env
+.env.local
+.env.production
+.env.staging
+
+# 로그 파일
+*.log
+error_log
+debug.log
+wp-content/debug.log
+
+# WordPress 캐시 및 임시 파일
+wp-content/cache/
+wp-content/upgrade/
+wp-content/upgrade-temp-backup/
+wp-content/backup-*/
+wp-content/updraft/
+wp-content/ai1wm-backups/
+
+# 업로드 파일 (용량 관리)
+wp-content/uploads/
+
+# 백업 파일들
+*-backup-*.php
+*-backup-*.css
+*-backup-*.js
+functions-backup-*.php
+front-page-backup-*.php
+
+# 테스트 파일들
+test-*.php
+*-test.php
+temp-*.php
+debug-*.php
+
+# 임시 파일
+*.tmp
+*.swp
+*.swo
+*~
+
+# 시스템 파일
+.DS_Store
+Thumbs.db
+
+# IDE 설정
+.vscode/
+.idea/
+*.sublime-*
+
+# Node.js (PWA 빌드용)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+
+# 컴파일된 파일
+*.min.css.map
+*.min.js.map
