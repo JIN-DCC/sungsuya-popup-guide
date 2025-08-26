@@ -1,0 +1,580 @@
+/**
+ * SUNGSUYA - Mobile CSS v3.0
+ * 모바일 최적화 및 터치 인터페이스
+ * 
+ * @package SungsuyaV2
+ * @version 3.0.0
+ * @author 3-AI Collaboration Team
+ * @date 2025-08-21
+ */
+
+/* ==========================================
+   📱 MOBILE SCROLL FIX - 모바일 스크롤 긴급 수정
+   ========================================== */
+
+@media (max-width: 1024px) {
+    html {
+        overflow-y: scroll !important;
+        overflow-x: hidden !important;
+        height: 100% !important;
+        position: static !important;
+    }
+    
+    body {
+        overflow: visible !important;
+        height: auto !important;
+        min-height: 100% !important;
+        position: relative !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+    
+    #page, .site, main, .site-main, .content-area {
+        overflow: visible !important;
+        height: auto !important;
+        position: relative !important;
+    }
+    
+    * {
+        transform: none !important;
+    }
+}
+
+/* ==========================================
+   📱 MOBILE OPTIMIZATION - 모바일 기본 최적화
+   ========================================== */
+
+/* 터치 디바이스 기본 설정 */
+@media (max-width: 768px) {
+  body {
+    font-size: var(--text-sm);
+    line-height: 1.6;
+    -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+  }
+  
+  /* 터치 타겟 최소 크기 보장 */
+  .btn,
+  .filter-tab,
+  .nav-link,
+  .popup-store-card {
+    min-height: 44px;
+    min-width: 44px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  /* 스크롤 성능 최적화 */
+  .popup-grid,
+  .scroll-container {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+}
+
+/* ==========================================
+   🪟 GLASSMORPHISM MOBILE - 모바일 글래스모피즘
+   ========================================== */
+
+@media (max-width: 768px) {
+  .popup-store-card {
+    padding: var(--space-4);
+    border-radius: var(--radius-xl);
+    margin-bottom: var(--space-4);
+  }
+  
+  .popup-store-card:hover {
+    transform: none; /* 모바일에서는 호버 효과 제거 */
+  }
+  
+  .popup-store-card:active {
+    transform: scale(0.98);
+    transition: transform var(--duration-fast) var(--ease-out);
+  }
+  
+  .glass-card {
+    backdrop-filter: blur(15px); /* 모바일에서 블러 강도 조정 */
+    -webkit-backdrop-filter: blur(15px);
+  }
+}
+
+/* ==========================================
+   📲 TOUCH GESTURES - 터치 제스처 최적화
+   ========================================== */
+
+@media (max-width: 768px) {
+  /* 스와이프 가능한 필터 탭 */
+  .filter-tabs {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding: var(--space-2) var(--space-4);
+  }
+  
+  .filter-tabs::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .filter-tab {
+    scroll-snap-align: start;
+    flex-shrink: 0;
+    padding: var(--space-3) var(--space-5);
+    margin-right: var(--space-2);
+  }
+  
+  /* 풀 스크린 터치 영역 */
+  .hero-cta {
+    flex-direction: column;
+    width: 100%;
+    gap: var(--space-3);
+  }
+  
+  .hero-cta .btn {
+    width: 100%;
+    max-width: 280px;
+    padding: var(--space-4) var(--space-6);
+  }
+}
+
+/* ==========================================
+   🔄 RESPONSIVE GRID - 반응형 그리드 시스템
+   ========================================== */
+
+@media (max-width: 640px) {
+  .popup-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+    padding: var(--space-4);
+  }
+  
+  .content-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+  
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+  
+  .gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-content {
+    padding: var(--space-4);
+  }
+  
+  .hero-title {
+    font-size: var(--text-3xl);
+    line-height: 1.2;
+  }
+  
+  .hero-subtitle {
+    font-size: var(--text-base);
+  }
+  
+  .store-title {
+    font-size: var(--text-2xl);
+  }
+  
+  .main-content,
+  .auth-card,
+  .page-content {
+    padding: var(--space-4);
+    margin: var(--space-2);
+  }
+}
+
+/* ==========================================
+   🧭 MOBILE NAVIGATION - 모바일 네비게이션
+   ========================================== */
+
+@media (max-width: 768px) {
+  .main-navigation {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: var(--z-fixed);
+    border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+    border-bottom: none;
+    padding: var(--space-3) var(--space-4);
+    /* Safe area 고려 */
+    padding-bottom: calc(var(--space-3) + var(--safe-area-bottom));
+  }
+  
+  .nav-menu {
+    justify-content: space-around;
+    gap: var(--space-2);
+  }
+  
+  .nav-link {
+    flex-direction: column;
+    gap: var(--space-1);
+    padding: var(--space-2);
+    font-size: var(--text-xs);
+    text-align: center;
+    min-width: 60px;
+  }
+  
+  .nav-icon {
+    width: 24px;
+    height: 24px;
+    margin-bottom: var(--space-1);
+  }
+}
+
+/* ==========================================
+   📝 MOBILE FORMS - 모바일 폼 최적화
+   ========================================== */
+
+@media (max-width: 768px) {
+  .form-input,
+  .form-textarea {
+    font-size: 16px; /* iOS 줌 방지 */
+    padding: var(--space-4);
+    border-radius: var(--radius-lg);
+  }
+  
+  .form-label {
+    font-size: var(--text-base);
+    font-weight: var(--font-medium);
+  }
+  
+  .auth-form {
+    gap: var(--space-5);
+  }
+  
+  .btn {
+    padding: var(--space-4) var(--space-6);
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+  }
+  
+  .btn-lg {
+    padding: var(--space-5) var(--space-8);
+    font-size: var(--text-lg);
+    min-height: 56px;
+  }
+}
+
+/* ==========================================
+   🎯 MODAL & OVERLAY - 모바일 모달 시스템
+   ========================================== */
+
+@media (max-width: 768px) {
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--bg-overlay);
+    backdrop-filter: blur(10px);
+    z-index: var(--z-modal-backdrop);
+    display: flex;
+    align-items: flex-end;
+    padding: 0;
+  }
+  
+  .modal-content {
+    background: var(--glass-card);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+    width: 100%;
+    max-height: 90vh;
+    padding: var(--space-6);
+    padding-bottom: calc(var(--space-6) + var(--safe-area-bottom));
+    backdrop-filter: var(--glass-backdrop);
+    transform: translateY(100%);
+    transition: transform var(--duration-normal) var(--ease-out);
+  }
+  
+  .modal-content.open {
+    transform: translateY(0);
+  }
+  
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-6);
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--glass-border);
+  }
+  
+  .modal-close {
+    width: 44px;
+    height: 44px;
+    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-full);
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--duration-fast) var(--ease-out);
+  }
+  
+  .modal-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+}
+
+/* ==========================================
+   🔍 SEARCH & FILTERS - 모바일 검색 최적화
+   ========================================== */
+
+@media (max-width: 768px) {
+  .search-container {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-sticky);
+    background: var(--glass-card);
+    backdrop-filter: var(--glass-backdrop);
+    border-bottom: 1px solid var(--glass-border);
+    padding: var(--space-4);
+    margin-bottom: var(--space-4);
+  }
+  
+  .search-input {
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    font-size: 16px; /* iOS 줌 방지 */
+    border-radius: var(--radius-xl);
+    background: var(--glass-card);
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+  }
+  
+  .search-input::placeholder {
+    color: var(--text-muted);
+  }
+  
+  .filter-summary {
+    margin-top: var(--space-3);
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+    text-align: center;
+  }
+}
+
+/* ==========================================
+   📊 CARDS & CONTENT - 모바일 카드 최적화
+   ========================================== */
+
+@media (max-width: 768px) {
+  .popup-store-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+  }
+  
+  .popup-store-title {
+    font-size: var(--text-lg);
+    line-height: 1.3;
+  }
+  
+  .popup-store-meta {
+    gap: var(--space-3);
+  }
+  
+  .popup-store-date,
+  .popup-store-location {
+    font-size: var(--text-sm);
+  }
+  
+  .popup-store-description {
+    font-size: var(--text-sm);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .badge {
+    font-size: 10px;
+    padding: var(--space-1) var(--space-2);
+  }
+}
+
+/* ==========================================
+   ⚡ PERFORMANCE - 모바일 성능 최적화
+   ========================================== */
+
+@media (max-width: 768px) {
+  /* GPU 가속 활성화 */
+  .popup-store-card,
+  .filter-tab,
+  .btn,
+  .modal-content {
+    transform: translateZ(0);
+    will-change: transform;
+  }
+  
+  /* 애니메이션 최적화 */
+  .transition-fast {
+    transition-duration: var(--duration-fast);
+  }
+  
+  .transition-normal {
+    transition-duration: var(--duration-normal);
+  }
+  
+  /* 이미지 최적화 */
+  .lazy-image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: var(--radius-lg);
+  }
+  
+  .gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+/* ==========================================
+   🎮 INTERACTIONS - 모바일 인터랙션
+   ========================================== */
+
+@media (max-width: 768px) {
+  /* 터치 피드백 */
+  .interactive-element:active {
+    transform: scale(0.98);
+    transition: transform var(--duration-fast) var(--ease-out);
+  }
+  
+  /* 리플 효과 */
+  .ripple-effect {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .ripple-effect::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width var(--duration-normal) var(--ease-out),
+                height var(--duration-normal) var(--ease-out);
+  }
+  
+  .ripple-effect:active::before {
+    width: 300px;
+    height: 300px;
+  }
+  
+  /* 스와이프 인디케이터 */
+  .swipe-indicator {
+    position: relative;
+  }
+  
+  .swipe-indicator::after {
+    content: '← 스와이프';
+    position: absolute;
+    right: var(--space-4);
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    opacity: 0.7;
+    animation: pulse 2s infinite;
+  }
+}
+
+/* ==========================================
+   🌙 DARK MODE MOBILE - 모바일 다크모드
+   ========================================== */
+
+@media (max-width: 768px) and (prefers-color-scheme: dark) {
+  .main-navigation {
+    background: rgba(15, 15, 35, 0.95);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .search-container {
+    background: rgba(15, 15, 35, 0.95);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .modal-content {
+    background: rgba(15, 15, 35, 0.95);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* ==========================================
+   📱 PWA SPECIFIC - PWA 전용 모바일 스타일
+   ========================================== */
+
+@media (max-width: 768px) {
+  /* PWA 상태바 영역 */
+  .pwa-header {
+    padding-top: var(--safe-area-top);
+    background: var(--glass-card);
+    backdrop-filter: var(--glass-backdrop);
+  }
+  
+  /* PWA 네비게이션 영역 */
+  .pwa-navigation {
+    padding-bottom: var(--safe-area-bottom);
+  }
+  
+  /* 홈 인디케이터 영역 고려 */
+  .page-content {
+    margin-bottom: calc(80px + var(--safe-area-bottom));
+  }
+  
+  /* 풀스크린 모드 */
+  @media (display-mode: fullscreen) {
+    .main-navigation {
+      padding-bottom: var(--space-6);
+    }
+  }
+  
+  /* 스탠드얼론 모드 */
+  @media (display-mode: standalone) {
+    .header-bar {
+      padding-top: var(--safe-area-top);
+    }
+  }
+}
+
+/* ==========================================
+   🔄 ORIENTATION - 디바이스 회전 대응
+   ========================================== */
+
+@media (max-width: 768px) and (orientation: landscape) {
+  .hero-title {
+    font-size: var(--text-3xl);
+  }
+  
+  .hero-content {
+    padding: var(--space-4);
+  }
+  
+  .popup-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .main-navigation {
+    position: relative;
+    border-radius: var(--radius-xl);
+  }
+}
+
+/* 🎊 SUNGSUYA MOBILE v3.0 완성! */
