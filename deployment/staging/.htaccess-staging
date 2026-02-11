@@ -1,0 +1,266 @@
+# SUNGSUYA Staging Environment .htaccess
+# For dev.sungsuya.com
+# Version 2.4 - 3-AI Collaboration Ready
+
+# ============================================================================
+# STAGING ENVIRONMENT IDENTIFIER
+# ============================================================================
+
+# Add staging environment header
+<IfModule mod_headers.c>
+    Header always set X-Environment "staging"
+    Header always set X-Version "2.4"
+    Header always set X-Server "dev.sungsuya.com"
+</IfModule>
+
+# ============================================================================
+# SECURITY HEADERS (Relaxed for Development)
+# ============================================================================
+
+<IfModule mod_headers.c>
+    # Basic Security Headers
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    
+    # Relaxed CSP for development
+    Header always set Content-Security-Policy "default-src 'self' 'unsafe-inline' 'unsafe-eval'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https: blob:; font-src 'self' data: https:; connect-src 'self' https: wss:; frame-src 'self' https:; object-src 'none';"
+    
+    # Development-friendly HSTS (shorter duration)
+    Header always set Strict-Transport-Security "max-age=86400; includeSubDomains"
+</IfModule>
+
+# ============================================================================
+# STAGING PERFORMANCE (Moderate Caching)
+# ============================================================================
+
+# Enable Compression
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE text/javascript
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/json
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE image/svg+xml
+</IfModule>
+
+# Moderate Browser Caching for Development
+<IfModule mod_expires.c>
+    ExpiresActive on
+    
+    # Images - shorter cache for frequent updates
+    ExpiresByType image/jpg "access plus 1 day"
+    ExpiresByType image/jpeg "access plus 1 day"
+    ExpiresByType image/gif "access plus 1 day"
+    ExpiresByType image/png "access plus 1 day"
+    ExpiresByType image/webp "access plus 1 day"
+    ExpiresByType image/svg+xml "access plus 1 day"
+    
+    # CSS and JavaScript - very short cache for development
+    ExpiresByType text/css "access plus 1 hour"
+    ExpiresByType application/javascript "access plus 1 hour"
+    ExpiresByType text/javascript "access plus 1 hour"
+    
+    # HTML - no cache for development
+    ExpiresByType text/html "access plus 0 seconds"
+    
+    # Fonts - moderate cache
+    ExpiresByType font/ttf "access plus 1 week"
+    ExpiresByType font/otf "access plus 1 week"
+    ExpiresByType font/woff "access plus 1 week"
+    ExpiresByType font/woff2 "access plus 1 week"
+</IfModule>
+
+# Development Cache Control
+<IfModule mod_headers.c>
+    # CSS/JS - Quick refresh for development
+    <FilesMatch "\.(css|js)$">
+        Header set Cache-Control "public, max-age=3600"
+    </FilesMatch>
+    
+    # Images - Daily refresh
+    <FilesMatch "\.(png|jpg|jpeg|gif|webp|svg)$">
+        Header set Cache-Control "public, max-age=86400"
+    </FilesMatch>
+    
+    # HTML - No cache for testing
+    <FilesMatch "\.(html|htm|php)$">
+        Header set Cache-Control "no-cache, must-revalidate"
+    </FilesMatch>
+    
+    # Service Worker - Always fresh
+    <FilesMatch "sw.*\.js$">
+        Header set Cache-Control "no-cache, no-store, must-revalidate"
+        Header set Pragma "no-cache"
+        Header set Expires "0"
+    </FilesMatch>
+</IfModule>
+
+# ============================================================================
+# PWA SUPPORT
+# ============================================================================
+
+<IfModule mod_mime.c>
+    AddType application/javascript .js
+    AddType application/manifest+json .webmanifest
+    AddType application/manifest+json .json
+</IfModule>
+
+# PWA Manifest
+<Files "manifest.json">
+    Header set Content-Type "application/manifest+json"
+    Header set Cache-Control "public, max-age=3600"
+</Files>
+
+# ============================================================================
+# STAGING DEVELOPMENT FEATURES
+# ============================================================================
+
+# Enable error display for debugging
+<IfModule mod_php.c>
+    php_flag display_errors On
+    php_flag log_errors On
+    php_value error_log /home/sungsuya/logs/php_errors.log
+</IfModule>
+
+# Allow .htaccess testing
+<Files ".htaccess">
+    # Allow access for debugging (remove in production)
+    # Order allow,deny
+    # Allow from all
+</Files>
+
+# Debug headers for developers
+<IfModule mod_headers.c>
+    Header always set X-Debug-Mode "enabled"
+    Header always set X-Staging-Info "dev.sungsuya.com - 3-AI Collaboration Environment"
+</IfModule>
+
+# ============================================================================
+# WORDPRESS SECURITY (Relaxed for Development)
+# ============================================================================
+
+# Block access to wp-config.php
+<Files wp-config.php>
+    Order allow,deny
+    Deny from all
+</Files>
+
+# Block access to sensitive files
+<FilesMatch "\.(log|bak|backup)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Allow directory browsing for debugging (remove in production)
+# Options +Indexes
+
+# Allow PHP execution in uploads for testing (NEVER in production)
+<Directory "/wp-content/uploads/">
+    # <Files "*.php">
+    #     Order allow,deny
+    #     Allow from all
+    # </Files>
+</Directory>
+
+# ============================================================================
+# STAGING ACCESS CONTROL
+# ============================================================================
+
+# IP-based access control (uncomment and configure as needed)
+# <RequireAll>
+#     Require all granted
+#     # Add your IP addresses here
+#     # Require ip 192.168.1.0/24
+#     # Require ip 203.0.113.0/24
+# </RequireAll>
+
+# Basic Auth for staging (uncomment to enable)
+# AuthType Basic
+# AuthName "SUNGSUYA Staging Environment"
+# AuthUserFile /home/sungsuya/.htpasswd
+# Require valid-user
+
+# ============================================================================
+# WORDPRESS STANDARD RULES
+# ============================================================================
+
+# BEGIN WordPress
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+RewriteBase /
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+</IfModule>
+# END WordPress
+
+# ============================================================================
+# 3-AI COLLABORATION FEATURES
+# ============================================================================
+
+# Claude Desktop indicators
+<IfModule mod_headers.c>
+    Header always set X-Claude-Version "Desktop"
+    Header always set X-ChatGPT-Integration "enabled"
+    Header always set X-Gemini-Deploy "staging"
+</IfModule>
+
+# Development URL redirects for testing
+<IfModule mod_rewrite.c>
+    # Redirect old URLs for testing
+    # RewriteRule ^old-url/?$ /new-url [R=302,L]
+    
+    # API testing routes
+    RewriteRule ^api/test/?$ /wp-json/sungsuya/v1/test [R=302,L]
+</IfModule>
+
+# ============================================================================
+# PERFORMANCE MONITORING
+# ============================================================================
+
+# Add performance headers for monitoring
+<IfModule mod_headers.c>
+    Header always set X-Page-Speed "monitoring"
+    Header always set X-Load-Time "%D"
+    Header always set X-Cache-Status "staging"
+</IfModule>
+
+# ============================================================================
+# CORS for API Development
+# ============================================================================
+
+<IfModule mod_headers.c>
+    # Enable CORS for API testing
+    Header always set Access-Control-Allow-Origin "*"
+    Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+    Header always set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
+    Header always set Access-Control-Max-Age "86400"
+</IfModule>
+
+# Handle preflight OPTIONS requests
+<IfModule mod_rewrite.c>
+    RewriteCond %{REQUEST_METHOD} OPTIONS
+    RewriteRule ^(.*)$ $1 [R=200,L]
+</IfModule>
+
+# ============================================================================
+# STAGING ENVIRONMENT NOTES
+# ============================================================================
+
+# This .htaccess is optimized for development and testing
+# Features enabled:
+# ✅ Debug mode and error display
+# ✅ Shorter cache times for quick iterations
+# ✅ CORS enabled for API development
+# ✅ Relaxed security for testing
+# ✅ Performance monitoring headers
+# ✅ 3-AI collaboration indicators
+
+# WARNING: Do NOT use this configuration in production!
+# Use the production .htaccess from /deployment/fastcomet/.htaccess

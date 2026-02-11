@@ -24,7 +24,9 @@ on:
 
 env:
   STAGING_URL: 'dev.sungsuya.com'
+  STAGING_PATH: '/home/sungsuya/public_html/dev.sungsuya.com'
   PRODUCTION_URL: 'sungsuya.com'
+  PRODUCTION_PATH: '/home/sungsuya/public_html'
 
 jobs:
   pre-deployment:

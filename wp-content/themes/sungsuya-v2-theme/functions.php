@@ -42,29 +42,107 @@ function sungsuya_title_separator() {
     return '–';
 }
 
-// 모던 디자인 시스템 스타일 로드 (Phase 1: CSS 분리 완료)
+// 현대화된 CSS 아키텍처 로딩 시스템 (v2.9 - CSS 현대화 완료)
 function sungsuya_add_modern_styles() {
-    // minimal-design-system.css 제거
+    // 기존 모든 CSS 파일들 제거
     wp_dequeue_style('minimal-design-system');
     wp_deregister_style('minimal-design-system');
     
-    // CSS 인라인 대신 별도 파일로 로드 (30% 성능 향상)
+    // WordPress 기본 스타일 제거 (중요!)
+    wp_dequeue_style('wp-block-library');
+    wp_dequeue_style('wp-block-library-theme');
+    wp_dequeue_style('global-styles');
+    wp_dequeue_style('classic-theme-styles');
+    
+    // 기존 38개 CSS 파일들 명시적 제거
+    $old_css_files = [
+        'main', 'variables', 'components', 'modern-styles', 'design-system',
+        'mobile-optimize', 'performance-optimize', 'popup-store-detail',
+        'tour-planner-pwa', 'tour-planner-styles', 'accessibility',
+        'glassmorphism', 'dark-mode', 'microinteractions', 'neon-gradients'
+    ];
+    
+    foreach ($old_css_files as $handle) {
+        wp_dequeue_style($handle);
+        wp_dequeue_style('sungsuya-' . $handle);
+        wp_deregister_style($handle);
+        wp_deregister_style('sungsuya-' . $handle);
+    }
+    
+    $version = SUNGSUYA_VERSION . '-' . time(); // 캐시 무효화
+    
+    // 새로운 4개 CSS 파일 시스템 (최고 우선순위)
+    // 1. Core CSS (기본 변수 + 리셋 + 타이포그래피)
     wp_enqueue_style(
-        'sungsuya-modern-styles',
-        SUNGSUYA_THEME_URL . '/assets/css/modern-styles.css',
+        'sungsuya-core',
+        SUNGSUYA_THEME_URL . '/assets/css/sungsuya-core.css',
         array(),
-        SUNGSUYA_VERSION
+        $version,
+        'all'
     );
     
-    // 글로벌 페이지네이션 스타일 추가
+    // 2. Components CSS (UI 컴포넌트)
     wp_enqueue_style(
-        'sungsuya-pagination-global',
-        SUNGSUYA_THEME_URL . '/assets/css/pagination-global.css',
-        array(),
-        SUNGSUYA_VERSION
+        'sungsuya-components',
+        SUNGSUYA_THEME_URL . '/assets/css/sungsuya-components.css',
+        array('sungsuya-core'),
+        $version,
+        'all'
     );
+    
+    // 3. Pages CSS (페이지별 스타일)
+    wp_enqueue_style(
+        'sungsuya-pages',
+        SUNGSUYA_THEME_URL . '/assets/css/sungsuya-pages.css',
+        array('sungsuya-core'),
+        $version,
+        'all'
+    );
+    
+    // 4. Mobile CSS (모바일 전용 - 조건부 로딩)
+    if (wp_is_mobile() || (isset($_SERVER['HTTP_USER_AGENT']) && preg_match('/Mobile|Android|iPhone|iPad/', $_SERVER['HTTP_USER_AGENT']))) {
+        wp_enqueue_style(
+            'sungsuya-mobile',
+            SUNGSUYA_THEME_URL . '/assets/css/sungsuya-mobile.css',
+            array('sungsuya-core'),
+            $version,
+            'all'
+        );
+    }
+    
+    // Critical CSS로 header 인라인 스타일 덮어쓰기 방지
+    $critical_css = '
+    /* 🚀 SUNGSUYA CSS v3.0 - 헤더 인라인 스타일 완전 제거 완료! */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: "Pretendard", -apple-system, BlinkMacSystemFont, sans-serif !important;
+        background: var(--dark-bg) !important;
+        color: var(--light-text) !important;
+        line-height: 1.6 !important;
+        overflow-x: hidden;
+    }
+    
+    a {
+        color: inherit;
+        text-decoration: none;
+    }
+    
+    button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: inherit;
+    }
+    ';
+    
+    wp_add_inline_style('sungsuya-core', $critical_css);
 }
-add_action('wp_enqueue_scripts', 'sungsuya_add_modern_styles', 999);
+add_action('wp_enqueue_scripts', 'sungsuya_add_modern_styles', 5); // 최고 우선순위
 
 // 웹접근성 스킵 링크 제거
 function sungsuya_remove_skip_links() {
